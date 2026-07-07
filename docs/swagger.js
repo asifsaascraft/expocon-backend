@@ -12,20 +12,16 @@ const options = {
 
       version: "1.0.0",
 
-      description:
-        "Official REST API documentation for the Expocon Backend.",
+      description: "Official REST API documentation for the Expocon Backend.",
     },
 
     servers: [
       {
         url: `http://localhost:${process.env.PORT || 5000}/api`,
-
         description: "Local Development",
       },
-
       {
         url: process.env.API_BASE_URL,
-
         description: "Production",
       },
     ],
