@@ -1,0 +1,384 @@
+export const schemas = {
+  User: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "6852b4d04ef5f2e4dbd0d001",
+      },
+
+      fullName: {
+        type: "string",
+        example: "John Doe",
+      },
+
+      username: {
+        type: "string",
+        example: "johndoe",
+      },
+
+      email: {
+        type: "string",
+        example: "john@example.com",
+      },
+
+      mobile: {
+        type: "string",
+        example: "9876543210",
+      },
+
+      profileImage: {
+        type: "string",
+        nullable: true,
+        example: null,
+      },
+
+      role: {
+        type: "string",
+        enum: [
+          "admin",
+          "user",
+          "partner",
+          "staff",
+        ],
+        example: "user",
+      },
+
+      permissions: {
+        type: "array",
+
+        items: {
+          type: "string",
+        },
+
+        example: [],
+      },
+
+      status: {
+        type: "string",
+
+        enum: [
+          "pending",
+          "active",
+          "blocked",
+        ],
+
+        example: "active",
+      },
+
+      isDeleted: {
+        type: "boolean",
+        example: false,
+      },
+
+      isEmailVerified: {
+        type: "boolean",
+        example: true,
+      },
+
+      language: {
+        type: "string",
+        example: "en",
+      },
+
+      timezone: {
+        type: "string",
+        example: "Asia/Kolkata",
+      },
+
+      profileCompleted: {
+        type: "boolean",
+        example: true,
+      },
+
+      loginCount: {
+        type: "integer",
+        example: 12,
+      },
+
+      lastLoginAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+
+  UserSession: {
+    type: "object",
+
+    properties: {
+      sessionId: {
+        type: "string",
+      },
+
+      deviceId: {
+        type: "string",
+      },
+
+      deviceName: {
+        type: "string",
+      },
+
+      browser: {
+        type: "string",
+      },
+
+      operatingSystem: {
+        type: "string",
+      },
+
+      platform: {
+        type: "string",
+      },
+
+      appVersion: {
+        type: "string",
+      },
+
+      ipAddress: {
+        type: "string",
+      },
+
+      location: {
+        type: "string",
+      },
+
+      isActive: {
+        type: "boolean",
+      },
+
+      lastActivityAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      expiresAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      loggedOutAt: {
+        type: "string",
+        nullable: true,
+        format: "date-time",
+      },
+    },
+  },
+
+  RegisterAdminRequest: {
+    type: "object",
+
+    required: [
+      "fullName",
+      "email",
+      "password",
+    ],
+
+    properties: {
+      fullName: {
+        type: "string",
+      },
+
+      username: {
+        type: "string",
+      },
+
+      email: {
+        type: "string",
+      },
+
+      mobile: {
+        type: "string",
+      },
+
+      password: {
+        type: "string",
+      },
+    },
+  },
+
+  RegisterUserRequest: {
+    type: "object",
+
+    required: [
+      "fullName",
+      "email",
+      "password",
+    ],
+
+    properties: {
+      fullName: {
+        type: "string",
+      },
+
+      username: {
+        type: "string",
+      },
+
+      email: {
+        type: "string",
+      },
+
+      mobile: {
+        type: "string",
+      },
+
+      password: {
+        type: "string",
+      },
+    },
+  },
+
+  RegisterPartnerRequest: {
+    type: "object",
+
+    required: [
+      "fullName",
+      "email",
+      "password",
+    ],
+
+    properties: {
+      fullName: {
+        type: "string",
+      },
+
+      username: {
+        type: "string",
+      },
+
+      email: {
+        type: "string",
+      },
+
+      mobile: {
+        type: "string",
+      },
+
+      password: {
+        type: "string",
+      },
+    },
+  },
+
+  LoginRequest: {
+    type: "object",
+
+    required: [
+      "email",
+      "password",
+    ],
+
+    properties: {
+      email: {
+        type: "string",
+      },
+
+      password: {
+        type: "string",
+      },
+    },
+  },
+
+  ForgotPasswordRequest: {
+    type: "object",
+
+    required: [
+      "email",
+    ],
+
+    properties: {
+      email: {
+        type: "string",
+      },
+    },
+  },
+
+  ResetPasswordRequest: {
+    type: "object",
+
+    required: [
+      "password",
+    ],
+
+    properties: {
+      password: {
+        type: "string",
+      },
+    },
+  },
+
+  RefreshTokenResponse: {
+    type: "object",
+
+    properties: {
+      success: {
+        type: "boolean",
+      },
+
+      message: {
+        type: "string",
+      },
+
+      data: {
+        type: "object",
+
+        properties: {
+          accessToken: {
+            type: "string",
+          },
+        },
+      },
+    },
+  },
+
+  SuccessResponse: {
+    type: "object",
+
+    properties: {
+      success: {
+        type: "boolean",
+      },
+
+      message: {
+        type: "string",
+      },
+
+      data: {
+        type: "object",
+      },
+    },
+  },
+
+  ErrorResponse: {
+    type: "object",
+
+    properties: {
+      success: {
+        type: "boolean",
+      },
+
+      message: {
+        type: "string",
+      },
+
+      errors: {
+        type: "object",
+        nullable: true,
+      },
+    },
+  },
+};
+
+export default schemas;
