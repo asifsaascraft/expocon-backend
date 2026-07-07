@@ -62,6 +62,7 @@ const limiter = rateLimit({
 app.use(helmet());
 app.use(compression());
 app.use(cors(corsOptions));
+app.use(limiter);
 
 app.use(express.json({
   limit: "10mb",
@@ -78,7 +79,6 @@ if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
-app.use(limiter);
 
 // Swagger
 app.use("/api-docs", swaggerRoutes);
@@ -99,6 +99,11 @@ app.get("/", (req, res) => {
 // API Routes
 // =======================
 app.use("/api/auth", authRoutes);
+// app.use("/api/users", userRoutes);
+// app.use("/api/partners", partnerRoutes);
+// app.use("/api/staff", staffRoutes);
+// app.use("/api/events", eventRoutes);
+
 
 // 404 Route
 app.use((req, res) => {
