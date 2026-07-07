@@ -21,7 +21,7 @@ const options = {
         description: "Local Development",
       },
       {
-        url: process.env.API_BASE_URL,
+        url: `${process.env.API_BASE_URL}/api`,
         description: "Production",
       },
     ],
