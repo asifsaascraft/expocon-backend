@@ -29,22 +29,30 @@ const allowedOrigins = [
 ];
 
 // CORS Configuration
+// const corsOptions = {
+//   origin(origin, callback) {
+//     if (!origin) {
+//       return callback(null, true);
+//     }
+
+//     if (allowedOrigins.includes(origin)) {
+//       return callback(null, true);
+//     }
+
+//     return callback(new Error("Not allowed by CORS."));
+//   },
+
+//   credentials: true,
+// };
+
+// CORS for now all origin allowed for testing
 const corsOptions = {
-  origin(origin, callback) {
-    if (!origin) {
-      return callback(null, true);
-    }
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    return callback(new Error("Not allowed by CORS."));
+  origin: (origin, callback) => {
+    // allow any origin (including browser requests)
+    callback(null, true);
   },
-
   credentials: true,
 };
-
 
 // Global Rate Limiter
 const limiter = rateLimit({
