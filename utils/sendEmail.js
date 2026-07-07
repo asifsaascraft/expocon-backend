@@ -34,13 +34,6 @@ const sendEmail = async ({
         address: process.env.ZEPTO_FROM,
         name: "Expocon",
       },
-
-      reply_to: [
-        {
-          address: process.env.ZEPTO_REPLY_TO,
-        },
-      ],
-
       to: [
         {
           email_address: {
@@ -57,7 +50,7 @@ const sendEmail = async ({
 
     return response;
   } catch (error) {
-    console.error("ZeptoMail Error:", error);
+    console.error("ZeptoMail Error:", JSON.stringify(error, null, 2));
 
     throw error;
   }

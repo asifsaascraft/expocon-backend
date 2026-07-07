@@ -226,9 +226,9 @@ UserSchema.virtual("isLocked").get(function () {
 });
 
 // Pre Save Hook
-UserSchema.pre("save", async function (next) {
+UserSchema.pre("save", async function () {
   if (!this.isModified("password")) {
-    return next();
+    return;
   }
 
   this.password = await bcrypt.hash(this.password, 12);
@@ -236,8 +236,6 @@ UserSchema.pre("save", async function (next) {
   if (!this.isNew) {
     this.passwordChangedAt = new Date();
   }
-
-  next();
 });
 
 // Instance Methods

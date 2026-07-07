@@ -120,7 +120,6 @@ export const registerAdmin = asyncHandler(async (req, res) => {
 
 // Verify Email
 export const verifyEmail = asyncHandler(async (req, res) => {
-
   const { token } = req.params;
 
   if (!token) {
@@ -130,10 +129,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
     });
   }
 
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(token)
-    .digest("hex");
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
   const user = await User.findOne({
     emailVerificationToken: hashedToken,
@@ -176,8 +172,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 
     name: user.fullName,
 
-    templateKey:
-      process.env.ZEPTO_WELCOME_TEMPLATE,
+    templateKey: process.env.ZEPTO_WELCOME_TEMPLATE,
 
     mergeInfo: {
       name: user.fullName,
@@ -188,11 +183,9 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   return successResponse(res, {
     message: "Email verified successfully.",
   });
-
 });
 
 // Login
-
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -215,7 +208,7 @@ export const login = asyncHandler(async (req, res) => {
   if (!user) {
     return errorResponse(res, {
       statusCode: 401,
-      message: "Invalid email or password.",
+      message: "Invalid email.",
     });
   }
 
@@ -238,7 +231,7 @@ export const login = asyncHandler(async (req, res) => {
 
     return errorResponse(res, {
       statusCode: 401,
-      message: "Invalid email or password.",
+      message: "Wrong password.",
     });
   }
 
@@ -274,10 +267,7 @@ export const login = asyncHandler(async (req, res) => {
 
   // Generate Tokens
 
-  const {
-    accessToken,
-    refreshToken,
-  } = await generateTokens({
+  const { accessToken, refreshToken } = await generateTokens({
     user,
     req,
     deviceInfo,
@@ -311,10 +301,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
   let decoded;
 
   try {
-    decoded = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET,
-    );
+    decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
   } catch (error) {
     return errorResponse(res, {
       statusCode: 401,
@@ -454,9 +441,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
   user.passwordResetToken = hashedToken;
 
-  user.passwordResetExpires = new Date(
-    Date.now() + 15 * 60 * 1000,
-  );
+  user.passwordResetExpires = new Date(Date.now() + 15 * 60 * 1000);
 
   await user.save({
     validateBeforeSave: false,
@@ -464,8 +449,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
   // Reset Link
 
-  const resetLink =
-    `${process.env.FRONTEND_URL}/reset-password/${rawToken}`;
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password/${rawToken}`;
 
   // Send Email
 
@@ -474,8 +458,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
     name: user.fullName,
 
-    templateKey:
-      process.env.ZEPTO_FORGOT_PASSWORD_TEMPLATE,
+    templateKey: process.env.ZEPTO_FORGOT_PASSWORD_TEMPLATE,
 
     mergeInfo: {
       name: user.fullName,
@@ -510,10 +493,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
 
   // Hash Token
 
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(token)
-    .digest("hex");
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
   // Find User
 
@@ -555,8 +535,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
   );
 
   return successResponse(res, {
-    message:
-      "Password reset successfully. Please login again.",
+    message: "Password reset successfully. Please login again.",
   });
 });
 
@@ -600,9 +579,7 @@ export const resendVerificationEmail = asyncHandler(async (req, res) => {
 
   user.emailVerificationToken = hashedToken;
 
-  user.emailVerificationExpires = new Date(
-    Date.now() + 24 * 60 * 60 * 1000,
-  );
+  user.emailVerificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
   await user.save({
     validateBeforeSave: false,
@@ -610,8 +587,7 @@ export const resendVerificationEmail = asyncHandler(async (req, res) => {
 
   // Verification Link
 
-  const verificationLink =
-    `${process.env.FRONTEND_URL}/verify-email/${rawToken}`;
+  const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${rawToken}`;
 
   // Send Email
 
@@ -620,8 +596,7 @@ export const resendVerificationEmail = asyncHandler(async (req, res) => {
 
     name: user.fullName,
 
-    templateKey:
-      process.env.ZEPTO_VERIFY_EMAIL_TEMPLATE,
+    templateKey: process.env.ZEPTO_VERIFY_EMAIL_TEMPLATE,
 
     mergeInfo: {
       name: user.fullName,
