@@ -14,6 +14,8 @@ import sendEmail from "../utils/sendEmail.js";
 import checkDuplicateFields from "../utils/checkDuplicateFields.js";
 import { successResponse, errorResponse } from "../utils/response.js";
 
+
+//=========================
 // Register Admin
 export const registerAdmin = asyncHandler(async (req, res) => {
   const { fullName, username, email, mobile, password } = req.body;
@@ -96,6 +98,7 @@ export const registerAdmin = asyncHandler(async (req, res) => {
       name: user.fullName,
 
       verification_link: verificationLink,
+      current_year: new Date().getFullYear(),
     },
   });
 
@@ -118,6 +121,355 @@ export const registerAdmin = asyncHandler(async (req, res) => {
   });
 });
 
+//=========================
+// Register User
+export const registerUser = asyncHandler(async (req, res) => {
+  const {
+    fullName,
+    username,
+    email,
+    mobile,
+    password,
+  } = req.body;
+
+  // Validate Required Fields
+
+  if (!fullName || !email || !password) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Full name, email and password are required.",
+    });
+  }
+
+  // Check Duplicate Fields
+
+  const duplicate = await checkDuplicateFields({
+    email,
+    username,
+    mobile,
+  });
+
+  if (duplicate.exists) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: duplicate.message,
+    });
+  }
+
+  // Generate Verification Token
+
+  const { rawToken, hashedToken } = generateRandomToken();
+
+  // Create User
+
+  const user = await User.create({
+    fullName,
+    username,
+    email,
+    mobile,
+    password,
+
+    role: "user",
+
+    status: "pending",
+
+    isEmailVerified: false,
+
+    emailVerificationToken: hashedToken,
+
+    emailVerificationExpires: new Date(
+      Date.now() + 24 * 60 * 60 * 1000,
+    ),
+  });
+
+  // Verification Link
+
+  const verificationLink = `${process.env.FRONTEND_URL}/verify-email/${rawToken}`;
+
+  // Send Verification Email
+
+  await sendEmail({
+    to: user.email,
+
+    name: user.fullName,
+
+    templateKey: process.env.ZEPTO_VERIFY_EMAIL_TEMPLATE,
+
+    mergeInfo: {
+      name: user.fullName,
+      verification_link: verificationLink,
+      current_year: new Date().getFullYear(),
+    },
+  });
+
+  return successResponse(res, {
+    statusCode: 201,
+
+    message:
+      "User registered successfully. Please verify your email.",
+
+    data: {
+      id: user._id,
+
+      fullName: user.fullName,
+
+      email: user.email,
+
+      role: user.role,
+
+      status: user.status,
+    },
+  });
+});
+
+//=========================
+// Invite Staff
+export const inviteStaff = asyncHandler(async (req, res) => {
+  const {
+    fullName,
+    username,
+    email,
+    mobile,
+  } = req.body;
+
+  // Validate Required Fields
+
+  if (!fullName || !email) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Full name and email are required.",
+    });
+  }
+
+  // Check Duplicate Fields
+
+  const duplicate = await checkDuplicateFields({
+    email,
+    username,
+    mobile,
+  });
+
+  if (duplicate.exists) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: duplicate.message,
+    });
+  }
+
+  // Generate Invitation Token
+
+  const { rawToken, hashedToken } = generateRandomToken();
+
+  // Generate Temporary Password
+
+  const temporaryPassword = generateRandomToken().rawToken;
+
+  // Create Staff Account
+
+  const staff = await User.create({
+    fullName,
+
+    username,
+
+    email,
+
+    mobile,
+
+    password: temporaryPassword,
+
+    role: "staff",
+
+    status: "pending",
+
+    isEmailVerified: false,
+
+    emailVerificationToken: hashedToken,
+
+    emailVerificationExpires: new Date(
+      Date.now() + 24 * 60 * 60 * 1000,
+    ),
+
+    createdBy: req.user._id,
+  });
+
+  // Invitation Link
+
+  const invitationLink =
+    `${process.env.FRONTEND_URL}/staff/set-password/${rawToken}`;
+
+  // Send Invitation Email
+
+  await sendEmail({
+    to: staff.email,
+
+    name: staff.fullName,
+
+    templateKey:
+      process.env.ZEPTO_STAFF_INVITATION_TEMPLATE,
+
+    mergeInfo: {
+      name: staff.fullName,
+      invitation_link: invitationLink,
+      current_year: new Date().getFullYear(),
+    },
+  });
+
+  return successResponse(res, {
+    statusCode: 201,
+
+    message: "Staff invited successfully.",
+
+    data: {
+      id: staff._id,
+
+      fullName: staff.fullName,
+
+      email: staff.email,
+
+      role: staff.role,
+
+      status: staff.status,
+    },
+  });
+});
+
+//=========================
+// Accept Staff Invitation
+export const acceptInvitation = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+
+  // Validate Token
+
+  if (!token) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Invitation token is required.",
+    });
+  }
+
+  // Hash Token
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  // Find Staff
+
+  const staff = await User.findOne({
+    role: "staff",
+
+    emailVerificationToken: hashedToken,
+
+    emailVerificationExpires: {
+      $gt: new Date(),
+    },
+
+    isDeleted: false,
+  });
+
+  if (!staff) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Invitation link is invalid or has expired.",
+    });
+  }
+
+  // Already Activated
+
+  if (staff.isEmailVerified) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Staff account has already been activated.",
+    });
+  }
+
+  // Response
+
+  return successResponse(res, {
+    message: "Invitation is valid.",
+
+    data: {
+      fullName: staff.fullName,
+
+      email: staff.email,
+    },
+  });
+});
+
+
+//=========================
+// Set Staff Password
+export const setStaffPassword = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+
+  const { password } = req.body;
+
+  // Validate
+
+  if (!password) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Password is required.",
+    });
+  }
+
+  // Hash Token
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  // Find Staff
+
+  const staff = await User.findOne({
+    role: "staff",
+
+    emailVerificationToken: hashedToken,
+
+    emailVerificationExpires: {
+      $gt: new Date(),
+    },
+
+    isDeleted: false,
+  }).select("+password");
+
+  if (!staff) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Invitation link is invalid or has expired.",
+    });
+  }
+
+  if (staff.isEmailVerified) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Staff account has already been activated.",
+    });
+  }
+
+  // Set Password
+
+  staff.password = password;
+
+  staff.isEmailVerified = true;
+
+  staff.status = "active";
+
+  staff.emailVerificationToken = null;
+
+  staff.emailVerificationExpires = null;
+
+  await staff.save();
+
+  return successResponse(res, {
+    message: "Password created successfully. You can now login.",
+  });
+});
+
+
+//=========================
 // Verify Email
 export const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.params;
@@ -177,6 +529,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
     mergeInfo: {
       name: user.fullName,
       login_link: `${process.env.FRONTEND_URL}/login`,
+      current_year: new Date().getFullYear(),
     },
   });
 
@@ -185,6 +538,8 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   });
 });
 
+
+//=========================
 // Login
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -313,6 +668,7 @@ export const login = asyncHandler(async (req, res) => {
   });
 });
 
+//=========================
 // Refresh Access Token
 export const refreshToken = asyncHandler(async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
@@ -402,6 +758,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
   });
 });
 
+//=========================
 // Logout
 export const logout = asyncHandler(async (req, res) => {
   req.session.isActive = false;
@@ -416,6 +773,7 @@ export const logout = asyncHandler(async (req, res) => {
   });
 });
 
+//=========================
 // Logout From All Devices
 export const logoutAllDevices = asyncHandler(async (req, res) => {
   await UserSession.updateMany(
@@ -436,6 +794,7 @@ export const logoutAllDevices = asyncHandler(async (req, res) => {
   });
 });
 
+//=========================
 // Forgot Password
 export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -489,6 +848,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     mergeInfo: {
       name: user.fullName,
       reset_password_link: resetLink,
+      current_year: new Date().getFullYear(),
     },
   });
 
@@ -498,6 +858,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   });
 });
 
+//=========================
 // Reset Password
 export const resetPassword = asyncHandler(async (req, res) => {
   const { token } = req.params;
@@ -565,6 +926,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
   });
 });
 
+//=========================
 // Resend Verification Email
 export const resendVerificationEmail = asyncHandler(async (req, res) => {
   const { email } = req.body;

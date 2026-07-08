@@ -1,5 +1,7 @@
 import {
   registerAdminExample,
+  registerUserExample,
+  createStaffExample,
   loginExample,
   forgotPasswordExample,
   resetPasswordExample,
@@ -77,6 +79,135 @@ const authPaths = {
     },
   },
 
+  "/auth/register/user": {
+    post: {
+      tags: ["Authentication"],
+
+      summary: "Register User",
+
+      description:
+        "Register a new user account. After successful registration, a verification email is sent.",
+
+      requestBody: {
+        required: true,
+
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/RegisterUserRequest",
+            },
+
+            example: registerUserExample,
+          },
+        },
+      },
+
+      responses: {
+        201: {
+          description: "User registered successfully.",
+
+          content: {
+            "application/json": {
+              example: {
+                success: true,
+
+                message:
+                  "User registered successfully. Please verify your email.",
+
+                data: {
+                  id: "6852b4d04ef5f2e4dbd0d010",
+
+                  fullName: "John Doe",
+
+                  email: "john@example.com",
+
+                  role: "user",
+
+                  status: "pending",
+                },
+              },
+            },
+          },
+        },
+
+        400: badRequest400,
+
+        409: conflict409,
+
+        500: internalServer500,
+      },
+    },
+  },
+
+  "/auth/invite/staff": {
+    post: {
+      tags: ["Authentication"],
+
+      summary: "Invite Staff",
+
+      description:
+        "Invite a new staff member. Only an authenticated admin can access this endpoint. An invitation email is sent to the staff member to set their password.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      requestBody: {
+        required: true,
+
+        content: {
+          "application/json": {
+            schema: {
+              $ref: "#/components/schemas/RegisterUserRequest",
+            },
+
+            example: createStaffExample,
+          },
+        },
+      },
+
+      responses: {
+        201: {
+          description: "Staff invited successfully.",
+
+          content: {
+            "application/json": {
+              example: {
+                success: true,
+
+                message: "Staff invited successfully.",
+
+                data: {
+                  id: "6852b4d04ef5f2e4dbd0d001",
+
+                  fullName: "Rahul Sharma",
+
+                  email: "rahul@example.com",
+
+                  role: "staff",
+
+                  status: "pending",
+                },
+              },
+            },
+          },
+        },
+
+        400: badRequest400,
+
+        401: unauthorized401,
+
+        403: forbidden403,
+
+        409: conflict409,
+
+        500: internalServer500,
+      },
+    },
+  },
+
   "/auth/verify-email/{token}": {
     get: {
       tags: ["Authentication"],
@@ -119,6 +250,155 @@ const authPaths = {
         400: badRequest400,
 
         404: notFound404,
+
+        500: internalServer500,
+      },
+    },
+  },
+
+  "/auth/accept-invitation/{token}": {
+    get: {
+      tags: ["Authentication"],
+
+      summary: "Accept Staff Invitation",
+
+      description:
+        "Validate the staff invitation token before allowing the staff member to create a password.",
+
+      parameters: [
+        {
+          name: "token",
+
+          in: "path",
+
+          required: true,
+
+          description: "Staff invitation token.",
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      responses: {
+        200: {
+          description: "Invitation is valid.",
+
+          content: {
+            "application/json": {
+              example: {
+                success: true,
+
+                message: "Invitation is valid.",
+
+                data: {
+                  fullName: "Rahul Sharma",
+
+                  email: "rahul@example.com",
+                },
+              },
+            },
+          },
+        },
+
+        400: {
+          description: "Invalid or expired invitation.",
+
+          content: {
+            "application/json": {
+              example: {
+                success: false,
+
+                message: "Invitation link is invalid or has expired.",
+              },
+            },
+          },
+        },
+
+        500: internalServer500,
+      },
+    },
+  },
+
+  "/auth/set-password/{token}": {
+    post: {
+      tags: ["Authentication"],
+
+      summary: "Set Staff Password",
+
+      description:
+        "Create a password for an invited staff member. This activates the account and verifies the email address.",
+
+      parameters: [
+        {
+          name: "token",
+
+          in: "path",
+
+          required: true,
+
+          description: "Staff invitation token.",
+
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+
+      requestBody: {
+        required: true,
+
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+
+              required: ["password"],
+
+              properties: {
+                password: {
+                  type: "string",
+                  example: "Staff@123",
+                },
+              },
+            },
+
+            example: {
+              password: "Staff@123",
+            },
+          },
+        },
+      },
+
+      responses: {
+        200: {
+          description: "Password created successfully.",
+
+          content: {
+            "application/json": {
+              example: {
+                success: true,
+
+                message: "Password created successfully. You can now login.",
+              },
+            },
+          },
+        },
+
+        400: {
+          description: "Invalid or expired invitation.",
+
+          content: {
+            "application/json": {
+              example: {
+                success: false,
+
+                message: "Invitation link is invalid or has expired.",
+              },
+            },
+          },
+        },
 
         500: internalServer500,
       },
@@ -224,8 +504,8 @@ const authPaths = {
       },
     },
   },
-  
-    "/auth/refresh-token": {
+
+  "/auth/refresh-token": {
     post: {
       tags: ["Authentication"],
 
@@ -241,19 +521,16 @@ const authPaths = {
           content: {
             "application/json": {
               schema: {
-                $ref:
-                  "#/components/schemas/RefreshTokenResponse",
+                $ref: "#/components/schemas/RefreshTokenResponse",
               },
 
               example: {
                 success: true,
 
-                message:
-                  "Access token refreshed successfully.",
+                message: "Access token refreshed successfully.",
 
                 data: {
-                  accessToken:
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxx.xxx",
+                  accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxx.xxx",
                 },
               },
             },
@@ -291,8 +568,7 @@ const authPaths = {
               example: {
                 success: true,
 
-                message:
-                  "Logged out successfully.",
+                message: "Logged out successfully.",
               },
             },
           },
@@ -322,16 +598,14 @@ const authPaths = {
 
       responses: {
         200: {
-          description:
-            "Logged out from all devices successfully.",
+          description: "Logged out from all devices successfully.",
 
           content: {
             "application/json": {
               example: {
                 success: true,
 
-                message:
-                  "Logged out from all devices successfully.",
+                message: "Logged out from all devices successfully.",
               },
             },
           },
@@ -344,7 +618,7 @@ const authPaths = {
     },
   },
 
-    "/auth/forgot-password": {
+  "/auth/forgot-password": {
     post: {
       tags: ["Authentication"],
 
@@ -359,8 +633,7 @@ const authPaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/ForgotPasswordRequest",
+              $ref: "#/components/schemas/ForgotPasswordRequest",
             },
 
             example: forgotPasswordExample,
@@ -370,8 +643,7 @@ const authPaths = {
 
       responses: {
         200: {
-          description:
-            "Password reset email processed.",
+          description: "Password reset email processed.",
 
           content: {
             "application/json": {
@@ -423,8 +695,7 @@ const authPaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/ResetPasswordRequest",
+              $ref: "#/components/schemas/ResetPasswordRequest",
             },
 
             example: resetPasswordExample,
@@ -434,16 +705,14 @@ const authPaths = {
 
       responses: {
         200: {
-          description:
-            "Password reset successfully.",
+          description: "Password reset successfully.",
 
           content: {
             "application/json": {
               example: {
                 success: true,
 
-                message:
-                  "Password reset successfully. Please login again.",
+                message: "Password reset successfully. Please login again.",
               },
             },
           },
@@ -457,7 +726,6 @@ const authPaths = {
       },
     },
   },
-
 };
 
 export default authPaths;
