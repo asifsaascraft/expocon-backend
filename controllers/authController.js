@@ -265,9 +265,20 @@ export const login = asyncHandler(async (req, res) => {
 
   await user.updateLoginInfo();
 
+  await UserSession.updateMany(
+    {
+      user: user._id,
+      isActive: true,
+    },
+    {
+      isActive: false,
+      loggedOutAt: new Date(),
+    },
+  );
+
   // Generate Tokens
 
-  const { accessToken, refreshToken } = await generateTokens({
+  const { accessToken, refreshToken, session } = await generateTokens({
     user,
     req,
     deviceInfo,
@@ -277,12 +288,27 @@ export const login = asyncHandler(async (req, res) => {
 
   setRefreshTokenCookie(res, refreshToken);
 
+  // Remove Internal Fields
+
+  const sessionData = session.toObject();
+
+  delete sessionData.refreshTokenHash;
+
+  delete sessionData.userAgent;
+
+  delete sessionData.__v;
+
+  // Response
+
   return successResponse(res, {
     message: "Login successful.",
 
     data: {
       accessToken,
+
       user,
+
+      session: sessionData,
     },
   });
 });

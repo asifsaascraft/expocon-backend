@@ -84,11 +84,6 @@ const UserSchema = new mongoose.Schema(
       default: "user",
     },
 
-    permissions: {
-      type: [String],
-      default: [],
-    },
-
     // Account Status
     status: {
       type: String,
@@ -196,11 +191,6 @@ const UserSchema = new mongoose.Schema(
       trim: true,
       default: "Asia/Kolkata",
     },
-
-    profileCompleted: {
-      type: Boolean,
-      default: false,
-    },
   },
   {
     timestamps: true,
@@ -260,11 +250,10 @@ UserSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 };
 
 // Increase Failed Login Attempts
-
 UserSchema.methods.incrementLoginAttempts = async function () {
   this.failedLoginAttempts += 1;
 
-  if (this.failedLoginAttempts >= 5) {
+  if (this.failedLoginAttempts >= 3) {
     this.lockUntil = new Date(Date.now() + 15 * 60 * 1000);
   }
 

@@ -2,30 +2,26 @@
 
 export const successResponse = (
   res,
-  {
-    statusCode = 200,
-    message = "Success",
-    data = null,
-    meta = null,
-  } = {},
+  { statusCode = 200, message = "Success", data = null, meta } = {},
 ) => {
-  return res.status(statusCode).json({
+  const response = {
     success: true,
     message,
     data,
-    meta,
-  });
+  };
+
+  if (meta !== undefined) {
+    response.meta = meta;
+  }
+
+  return res.status(statusCode).json(response);
 };
 
 // Error Response
 
 export const errorResponse = (
   res,
-  {
-    statusCode = 500,
-    message = "Something went wrong.",
-    errors = null,
-  } = {},
+  { statusCode = 500, message = "Something went wrong.", errors = null } = {},
 ) => {
   return res.status(statusCode).json({
     success: false,

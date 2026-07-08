@@ -1,11 +1,14 @@
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 
 import UserSession from "../models/UserSession.js";
 import hashToken from "./hashToken.js";
 
-const generateTokens = async ({ user, req, deviceInfo = {} }) => {
+const generateTokens = async ({
+  user,
+  req,
+  deviceInfo = {},
+}) => {
   // Session ID
 
   const sessionId = uuidv4();
@@ -33,7 +36,8 @@ const generateTokens = async ({ user, req, deviceInfo = {} }) => {
     },
     process.env.JWT_REFRESH_SECRET,
     {
-      expiresIn: process.env.JWT_REFRESH_EXPIRES || "7d",
+      expiresIn:
+        process.env.JWT_REFRESH_EXPIRES || "7d",
     },
   );
 
@@ -45,11 +49,13 @@ const generateTokens = async ({ user, req, deviceInfo = {} }) => {
 
   const decodedRefresh = jwt.decode(refreshToken);
 
-  const expiresAt = new Date(decodedRefresh.exp * 1000);
+  const expiresAt = new Date(
+    decodedRefresh.exp * 1000,
+  );
 
   // Save Session
 
-  await UserSession.create({
+  const session = await UserSession.create({
     user: user._id,
 
     sessionId,
@@ -62,7 +68,8 @@ const generateTokens = async ({ user, req, deviceInfo = {} }) => {
 
     browser: deviceInfo.browser || null,
 
-    operatingSystem: deviceInfo.operatingSystem || null,
+    operatingSystem:
+      deviceInfo.operatingSystem || null,
 
     platform: deviceInfo.platform || null,
 
@@ -79,8 +86,10 @@ const generateTokens = async ({ user, req, deviceInfo = {} }) => {
 
   return {
     accessToken,
+
     refreshToken,
-    sessionId,
+
+    session,
   };
 };
 
