@@ -15,10 +15,6 @@ const CompanyTypeSchema = new mongoose.Schema(
   },
 );
 
-// Indexes
-CompanyTypeSchema.index({
-  companyTypeName: 1,
-});
 
 // JSON Transform
 CompanyTypeSchema.set("toJSON", {
