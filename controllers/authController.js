@@ -17,6 +17,7 @@ import { successResponse, errorResponse } from "../utils/response.js";
 
 //=========================
 // Register Admin
+//=======================
 export const registerAdmin = asyncHandler(async (req, res) => {
   const { fullName, username, email, mobile, password } = req.body;
 
@@ -123,6 +124,7 @@ export const registerAdmin = asyncHandler(async (req, res) => {
 
 //=========================
 // Register User
+//=======================
 export const registerUser = asyncHandler(async (req, res) => {
   const {
     fullName,
@@ -224,6 +226,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
 //=========================
 // Invite Staff
+//=======================
 export const inviteStaff = asyncHandler(async (req, res) => {
   const {
     fullName,
@@ -335,6 +338,7 @@ export const inviteStaff = asyncHandler(async (req, res) => {
 
 //=========================
 // Accept Staff Invitation
+//=========================
 export const acceptInvitation = asyncHandler(async (req, res) => {
   const { token } = req.params;
 
@@ -400,6 +404,7 @@ export const acceptInvitation = asyncHandler(async (req, res) => {
 
 //=========================
 // Set Staff Password
+//=========================
 export const setStaffPassword = asyncHandler(async (req, res) => {
   const { token } = req.params;
 
@@ -471,6 +476,7 @@ export const setStaffPassword = asyncHandler(async (req, res) => {
 
 //=========================
 // Verify Email
+//=======================
 export const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.params;
 
@@ -541,6 +547,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 
 //=========================
 // Login
+//=======================
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -670,6 +677,7 @@ export const login = asyncHandler(async (req, res) => {
 
 //=========================
 // Refresh Access Token
+//=======================
 export const refreshToken = asyncHandler(async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
 
@@ -760,6 +768,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
 
 //=========================
 // Logout
+//=======================
 export const logout = asyncHandler(async (req, res) => {
   req.session.isActive = false;
   req.session.loggedOutAt = new Date();
@@ -775,6 +784,7 @@ export const logout = asyncHandler(async (req, res) => {
 
 //=========================
 // Logout From All Devices
+//=======================
 export const logoutAllDevices = asyncHandler(async (req, res) => {
   await UserSession.updateMany(
     {
@@ -796,6 +806,7 @@ export const logoutAllDevices = asyncHandler(async (req, res) => {
 
 //=========================
 // Forgot Password
+//=======================
 export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -860,6 +871,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
 
 //=========================
 // Reset Password
+//=======================
 export const resetPassword = asyncHandler(async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
@@ -928,6 +940,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
 
 //=========================
 // Resend Verification Email
+//=======================
 export const resendVerificationEmail = asyncHandler(async (req, res) => {
   const { email } = req.body;
 

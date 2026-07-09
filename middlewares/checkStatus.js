@@ -1,23 +1,19 @@
-const checkStatus = (...allowedStatus) => {
-  return (req, res, next) => {
+const checkStatus = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized.",
+    });
+  }
 
-    if (!req.user) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized.",
-      });
-    }
+  if (req.user.status !== "active") {
+    return res.status(403).json({
+      success: false,
+      message: `Your account is ${req.user.status}.`,
+    });
+  }
 
-    if (!allowedStatus.includes(req.user.status)) {
-      return res.status(403).json({
-        success: false,
-        message: `Account status is '${req.user.status}'.`,
-      });
-    }
-
-    next();
-
-  };
+  next();
 };
 
 export default checkStatus;

@@ -110,3 +110,81 @@ export const errorExample = {
   success: false,
   message: "Something went wrong.",
 };
+
+export const uploadProfileImageExample = {
+  profileImage: "(binary)",
+};
+
+export const profileResponseExample = {
+  success: true,
+  message: "Profile fetched successfully.",
+  data: {
+    _id: "6852b4d04ef5f2e4dbd0d001",
+
+    fullName: "John Doe",
+
+    username: "johndoe",
+
+    email: "john@example.com",
+
+    mobile: "9876543210",
+
+    profileImage:
+      "https://your-bucket.s3.ap-south-1.amazonaws.com/profile-images/profile.jpg",
+
+    role: "user",
+
+    status: "active",
+
+    isEmailVerified: true,
+
+    language: "en",
+
+    timezone: "Asia/Kolkata",
+
+    createdAt: "2026-07-09T10:30:00.000Z",
+
+    updatedAt: "2026-07-09T10:30:00.000Z",
+  },
+};
+
+export const uploadProfileImageSuccessExample = {
+  success: true,
+
+  message: "Profile image uploaded successfully.",
+
+  data: {
+    _id: "6852b4d04ef5f2e4dbd0d001",
+
+    fullName: "John Doe",
+
+    username: "johndoe",
+
+    email: "john@example.com",
+
+    profileImage:
+      "https://your-bucket.s3.ap-south-1.amazonaws.com/profile-images/profile.jpg",
+
+    role: "user",
+  },
+};
+
+export const deleteProfileImageSuccessExample = {
+  success: true,
+
+  message: "Profile image deleted successfully.",
+
+  data: {
+    _id: "6852b4d04ef5f2e4dbd0d001",
+
+    fullName: "John Doe",
+
+    username: "johndoe",
+
+    email: "john@example.com",
+
+    profileImage: null,
+
+    role: "user",
+  },
+};

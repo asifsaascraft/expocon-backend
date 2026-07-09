@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import UserSession from "../models/UserSession.js";
 
+
 const protect = async (req, res, next) => {
   try {
     let token;
@@ -108,16 +109,13 @@ const protect = async (req, res, next) => {
     req.session = session;
 
     next();
-
   } catch (error) {
-
     console.error(error);
 
     return res.status(500).json({
       success: false,
       message: "Internal server error.",
     });
-
   }
 };
 

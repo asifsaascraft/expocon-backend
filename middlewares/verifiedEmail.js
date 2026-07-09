@@ -13,9 +13,7 @@ const verifiedEmail = (req, res, next) => {
       message: "Please verify your email address first.",
     });
   }
-
   next();
-
 };
 
 export default verifiedEmail;

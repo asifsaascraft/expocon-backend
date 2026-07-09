@@ -14,6 +14,7 @@ import connectDB from "./config/db.js";
 
 import swaggerRoutes from "./routes/swaggerRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 // Connect Database
 await connectDB();
@@ -107,7 +108,7 @@ app.get("/", (req, res) => {
 // API Routes
 // =======================
 app.use("/api/auth", authRoutes);
-// app.use("/api/users", userRoutes);
+app.use("/api/users", userRoutes);
 // app.use("/api/partners", partnerRoutes);
 // app.use("/api/staff", staffRoutes);
 // app.use("/api/events", eventRoutes);

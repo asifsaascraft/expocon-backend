@@ -36,33 +36,14 @@ export const schemas = {
 
       role: {
         type: "string",
-        enum: [
-          "admin",
-          "user",
-          "partner",
-          "staff",
-        ],
+        enum: ["admin", "user", "partner", "staff"],
         example: "user",
-      },
-
-      permissions: {
-        type: "array",
-
-        items: {
-          type: "string",
-        },
-
-        example: [],
       },
 
       status: {
         type: "string",
 
-        enum: [
-          "pending",
-          "active",
-          "blocked",
-        ],
+        enum: ["pending", "active", "blocked"],
 
         example: "active",
       },
@@ -85,11 +66,6 @@ export const schemas = {
       timezone: {
         type: "string",
         example: "Asia/Kolkata",
-      },
-
-      profileCompleted: {
-        type: "boolean",
-        example: true,
       },
 
       loginCount: {
@@ -179,11 +155,7 @@ export const schemas = {
   RegisterAdminRequest: {
     type: "object",
 
-    required: [
-      "fullName",
-      "email",
-      "password",
-    ],
+    required: ["fullName", "email", "password"],
 
     properties: {
       fullName: {
@@ -211,11 +183,34 @@ export const schemas = {
   RegisterUserRequest: {
     type: "object",
 
-    required: [
-      "fullName",
-      "email",
-      "password",
-    ],
+    required: ["fullName", "email", "password"],
+
+    properties: {
+      fullName: {
+        type: "string",
+      },
+
+      username: {
+        type: "string",
+      },
+
+      email: {
+        type: "string",
+      },
+
+      mobile: {
+        type: "string",
+      },
+
+      password: {
+        type: "string",
+      },
+    },
+  },
+  RegisterPartnerRequest: {
+    type: "object",
+
+    required: ["fullName", "email", "password"],
 
     properties: {
       fullName: {
@@ -240,34 +235,64 @@ export const schemas = {
     },
   },
 
-  RegisterPartnerRequest: {
+  UpdateProfileRequest: {
     type: "object",
-
-    required: [
-      "fullName",
-      "email",
-      "password",
-    ],
 
     properties: {
       fullName: {
         type: "string",
+        example: "John Doe",
       },
 
       username: {
         type: "string",
-      },
-
-      email: {
-        type: "string",
+        example: "johndoe",
       },
 
       mobile: {
         type: "string",
+        example: "9876543210",
       },
 
-      password: {
+      language: {
         type: "string",
+        example: "en",
+      },
+
+      timezone: {
+        type: "string",
+        example: "Asia/Kolkata",
+      },
+    },
+  },
+
+  ChangePasswordRequest: {
+    type: "object",
+
+    required: ["currentPassword", "newPassword"],
+
+    properties: {
+      currentPassword: {
+        type: "string",
+        example: "OldPassword@123",
+      },
+
+      newPassword: {
+        type: "string",
+        example: "NewPassword@123",
+      },
+    },
+  },
+
+  UploadProfileImageRequest: {
+    type: "object",
+
+    required: ["profileImage"],
+
+    properties: {
+      profileImage: {
+        type: "string",
+        format: "binary",
       },
     },
   },
@@ -275,10 +300,7 @@ export const schemas = {
   LoginRequest: {
     type: "object",
 
-    required: [
-      "email",
-      "password",
-    ],
+    required: ["email", "password"],
 
     properties: {
       email: {
@@ -294,9 +316,7 @@ export const schemas = {
   ForgotPasswordRequest: {
     type: "object",
 
-    required: [
-      "email",
-    ],
+    required: ["email"],
 
     properties: {
       email: {
@@ -308,9 +328,7 @@ export const schemas = {
   ResetPasswordRequest: {
     type: "object",
 
-    required: [
-      "password",
-    ],
+    required: ["password"],
 
     properties: {
       password: {
