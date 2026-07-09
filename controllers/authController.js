@@ -14,7 +14,6 @@ import sendEmail from "../utils/sendEmail.js";
 import checkDuplicateFields from "../utils/checkDuplicateFields.js";
 import { successResponse, errorResponse } from "../utils/response.js";
 
-
 //=========================
 // Register Admin
 //=======================
@@ -126,13 +125,7 @@ export const registerAdmin = asyncHandler(async (req, res) => {
 // Register User
 //=======================
 export const registerUser = asyncHandler(async (req, res) => {
-  const {
-    fullName,
-    username,
-    email,
-    mobile,
-    password,
-  } = req.body;
+  const { fullName, username, email, mobile, password } = req.body;
 
   // Validate Required Fields
 
@@ -179,9 +172,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
     emailVerificationToken: hashedToken,
 
-    emailVerificationExpires: new Date(
-      Date.now() + 24 * 60 * 60 * 1000,
-    ),
+    emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
   });
 
   // Verification Link
@@ -207,8 +198,7 @@ export const registerUser = asyncHandler(async (req, res) => {
   return successResponse(res, {
     statusCode: 201,
 
-    message:
-      "User registered successfully. Please verify your email.",
+    message: "User registered successfully. Please verify your email.",
 
     data: {
       id: user._id,
@@ -228,12 +218,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 // Invite Staff
 //=======================
 export const inviteStaff = asyncHandler(async (req, res) => {
-  const {
-    fullName,
-    username,
-    email,
-    mobile,
-  } = req.body;
+  const { fullName, username, email, mobile } = req.body;
 
   // Validate Required Fields
 
@@ -288,17 +273,14 @@ export const inviteStaff = asyncHandler(async (req, res) => {
 
     emailVerificationToken: hashedToken,
 
-    emailVerificationExpires: new Date(
-      Date.now() + 24 * 60 * 60 * 1000,
-    ),
+    emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
 
     createdBy: req.user._id,
   });
 
   // Invitation Link
 
-  const invitationLink =
-    `${process.env.FRONTEND_URL}/staff/set-password/${rawToken}`;
+  const invitationLink = `${process.env.FRONTEND_URL}/staff/set-password/${rawToken}`;
 
   // Send Invitation Email
 
@@ -307,8 +289,7 @@ export const inviteStaff = asyncHandler(async (req, res) => {
 
     name: staff.fullName,
 
-    templateKey:
-      process.env.ZEPTO_STAFF_INVITATION_TEMPLATE,
+    templateKey: process.env.ZEPTO_STAFF_INVITATION_TEMPLATE,
 
     mergeInfo: {
       name: staff.fullName,
@@ -353,10 +334,7 @@ export const acceptInvitation = asyncHandler(async (req, res) => {
 
   // Hash Token
 
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(token)
-    .digest("hex");
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
   // Find Staff
 
@@ -401,7 +379,6 @@ export const acceptInvitation = asyncHandler(async (req, res) => {
   });
 });
 
-
 //=========================
 // Set Staff Password
 //=========================
@@ -421,10 +398,7 @@ export const setStaffPassword = asyncHandler(async (req, res) => {
 
   // Hash Token
 
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(token)
-    .digest("hex");
+  const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
   // Find Staff
 
@@ -472,7 +446,6 @@ export const setStaffPassword = asyncHandler(async (req, res) => {
     message: "Password created successfully. You can now login.",
   });
 });
-
 
 //=========================
 // Verify Email
@@ -543,7 +516,6 @@ export const verifyEmail = asyncHandler(async (req, res) => {
     message: "Email verified successfully.",
   });
 });
-
 
 //=========================
 // Login
@@ -758,10 +730,20 @@ export const refreshToken = asyncHandler(async (req, res) => {
     },
   );
 
+  // Remove Internal Fields
+
+  const sessionData = session.toObject();
+
+  delete sessionData.refreshTokenHash;
+  delete sessionData.userAgent;
+  delete sessionData.__v;
+
   return successResponse(res, {
     message: "Access token refreshed successfully.",
     data: {
       accessToken,
+      user,
+      session: sessionData,
     },
   });
 });
