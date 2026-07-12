@@ -230,6 +230,32 @@ export const schemas = {
     },
   },
 
+  EventType: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      eventTypeName: {
+        type: "string",
+        example: "Conference",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+
   RegisterAdminRequest: {
     type: "object",
 
@@ -489,6 +515,32 @@ export const schemas = {
       associationTypeName: {
         type: "string",
         example: "Healthcare Association",
+      },
+    },
+  },
+
+  CreateEventTypeRequest: {
+    type: "object",
+
+    required: ["eventTypeName"],
+
+    properties: {
+      eventTypeName: {
+        type: "string",
+        example: "Conference",
+      },
+    },
+  },
+
+  UpdateEventTypeRequest: {
+    type: "object",
+
+    required: ["eventTypeName"],
+
+    properties: {
+      eventTypeName: {
+        type: "string",
+        example: "International Conference",
       },
     },
   },

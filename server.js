@@ -19,6 +19,8 @@ import userRoutes from "./routes/userRoutes.js";
 import companyTypeRoutes from "./routes/companyTypeRoutes.js";
 import stateRoutes from "./routes/stateRoutes.js";
 import associationTypeRoutes from "./routes/associationTypeRoutes.js";
+import eventTypeRoutes from "./routes/eventTypeRoutes.js";
+
 
 // Connect Database
 await connectDB();
@@ -119,6 +121,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/company-types", companyTypeRoutes);
 app.use("/api/states", stateRoutes);
 app.use("/api/association-types", associationTypeRoutes,);
+app.use("/api/event-types", eventTypeRoutes,);
 // app.use("/api/partners", partnerRoutes);
 // app.use("/api/staff", staffRoutes);
 // app.use("/api/events", eventRoutes);

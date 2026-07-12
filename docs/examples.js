@@ -210,3 +210,12 @@ export const createAssociationTypeExample = {
 export const updateAssociationTypeExample = {
   associationTypeName: "Healthcare Association",
 };
+
+// Event Type Examples
+export const createEventTypeExample = {
+  eventTypeName: "Conference",
+};
+
+export const updateEventTypeExample = {
+  eventTypeName: "International Conference",
+};
