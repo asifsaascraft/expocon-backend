@@ -17,11 +17,13 @@ import swaggerRoutes from "./routes/swaggerRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import companyTypeRoutes from "./routes/companyTypeRoutes.js";
+import monthRoutes from "./routes/monthRoutes.js";
 import stateRoutes from "./routes/stateRoutes.js";
 import associationTypeRoutes from "./routes/associationTypeRoutes.js";
 import eventTypeRoutes from "./routes/eventTypeRoutes.js";
 import exhibitionTypeRoutes from "./routes/exhibitionTypeRoutes.js";
 import entryTypeRoutes from "./routes/entryTypeRoutes.js";
+import conferenceTypeRoutes from "./routes/conferenceTypeRoutes.js";
 
 // Connect Database
 await connectDB();
@@ -120,11 +122,13 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/company-types", companyTypeRoutes);
+app.use("/api/months", monthRoutes);
 app.use("/api/states", stateRoutes);
 app.use("/api/association-types", associationTypeRoutes);
 app.use("/api/event-types", eventTypeRoutes);
 app.use("/api/exhibition-types", exhibitionTypeRoutes);
 app.use("/api/entry-types", entryTypeRoutes);
+app.use("/api/conference-types", conferenceTypeRoutes);
 // app.use("/api/partners", partnerRoutes);
 // app.use("/api/staff", staffRoutes);
 // app.use("/api/events", eventRoutes);

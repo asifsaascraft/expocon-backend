@@ -189,6 +189,15 @@ export const updateCompanyTypeExample = {
   companyTypeName: "Medical Equipment Company",
 };
 
+// Month Examples
+export const createMonthExample = {
+  month: "January",
+};
+
+export const updateMonthExample = {
+  month: "February",
+};
+
 // State Examples
 export const createStateExample = {
   state: "Uttar Pradesh",
@@ -232,4 +241,13 @@ export const createEntryTypeExample = {
 
 export const updateEntryTypeExample = {
   entryTypeName: "VIP Visitor",
+};
+
+// Conference Type Examples
+export const createConferenceTypeExample = {
+  conferenceTypeName: "Medical Conference",
+};
+
+export const updateConferenceTypeExample = {
+  conferenceTypeName: "International Medical Conference",
 };

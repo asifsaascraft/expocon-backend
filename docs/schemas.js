@@ -178,6 +178,32 @@ export const schemas = {
     },
   },
 
+  Month: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      month: {
+        type: "string",
+        example: "January",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+
   State: {
     type: "object",
 
@@ -294,6 +320,32 @@ export const schemas = {
       entryTypeName: {
         type: "string",
         example: "Visitor",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+
+  ConferenceType: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      conferenceTypeName: {
+        type: "string",
+        example: "Medical Conference",
       },
 
       createdAt: {
@@ -502,6 +554,31 @@ export const schemas = {
     },
   },
 
+  CreateMonthRequest: {
+    type: "object",
+
+    required: ["month"],
+
+    properties: {
+      month: {
+        type: "string",
+        example: "January",
+      },
+    },
+  },
+  UpdateMonthRequest: {
+    type: "object",
+
+    required: ["month"],
+
+    properties: {
+      month: {
+        type: "string",
+        example: "February",
+      },
+    },
+  },
+
   CreateStateRequest: {
     type: "object",
 
@@ -632,6 +709,30 @@ export const schemas = {
     },
   },
 
+  CreateConferenceTypeRequest: {
+    type: "object",
+
+    required: ["conferenceTypeName"],
+
+    properties: {
+      conferenceTypeName: {
+        type: "string",
+        example: "Medical Conference",
+      },
+    },
+  },
+  UpdateConferenceTypeRequest: {
+    type: "object",
+
+    required: ["conferenceTypeName"],
+
+    properties: {
+      conferenceTypeName: {
+        type: "string",
+        example: "International Medical Conference",
+      },
+    },
+  },
   RefreshTokenResponse: {
     type: "object",
 
