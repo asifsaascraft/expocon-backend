@@ -552,7 +552,7 @@ export const login = asyncHandler(async (req, res) => {
     return errorResponse(res, {
       statusCode: 423,
       message:
-        "Account is temporarily locked  for 24 hours, multiple failed login deducted.",
+        "Account is temporarily locked  for 24 hours, multiple failed login detected.",
       data: {
         lockUntil: user.lockUntil,
       },
@@ -570,7 +570,7 @@ export const login = asyncHandler(async (req, res) => {
       return errorResponse(res, {
         statusCode: 423,
         message:
-          "Account is temporarily locked due to multiple failed login attempts.",
+          "Account is temporarily locked  for 24 hours, multiple failed login detected.",
         data: {
           lockUntil: user.lockUntil,
         },
@@ -819,7 +819,6 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   });
 
   // Don't reveal whether email exists
-
   if (!user) {
     return successResponse(res, {
       message:
