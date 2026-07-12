@@ -192,3 +192,12 @@ export const createCompanyTypeExample = {
 export const updateCompanyTypeExample = {
   companyTypeName: "Medical Equipment Company",
 };
+
+// State Examples
+export const createStateExample = {
+  state: "Uttar Pradesh",
+};
+
+export const updateStateExample = {
+  state: "Maharashtra",
+};

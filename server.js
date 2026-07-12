@@ -17,6 +17,7 @@ import swaggerRoutes from "./routes/swaggerRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import companyTypeRoutes from "./routes/companyTypeRoutes.js";
+import stateRoutes from "./routes/stateRoutes.js";
 
 
 // Connect Database
@@ -116,6 +117,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/company-types", companyTypeRoutes);
+app.use("/api/states", stateRoutes);
 // app.use("/api/partners", partnerRoutes);
 // app.use("/api/staff", staffRoutes);
 // app.use("/api/events", eventRoutes);

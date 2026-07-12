@@ -178,6 +178,32 @@ export const schemas = {
     },
   },
 
+  State: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      state: {
+        type: "string",
+        example: "Uttar Pradesh",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+
   RegisterAdminRequest: {
     type: "object",
 
@@ -385,6 +411,32 @@ export const schemas = {
       companyTypeName: {
         type: "string",
         example: "Medical Equipment Company",
+      },
+    },
+  },
+
+  CreateStateRequest: {
+    type: "object",
+
+    required: ["state"],
+
+    properties: {
+      state: {
+        type: "string",
+        example: "Uttar Pradesh",
+      },
+    },
+  },
+
+  UpdateStateRequest: {
+    type: "object",
+
+    required: ["state"],
+
+    properties: {
+      state: {
+        type: "string",
+        example: "Maharashtra",
       },
     },
   },
