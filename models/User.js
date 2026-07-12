@@ -257,6 +257,11 @@ UserSchema.methods.incrementLoginAttempts = async function () {
     this.lockUntil = new Date(Date.now() + 15 * 60 * 1000);
   }
 
+  console.log({
+    attempts: this.failedLoginAttempts,
+    lockUntil: this.lockUntil,
+  });
+
   await this.save();
 };
 

@@ -552,7 +552,10 @@ export const login = asyncHandler(async (req, res) => {
     return errorResponse(res, {
       statusCode: 423,
       message:
-        "Account temporarily locked due to multiple failed login attempts.",
+        "Account is temporarily locked  for 24 hours, multiple failed login deducted.",
+      data: {
+        lockUntil: user.lockUntil,
+      },
     });
   }
 
@@ -562,6 +565,17 @@ export const login = asyncHandler(async (req, res) => {
 
   if (!isMatch) {
     await user.incrementLoginAttempts();
+
+    if (user.isLocked) {
+      return errorResponse(res, {
+        statusCode: 423,
+        message:
+          "Account is temporarily locked due to multiple failed login attempts.",
+        data: {
+          lockUntil: user.lockUntil,
+        },
+      });
+    }
 
     return errorResponse(res, {
       statusCode: 401,
