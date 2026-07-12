@@ -11,6 +11,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import connectDB from "./config/db.js";
+import { connectRedis } from "./config/redis.js";
 
 import swaggerRoutes from "./routes/swaggerRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -20,6 +21,9 @@ import companyTypeRoutes from "./routes/companyTypeRoutes.js";
 
 // Connect Database
 await connectDB();
+
+// Connect Redis
+await connectRedis();
 
 const app = express();
 

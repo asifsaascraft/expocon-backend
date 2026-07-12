@@ -152,6 +152,32 @@ export const schemas = {
     },
   },
 
+  CompanyType: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      companyTypeName: {
+        type: "string",
+        example: "Hospital",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+
   RegisterAdminRequest: {
     type: "object",
 
@@ -333,6 +359,32 @@ export const schemas = {
     properties: {
       password: {
         type: "string",
+      },
+    },
+  },
+
+  CreateCompanyTypeRequest: {
+    type: "object",
+
+    required: ["companyTypeName"],
+
+    properties: {
+      companyTypeName: {
+        type: "string",
+        example: "Hospital",
+      },
+    },
+  },
+
+  UpdateCompanyTypeRequest: {
+    type: "object",
+
+    required: ["companyTypeName"],
+
+    properties: {
+      companyTypeName: {
+        type: "string",
+        example: "Medical Equipment Company",
       },
     },
   },

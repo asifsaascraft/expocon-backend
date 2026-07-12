@@ -1,18 +1,16 @@
 import mongoose from "mongoose";
 import CompanyType from "../models/CompanyType.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import {
-  successResponse,
-  errorResponse,
-} from "../utils/response.js";
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
+import { successResponse, errorResponse } from "../utils/response.js";
+import { getPagination, buildPaginationMeta } from "../utils/pagination.js";
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
-
+import {
+  getCache,
+  setCache,
+  deleteCacheByPattern,
+} from "../utils/redisCache.js";
 
 //==============================
 // Create Company Type
@@ -38,7 +36,7 @@ export const createCompanyType = asyncHandler(async (req, res) => {
   if (existingCompanyType) {
     return errorResponse(res, {
       statusCode: 409,
-      message: "Company type already exists.",
+      message: "This Company type name already exists.",
     });
   }
 
@@ -47,6 +45,10 @@ export const createCompanyType = asyncHandler(async (req, res) => {
   const companyType = await CompanyType.create({
     companyTypeName: companyTypeName.trim(),
   });
+
+  // Clear Redis Cache
+
+  await deleteCacheByPattern("company-types*");
 
   return successResponse(res, {
     statusCode: 201,
@@ -65,9 +67,7 @@ export const getCompanyTypes = asyncHandler(async (req, res) => {
   const { page, limit, skip } = getPagination(req);
 
   // Search
-  const searchQuery = buildSearchQuery(req, [
-    "companyTypeName",
-  ]);
+  const searchQuery = buildSearchQuery(req, ["companyTypeName"]);
 
   // Filters
   const filtersQuery = buildFiltersQuery(req, []);
@@ -81,29 +81,63 @@ export const getCompanyTypes = asyncHandler(async (req, res) => {
   // Sorting
   const sort = buildSortQuery(req);
 
-  // Get Data
+  // Cache Key
+  const cacheKey = `company-types:${JSON.stringify({
+    page,
+    limit,
+    query,
+    sort,
+  })}`;
+
+  // ==========================
+  // Check Redis Cache
+  // ==========================
+
+  const cachedData = await getCache(cacheKey);
+
+  if (cachedData) {
+    return successResponse(res, {
+      message: "Company types fetched successfully (from cache).",
+
+      data: cachedData.data,
+
+      pagination: cachedData.pagination,
+    });
+  }
+
+  // ==========================
+  // MongoDB
+  // ==========================
+
   const [companyTypes, total] = await Promise.all([
-    CompanyType.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
+    CompanyType.find(query).sort(sort).skip(skip).limit(limit),
 
     CompanyType.countDocuments(query),
   ]);
+
+  const pagination = buildPaginationMeta(total, page, limit);
+
+  // ==========================
+  // Save into Redis
+  // ==========================
+
+  await setCache(
+    cacheKey,
+    {
+      data: companyTypes,
+      pagination,
+    },
+    3600, // 1 hour
+  );
 
   return successResponse(res, {
     message: "Company types fetched successfully.",
 
     data: companyTypes,
 
-    pagination: buildPaginationMeta(
-      total,
-      page,
-      limit,
-    ),
+    pagination,
   });
 });
-
 
 //==============================
 // Get Company Type By ID
@@ -120,7 +154,23 @@ export const getCompanyTypeById = asyncHandler(async (req, res) => {
     });
   }
 
-  // Find Company Type
+  // Cache Key
+
+  const cacheKey = `company-type:${id}`;
+
+  // Check Redis
+
+  const cachedData = await getCache(cacheKey);
+
+  if (cachedData) {
+    return successResponse(res, {
+      message: "Company type fetched successfully (from cache).",
+
+      data: cachedData,
+    });
+  }
+
+  // MongoDB
 
   const companyType = await CompanyType.findById(id);
 
@@ -130,6 +180,10 @@ export const getCompanyTypeById = asyncHandler(async (req, res) => {
       message: "Company type not found.",
     });
   }
+
+  // Save Cache
+
+  await setCache(cacheKey, companyType, 3600);
 
   return successResponse(res, {
     message: "Company type fetched successfully.",
@@ -194,13 +248,16 @@ export const updateCompanyType = asyncHandler(async (req, res) => {
 
   await companyType.save();
 
+  // Clear Redis Cache
+  await deleteCacheByPattern("company-types*");
+  await deleteCacheByPattern("company-type*");
+
   return successResponse(res, {
     message: "Company type updated successfully.",
 
     data: companyType,
   });
 });
-
 
 //==============================
 // Delete Company Type
@@ -231,6 +288,10 @@ export const deleteCompanyType = asyncHandler(async (req, res) => {
   // Delete
 
   await companyType.deleteOne();
+
+  // Clear Redis Cache
+  await deleteCacheByPattern("company-types*");
+  await deleteCacheByPattern("company-type*");
 
   return successResponse(res, {
     message: "Company type deleted successfully.",

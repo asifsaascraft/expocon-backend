@@ -58,11 +58,7 @@ export const createStaffExample = {
   username: "rahulstaff",
   email: "rahul@example.com",
   mobile: "9876543214",
-  permissions: [
-    "event.create",
-    "event.update",
-    "user.view",
-  ],
+  permissions: ["event.create", "event.update", "user.view"],
 };
 
 // Partner Examples
@@ -88,8 +84,7 @@ export const loginSuccessExample = {
   success: true,
   message: "Login successful.",
   data: {
-    accessToken:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxx.xxx",
+    accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxx.xxx",
     user: {
       _id: "6852b4d04ef5f2e4dbd0d001",
       fullName: "Super Admin",
@@ -187,4 +182,13 @@ export const deleteProfileImageSuccessExample = {
 
     role: "user",
   },
+};
+
+// Company Type Examples
+export const createCompanyTypeExample = {
+  companyTypeName: "Professional Conference Organiser (PCO)",
+};
+
+export const updateCompanyTypeExample = {
+  companyTypeName: "Medical Equipment Company",
 };
