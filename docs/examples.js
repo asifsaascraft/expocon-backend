@@ -2,7 +2,6 @@
 
 export const registerAdminExample = {
   fullName: "Super Admin",
-  username: "admin",
   email: "admin@example.com",
   mobile: "9876543210",
   password: "Admin@123",
@@ -10,7 +9,6 @@ export const registerAdminExample = {
 
 export const registerUserExample = {
   fullName: "John Doe",
-  username: "johndoe",
   email: "john@example.com",
   mobile: "9876543211",
   password: "User@123",
@@ -18,7 +16,6 @@ export const registerUserExample = {
 
 export const registerPartnerExample = {
   fullName: "ABC Technologies",
-  username: "abctech",
   email: "partner@example.com",
   mobile: "9876543212",
   password: "Partner@123",
@@ -45,7 +42,6 @@ export const resendVerificationEmailExample = {
 
 export const updateProfileExample = {
   fullName: "John Doe Updated",
-  username: "johnupdated",
   mobile: "9876543213",
   language: "en",
   timezone: "Asia/Kolkata",
@@ -218,4 +214,22 @@ export const createEventTypeExample = {
 
 export const updateEventTypeExample = {
   eventTypeName: "International Conference",
+};
+
+// Exhibition Type Examples
+export const createExhibitionTypeExample = {
+  exhibitionTypeName: "Trade Exhibition",
+};
+
+export const updateExhibitionTypeExample = {
+  exhibitionTypeName: "International Trade Exhibition",
+};
+
+// Entry Type Examples
+export const createEntryTypeExample = {
+  entryTypeName: "Visitor",
+};
+
+export const updateEntryTypeExample = {
+  entryTypeName: "VIP Visitor",
 };

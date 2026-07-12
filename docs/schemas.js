@@ -256,6 +256,58 @@ export const schemas = {
     },
   },
 
+  ExhibitionType: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      exhibitionTypeName: {
+        type: "string",
+        example: "Trade Exhibition",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+
+  EntryType: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      entryTypeName: {
+        type: "string",
+        example: "Visitor",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+
   RegisterAdminRequest: {
     type: "object",
 
@@ -263,10 +315,6 @@ export const schemas = {
 
     properties: {
       fullName: {
-        type: "string",
-      },
-
-      username: {
         type: "string",
       },
 
@@ -294,10 +342,6 @@ export const schemas = {
         type: "string",
       },
 
-      username: {
-        type: "string",
-      },
-
       email: {
         type: "string",
       },
@@ -318,10 +362,6 @@ export const schemas = {
 
     properties: {
       fullName: {
-        type: "string",
-      },
-
-      username: {
         type: "string",
       },
 
@@ -346,11 +386,6 @@ export const schemas = {
       fullName: {
         type: "string",
         example: "John Doe",
-      },
-
-      username: {
-        type: "string",
-        example: "johndoe",
       },
 
       mobile: {
@@ -541,6 +576,58 @@ export const schemas = {
       eventTypeName: {
         type: "string",
         example: "International Conference",
+      },
+    },
+  },
+
+  CreateExhibitionTypeRequest: {
+    type: "object",
+
+    required: ["exhibitionTypeName"],
+
+    properties: {
+      exhibitionTypeName: {
+        type: "string",
+        example: "Trade Exhibition",
+      },
+    },
+  },
+
+  UpdateExhibitionTypeRequest: {
+    type: "object",
+
+    required: ["exhibitionTypeName"],
+
+    properties: {
+      exhibitionTypeName: {
+        type: "string",
+        example: "International Trade Exhibition",
+      },
+    },
+  },
+
+  CreateEntryTypeRequest: {
+    type: "object",
+
+    required: ["entryTypeName"],
+
+    properties: {
+      entryTypeName: {
+        type: "string",
+        example: "Visitor",
+      },
+    },
+  },
+
+  UpdateEntryTypeRequest: {
+    type: "object",
+
+    required: ["entryTypeName"],
+
+    properties: {
+      entryTypeName: {
+        type: "string",
+        example: "VIP Visitor",
       },
     },
   },

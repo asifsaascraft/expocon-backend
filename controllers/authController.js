@@ -10,6 +10,7 @@ import {
 import crypto from "crypto";
 import asyncHandler from "../utils/asyncHandler.js";
 import generateRandomToken from "../utils/generateRandomToken.js";
+import generateUsername from "../utils/generateUsername.js";
 import sendEmail from "../utils/sendEmail.js";
 import checkDuplicateFields from "../utils/checkDuplicateFields.js";
 import { successResponse, errorResponse } from "../utils/response.js";
@@ -18,7 +19,7 @@ import { successResponse, errorResponse } from "../utils/response.js";
 // Register Admin
 //=======================
 export const registerAdmin = asyncHandler(async (req, res) => {
-  const { fullName, username, email, mobile, password } = req.body;
+  const { fullName, email, mobile, password } = req.body;
 
   // Validate required fields
 
@@ -42,6 +43,8 @@ export const registerAdmin = asyncHandler(async (req, res) => {
       message: "Admin already registered.",
     });
   }
+
+  const username = await generateUsername(fullName);
 
   // Check duplicate
   const duplicate = await checkDuplicateFields({
@@ -125,7 +128,7 @@ export const registerAdmin = asyncHandler(async (req, res) => {
 // Register User
 //=======================
 export const registerUser = asyncHandler(async (req, res) => {
-  const { fullName, username, email, mobile, password } = req.body;
+  const { fullName, email, mobile, password } = req.body;
 
   // Validate Required Fields
 
@@ -135,6 +138,8 @@ export const registerUser = asyncHandler(async (req, res) => {
       message: "Full name, email and password are required.",
     });
   }
+
+  const username = await generateUsername(fullName);
 
   // Check Duplicate Fields
 
@@ -218,7 +223,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 // Invite Staff
 //=======================
 export const inviteStaff = asyncHandler(async (req, res) => {
-  const { fullName, username, email, mobile } = req.body;
+  const { fullName, email, mobile } = req.body;
 
   // Validate Required Fields
 
@@ -228,6 +233,8 @@ export const inviteStaff = asyncHandler(async (req, res) => {
       message: "Full name and email are required.",
     });
   }
+
+  const username = await generateUsername(fullName);
 
   // Check Duplicate Fields
 

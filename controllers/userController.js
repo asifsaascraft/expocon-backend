@@ -5,15 +5,9 @@ import asyncHandler from "../utils/asyncHandler.js";
 import checkDuplicateFields from "../utils/checkDuplicateFields.js";
 import deleteS3Object from "../utils/deleteS3Object.js";
 
-import {
-  successResponse,
-  errorResponse,
-} from "../utils/response.js";
+import { successResponse, errorResponse } from "../utils/response.js";
 
-import {
-  clearRefreshTokenCookie,
-} from "../utils/cookies.js";
-
+import { clearRefreshTokenCookie } from "../utils/cookies.js";
 
 //======================
 // Get My Profile
@@ -41,7 +35,7 @@ export const getMyProfile = asyncHandler(async (req, res) => {
 // Update My Profile
 //=======================
 export const updateMyProfile = asyncHandler(async (req, res) => {
-  const { fullName, username, mobile, language, timezone } = req.body;
+  const { fullName, mobile, language, timezone } = req.body;
 
   // Find User
 
@@ -57,8 +51,6 @@ export const updateMyProfile = asyncHandler(async (req, res) => {
   // Check duplicate username/mobile
 
   const duplicate = await checkDuplicateFields({
-    username: username !== user.username ? username : undefined,
-
     mobile: mobile !== user.mobile ? mobile : undefined,
 
     excludeUserId: user._id,
@@ -75,10 +67,6 @@ export const updateMyProfile = asyncHandler(async (req, res) => {
 
   if (fullName !== undefined) {
     user.fullName = fullName.trim();
-  }
-
-  if (username !== undefined) {
-    user.username = username.trim().toLowerCase();
   }
 
   if (mobile !== undefined) {
