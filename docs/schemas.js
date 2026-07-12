@@ -204,6 +204,32 @@ export const schemas = {
     },
   },
 
+  AssociationType: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      associationTypeName: {
+        type: "string",
+        example: "Medical Association",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+
   RegisterAdminRequest: {
     type: "object",
 
@@ -437,6 +463,32 @@ export const schemas = {
       state: {
         type: "string",
         example: "Maharashtra",
+      },
+    },
+  },
+
+  CreateAssociationTypeRequest: {
+    type: "object",
+
+    required: ["associationTypeName"],
+
+    properties: {
+      associationTypeName: {
+        type: "string",
+        example: "Medical Association",
+      },
+    },
+  },
+
+  UpdateAssociationTypeRequest: {
+    type: "object",
+
+    required: ["associationTypeName"],
+
+    properties: {
+      associationTypeName: {
+        type: "string",
+        example: "Healthcare Association",
       },
     },
   },

@@ -201,3 +201,12 @@ export const createStateExample = {
 export const updateStateExample = {
   state: "Maharashtra",
 };
+
+// Association Type Examples
+export const createAssociationTypeExample = {
+  associationTypeName: "Medical Association",
+};
+
+export const updateAssociationTypeExample = {
+  associationTypeName: "Healthcare Association",
+};
