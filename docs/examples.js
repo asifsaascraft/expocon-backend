@@ -189,15 +189,6 @@ export const updateCompanyTypeExample = {
   companyTypeName: "Medical Equipment Company",
 };
 
-// Month Examples
-export const createMonthExample = {
-  month: "January",
-};
-
-export const updateMonthExample = {
-  month: "February",
-};
-
 // State Examples
 export const createStateExample = {
   state: "Uttar Pradesh",
@@ -234,15 +225,6 @@ export const updateExhibitionTypeExample = {
   exhibitionTypeName: "International Trade Exhibition",
 };
 
-// Entry Type Examples
-export const createEntryTypeExample = {
-  entryTypeName: "Visitor",
-};
-
-export const updateEntryTypeExample = {
-  entryTypeName: "VIP Visitor",
-};
-
 // Conference Type Examples
 export const createConferenceTypeExample = {
   conferenceTypeName: "Medical Conference",
@@ -250,4 +232,40 @@ export const createConferenceTypeExample = {
 
 export const updateConferenceTypeExample = {
   conferenceTypeName: "International Medical Conference",
+};
+
+// Job Type Examples
+export const createJobTypeExample = {
+  jobTypeName: "Doctor",
+};
+
+export const updateJobTypeExample = {
+  jobTypeName: "Senior Doctor",
+};
+
+// Conference Segment Examples
+export const createConferenceSegmentExample = {
+  conferenceSegmentName: "Cardiology",
+};
+
+export const updateConferenceSegmentExample = {
+  conferenceSegmentName: "Interventional Cardiology",
+};
+
+// Interested As Examples
+export const createInterestedAsExample = {
+  interestedAsName: "Delegate",
+};
+
+export const updateInterestedAsExample = {
+  interestedAsName: "Speaker",
+};
+
+// Advertisement Location Examples
+export const createAdvertisementLocationExample = {
+  advertisementLocationName: "Homepage Banner",
+};
+
+export const updateAdvertisementLocationExample = {
+  advertisementLocationName: "Homepage Top Banner",
 };

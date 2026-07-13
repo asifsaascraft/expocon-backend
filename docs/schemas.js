@@ -178,32 +178,6 @@ export const schemas = {
     },
   },
 
-  Month: {
-    type: "object",
-
-    properties: {
-      _id: {
-        type: "string",
-        example: "686f9c5c7a4d8b0012345678",
-      },
-
-      month: {
-        type: "string",
-        example: "January",
-      },
-
-      createdAt: {
-        type: "string",
-        format: "date-time",
-      },
-
-      updatedAt: {
-        type: "string",
-        format: "date-time",
-      },
-    },
-  },
-
   State: {
     type: "object",
 
@@ -308,32 +282,6 @@ export const schemas = {
     },
   },
 
-  EntryType: {
-    type: "object",
-
-    properties: {
-      _id: {
-        type: "string",
-        example: "686f9c5c7a4d8b0012345678",
-      },
-
-      entryTypeName: {
-        type: "string",
-        example: "Visitor",
-      },
-
-      createdAt: {
-        type: "string",
-        format: "date-time",
-      },
-
-      updatedAt: {
-        type: "string",
-        format: "date-time",
-      },
-    },
-  },
-
   ConferenceType: {
     type: "object",
 
@@ -360,6 +308,107 @@ export const schemas = {
     },
   },
 
+  JobType: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      jobTypeName: {
+        type: "string",
+        example: "Doctor",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+
+  ConferenceSegment: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      conferenceSegmentName: {
+        type: "string",
+        example: "Cardiology",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+  InterestedAs: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      interestedAsName: {
+        type: "string",
+        example: "Delegate",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
+  AdvertisementLocation: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      advertisementLocationName: {
+        type: "string",
+        example: "Homepage Banner",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
   RegisterAdminRequest: {
     type: "object",
 
@@ -554,31 +603,6 @@ export const schemas = {
     },
   },
 
-  CreateMonthRequest: {
-    type: "object",
-
-    required: ["month"],
-
-    properties: {
-      month: {
-        type: "string",
-        example: "January",
-      },
-    },
-  },
-  UpdateMonthRequest: {
-    type: "object",
-
-    required: ["month"],
-
-    properties: {
-      month: {
-        type: "string",
-        example: "February",
-      },
-    },
-  },
-
   CreateStateRequest: {
     type: "object",
 
@@ -683,32 +707,6 @@ export const schemas = {
     },
   },
 
-  CreateEntryTypeRequest: {
-    type: "object",
-
-    required: ["entryTypeName"],
-
-    properties: {
-      entryTypeName: {
-        type: "string",
-        example: "Visitor",
-      },
-    },
-  },
-
-  UpdateEntryTypeRequest: {
-    type: "object",
-
-    required: ["entryTypeName"],
-
-    properties: {
-      entryTypeName: {
-        type: "string",
-        example: "VIP Visitor",
-      },
-    },
-  },
-
   CreateConferenceTypeRequest: {
     type: "object",
 
@@ -730,6 +728,102 @@ export const schemas = {
       conferenceTypeName: {
         type: "string",
         example: "International Medical Conference",
+      },
+    },
+  },
+  CreateJobTypeRequest: {
+    type: "object",
+
+    required: ["jobTypeName"],
+
+    properties: {
+      jobTypeName: {
+        type: "string",
+        example: "Doctor",
+      },
+    },
+  },
+  UpdateJobTypeRequest: {
+    type: "object",
+
+    required: ["jobTypeName"],
+
+    properties: {
+      jobTypeName: {
+        type: "string",
+        example: "Senior Doctor",
+      },
+    },
+  },
+  CreateConferenceSegmentRequest: {
+    type: "object",
+
+    required: ["conferenceSegmentName"],
+
+    properties: {
+      conferenceSegmentName: {
+        type: "string",
+        example: "Cardiology",
+      },
+    },
+  },
+  UpdateConferenceSegmentRequest: {
+    type: "object",
+
+    required: ["conferenceSegmentName"],
+
+    properties: {
+      conferenceSegmentName: {
+        type: "string",
+        example: "Interventional Cardiology",
+      },
+    },
+  },
+  CreateInterestedAsRequest: {
+    type: "object",
+
+    required: ["interestedAsName"],
+
+    properties: {
+      interestedAsName: {
+        type: "string",
+        example: "Delegate",
+      },
+    },
+  },
+  UpdateInterestedAsRequest: {
+    type: "object",
+
+    required: ["interestedAsName"],
+
+    properties: {
+      interestedAsName: {
+        type: "string",
+        example: "Speaker",
+      },
+    },
+  },
+  CreateAdvertisementLocationRequest: {
+    type: "object",
+
+    required: ["advertisementLocationName"],
+
+    properties: {
+      advertisementLocationName: {
+        type: "string",
+        example: "Homepage Banner",
+      },
+    },
+  },
+  UpdateAdvertisementLocationRequest: {
+    type: "object",
+
+    required: ["advertisementLocationName"],
+
+    properties: {
+      advertisementLocationName: {
+        type: "string",
+        example: "Homepage Top Banner",
       },
     },
   },

@@ -1,12 +1,12 @@
 import express from "express";
 
 import {
-  createEntryType,
-  getEntryTypes,
-  getEntryTypeById,
-  updateEntryType,
-  deleteEntryType,
-} from "../controllers/entryTypeController.js";
+  createInterestedAs,
+  getInterestedAs,
+  getInterestedAsById,
+  updateInterestedAs,
+  deleteInterestedAs,
+} from "../controllers/interestedAsController.js";
 
 import protect from "../middlewares/protect.js";
 import verifiedEmail from "../middlewares/verifiedEmail.js";
@@ -21,15 +21,15 @@ router.use(verifiedEmail);
 router.use(checkStatus);
 router.use(authorize("admin"));
 
-// Entry Type
-router.post("/", createEntryType);
+// Interested As
+router.post("/", createInterestedAs);
 
-router.get("/", getEntryTypes);
+router.get("/", getInterestedAs);
 
-router.get("/:id", getEntryTypeById);
+router.get("/:id", getInterestedAsById);
 
-router.put("/:id", updateEntryType);
+router.put("/:id", updateInterestedAs);
 
-router.delete("/:id", deleteEntryType);
+router.delete("/:id", deleteInterestedAs);
 
 export default router;

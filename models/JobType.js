@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 
-const MonthSchema = new mongoose.Schema(
+const JobTypeSchema = new mongoose.Schema(
   {
-    month: {
+    jobTypeName: {
       type: String,
-      required: [true, "Month is required."],
+      required: [true, "Job type name is required."],
       trim: true,
       unique: true,
       maxlength: 100,
@@ -17,7 +17,7 @@ const MonthSchema = new mongoose.Schema(
 
 
 // JSON Transform
-MonthSchema.set("toJSON", {
+JobTypeSchema.set("toJSON", {
   transform(doc, ret) {
     delete ret.__v;
     return ret;
@@ -25,8 +25,8 @@ MonthSchema.set("toJSON", {
 });
 
 // Export
-const Month =
-  mongoose.models.Month ||
-  mongoose.model("Month", MonthSchema);
+const JobType =
+  mongoose.models.JobType ||
+  mongoose.model("JobType", JobTypeSchema);
 
-export default Month;
+export default JobType;

@@ -1,20 +1,20 @@
 import {
-  createMonthExample,
-  updateMonthExample,
+  createAdvertisementLocationExample,
+  updateAdvertisementLocationExample,
 } from "./examples.js";
 
-const monthPaths = {
+const advertisementLocationPaths = {
   //==============================
-  // Create Month
+  // Create Advertisement Location
   //==============================
-  "/months": {
+  "/advertisement-locations": {
     post: {
-      tags: ["Month"],
+      tags: ["Advertisement Location"],
 
-      summary: "Create Month",
+      summary: "Create Advertisement Location",
 
       description:
-        "Create a new month. Admin only.",
+        "Create a new advertisement location. Admin only.",
 
       security: [
         {
@@ -29,10 +29,11 @@ const monthPaths = {
           "application/json": {
             schema: {
               $ref:
-                "#/components/schemas/CreateMonthRequest",
+                "#/components/schemas/CreateAdvertisementLocationRequest",
             },
 
-            example: createMonthExample,
+            example:
+              createAdvertisementLocationExample,
           },
         },
       },
@@ -40,7 +41,7 @@ const monthPaths = {
       responses: {
         201: {
           description:
-            "Month created successfully.",
+            "Advertisement location created successfully.",
         },
 
         400: {
@@ -53,21 +54,21 @@ const monthPaths = {
 
         409: {
           description:
-            "Month already exists.",
+            "Advertisement location already exists.",
         },
       },
     },
 
     //==============================
-    // Get Months
+    // Get Advertisement Locations
     //==============================
     get: {
-      tags: ["Month"],
+      tags: ["Advertisement Location"],
 
-      summary: "Get Months",
+      summary: "Get Advertisement Locations",
 
       description:
-        "Get paginated months with search, sorting and pagination.",
+        "Get paginated advertisement locations with search, sorting and pagination.",
 
       security: [
         {
@@ -135,7 +136,7 @@ const monthPaths = {
       responses: {
         200: {
           description:
-            "Months fetched successfully.",
+            "Advertisement locations fetched successfully.",
         },
 
         401: {
@@ -148,14 +149,14 @@ const monthPaths = {
   //==============================
   // Get / Update / Delete By ID
   //==============================
-  "/months/{id}": {
+  "/advertisement-locations/{id}": {
     //==============================
     // Get By ID
     //==============================
     get: {
-      tags: ["Month"],
+      tags: ["Advertisement Location"],
 
-      summary: "Get Month By ID",
+      summary: "Get Advertisement Location By ID",
 
       security: [
         {
@@ -180,12 +181,12 @@ const monthPaths = {
       responses: {
         200: {
           description:
-            "Month fetched successfully.",
+            "Advertisement location fetched successfully.",
         },
 
         404: {
           description:
-            "Month not found.",
+            "Advertisement location not found.",
         },
       },
     },
@@ -194,9 +195,9 @@ const monthPaths = {
     // Update
     //==============================
     put: {
-      tags: ["Month"],
+      tags: ["Advertisement Location"],
 
-      summary: "Update Month",
+      summary: "Update Advertisement Location",
 
       security: [
         {
@@ -225,10 +226,11 @@ const monthPaths = {
           "application/json": {
             schema: {
               $ref:
-                "#/components/schemas/UpdateMonthRequest",
+                "#/components/schemas/UpdateAdvertisementLocationRequest",
             },
 
-            example: updateMonthExample,
+            example:
+              updateAdvertisementLocationExample,
           },
         },
       },
@@ -236,17 +238,17 @@ const monthPaths = {
       responses: {
         200: {
           description:
-            "Month updated successfully.",
+            "Advertisement location updated successfully.",
         },
 
         404: {
           description:
-            "Month not found.",
+            "Advertisement location not found.",
         },
 
         409: {
           description:
-            "Month already exists.",
+            "Advertisement location already exists.",
         },
       },
     },
@@ -255,9 +257,9 @@ const monthPaths = {
     // Delete
     //==============================
     delete: {
-      tags: ["Month"],
+      tags: ["Advertisement Location"],
 
-      summary: "Delete Month",
+      summary: "Delete Advertisement Location",
 
       security: [
         {
@@ -282,16 +284,16 @@ const monthPaths = {
       responses: {
         200: {
           description:
-            "Month deleted successfully.",
+            "Advertisement location deleted successfully.",
         },
 
         404: {
           description:
-            "Month not found.",
+            "Advertisement location not found.",
         },
       },
     },
   },
 };
 
-export default monthPaths;
+export default advertisementLocationPaths;

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import Month from "../models/Month.js";
+import InterestedAs from "../models/InterestedAs.js";
 
 import asyncHandler from "../utils/asyncHandler.js";
 
@@ -25,56 +25,56 @@ import {
 } from "../utils/redisCache.js";
 
 //==============================
-// Create Month
+// Create Interested As
 //==============================
-export const createMonth = asyncHandler(async (req, res) => {
-  const { month } = req.body;
+export const createInterestedAs = asyncHandler(async (req, res) => {
+  const { interestedAsName } = req.body;
 
   // Validate
 
-  if (!month?.trim()) {
+  if (!interestedAsName?.trim()) {
     return errorResponse(res, {
       statusCode: 400,
-      message: "Month is required.",
+      message: "Interested As name is required.",
     });
   }
 
   // Check Duplicate
 
-  const existingMonth = await Month.findOne({
-    month: month.trim(),
+  const existingInterestedAs = await InterestedAs.findOne({
+    interestedAsName: interestedAsName.trim(),
   });
 
-  if (existingMonth) {
+  if (existingInterestedAs) {
     return errorResponse(res, {
       statusCode: 409,
-      message: "This month already exists.",
+      message: "This Interested As name already exists.",
     });
   }
 
   // Create
 
-  const newMonth = await Month.create({
-    month: month.trim(),
+  const interestedAs = await InterestedAs.create({
+    interestedAsName: interestedAsName.trim(),
   });
 
   // Clear Redis Cache
 
-  await deleteCacheByPattern("months*");
+  await deleteCacheByPattern("interested-as*");
 
   return successResponse(res, {
     statusCode: 201,
 
-    message: "Month created successfully.",
+    message: "Interested As created successfully.",
 
-    data: newMonth,
+    data: interestedAs,
   });
 });
 
 //==============================
-// Get Months
+// Get Interested As
 //==============================
-export const getMonths = asyncHandler(async (req, res) => {
+export const getInterestedAs = asyncHandler(async (req, res) => {
   // Pagination
 
   const { page, limit, skip } = getPagination(req);
@@ -82,7 +82,7 @@ export const getMonths = asyncHandler(async (req, res) => {
   // Search
 
   const searchQuery = buildSearchQuery(req, [
-    "month",
+    "interestedAsName",
   ]);
 
   // Filters
@@ -102,7 +102,7 @@ export const getMonths = asyncHandler(async (req, res) => {
 
   // Cache Key
 
-  const cacheKey = `months:${JSON.stringify({
+  const cacheKey = `interested-as:${JSON.stringify({
     page,
     limit,
     query,
@@ -115,7 +115,8 @@ export const getMonths = asyncHandler(async (req, res) => {
 
   if (cachedData) {
     return successResponse(res, {
-      message: "Months fetched successfully (from cache).",
+      message:
+        "Interested As fetched successfully (from cache).",
 
       data: cachedData.data,
 
@@ -125,13 +126,13 @@ export const getMonths = asyncHandler(async (req, res) => {
 
   // MongoDB
 
-  const [months, total] = await Promise.all([
-    Month.find(query)
+  const [interestedAsList, total] = await Promise.all([
+    InterestedAs.find(query)
       .sort(sort)
       .skip(skip)
       .limit(limit),
 
-    Month.countDocuments(query),
+    InterestedAs.countDocuments(query),
   ]);
 
   const pagination = buildPaginationMeta(
@@ -145,25 +146,25 @@ export const getMonths = asyncHandler(async (req, res) => {
   await setCache(
     cacheKey,
     {
-      data: months,
+      data: interestedAsList,
       pagination,
     },
     3600,
   );
 
   return successResponse(res, {
-    message: "Months fetched successfully.",
+    message: "Interested As fetched successfully.",
 
-    data: months,
+    data: interestedAsList,
 
     pagination,
   });
 });
 
 //==============================
-// Get Month By ID
+// Get Interested As By ID
 //==============================
-export const getMonthById = asyncHandler(async (req, res) => {
+export const getInterestedAsById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   // Validate ObjectId
@@ -171,13 +172,13 @@ export const getMonthById = asyncHandler(async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return errorResponse(res, {
       statusCode: 400,
-      message: "Invalid month ID.",
+      message: "Invalid Interested As ID.",
     });
   }
 
   // Cache Key
 
-  const cacheKey = `month:${id}`;
+  const cacheKey = `interested-as:${id}`;
 
   // Check Redis
 
@@ -185,7 +186,8 @@ export const getMonthById = asyncHandler(async (req, res) => {
 
   if (cachedData) {
     return successResponse(res, {
-      message: "Month fetched successfully (from cache).",
+      message:
+        "Interested As fetched successfully (from cache).",
 
       data: cachedData,
     });
@@ -193,98 +195,98 @@ export const getMonthById = asyncHandler(async (req, res) => {
 
   // MongoDB
 
-  const month = await Month.findById(id);
+  const interestedAs = await InterestedAs.findById(id);
 
-  if (!month) {
+  if (!interestedAs) {
     return errorResponse(res, {
       statusCode: 404,
-      message: "Month not found.",
+      message: "Interested As not found.",
     });
   }
 
   // Save Cache
 
-  await setCache(cacheKey, month, 3600);
+  await setCache(cacheKey, interestedAs, 3600);
 
   return successResponse(res, {
-    message: "Month fetched successfully.",
+    message: "Interested As fetched successfully.",
 
-    data: month,
+    data: interestedAs,
   });
 });
 
 //==============================
-// Update Month
+// Update Interested As
 //==============================
-export const updateMonth = asyncHandler(async (req, res) => {
+export const updateInterestedAs = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { month } = req.body;
+  const { interestedAsName } = req.body;
 
   // Validate ObjectId
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return errorResponse(res, {
       statusCode: 400,
-      message: "Invalid month ID.",
+      message: "Invalid Interested As ID.",
     });
   }
 
   // Validate
 
-  if (!month?.trim()) {
+  if (!interestedAsName?.trim()) {
     return errorResponse(res, {
       statusCode: 400,
-      message: "Month is required.",
+      message: "Interested As name is required.",
     });
   }
 
-  // Find Month
+  // Find Interested As
 
-  const existingMonth = await Month.findById(id);
+  const interestedAs = await InterestedAs.findById(id);
 
-  if (!existingMonth) {
+  if (!interestedAs) {
     return errorResponse(res, {
       statusCode: 404,
-      message: "Month not found.",
+      message: "Interested As not found.",
     });
   }
 
   // Check Duplicate
 
-  const duplicateMonth = await Month.findOne({
-    month: month.trim(),
+  const existingInterestedAs = await InterestedAs.findOne({
+    interestedAsName: interestedAsName.trim(),
     _id: { $ne: id },
   });
 
-  if (duplicateMonth) {
+  if (existingInterestedAs) {
     return errorResponse(res, {
       statusCode: 409,
-      message: "Month already exists.",
+      message: "Interested As already exists.",
     });
   }
 
   // Update
 
-  existingMonth.month = month.trim();
+  interestedAs.interestedAsName = interestedAsName.trim();
 
-  await existingMonth.save();
+  await interestedAs.save();
 
   // Clear Redis Cache
 
-  await deleteCacheByPattern("months*");
-  await deleteCacheByPattern("month*");
+  await deleteCacheByPattern("interested-as*");
+  await deleteCacheByPattern("interested-a*");
 
   return successResponse(res, {
-    message: "Month updated successfully.",
+    message: "Interested As updated successfully.",
 
-    data: existingMonth,
+    data: interestedAs,
   });
 });
 
 //==============================
-// Delete Month
+// Delete Interested As
 //==============================
-export const deleteMonth = asyncHandler(async (req, res) => {
+export const deleteInterestedAs = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   // Validate ObjectId
@@ -292,31 +294,31 @@ export const deleteMonth = asyncHandler(async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return errorResponse(res, {
       statusCode: 400,
-      message: "Invalid month ID.",
+      message: "Invalid Interested As ID.",
     });
   }
 
-  // Find Month
+  // Find Interested As
 
-  const month = await Month.findById(id);
+  const interestedAs = await InterestedAs.findById(id);
 
-  if (!month) {
+  if (!interestedAs) {
     return errorResponse(res, {
       statusCode: 404,
-      message: "Month not found.",
+      message: "Interested As not found.",
     });
   }
 
   // Delete
 
-  await month.deleteOne();
+  await interestedAs.deleteOne();
 
   // Clear Redis Cache
 
-  await deleteCacheByPattern("months*");
-  await deleteCacheByPattern("month*");
+  await deleteCacheByPattern("interested-as*");
+  await deleteCacheByPattern("interested-a*");
 
   return successResponse(res, {
-    message: "Month deleted successfully.",
+    message: "Interested As deleted successfully.",
   });
 });

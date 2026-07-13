@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import EntryType from "../models/EntryType.js";
+import JobType from "../models/JobType.js";
 
 import asyncHandler from "../utils/asyncHandler.js";
 
@@ -25,56 +25,56 @@ import {
 } from "../utils/redisCache.js";
 
 //==============================
-// Create Entry Type
+// Create Job Type
 //==============================
-export const createEntryType = asyncHandler(async (req, res) => {
-  const { entryTypeName } = req.body;
+export const createJobType = asyncHandler(async (req, res) => {
+  const { jobTypeName } = req.body;
 
   // Validate
 
-  if (!entryTypeName?.trim()) {
+  if (!jobTypeName?.trim()) {
     return errorResponse(res, {
       statusCode: 400,
-      message: "Entry type name is required.",
+      message: "Job type name is required.",
     });
   }
 
   // Check Duplicate
 
-  const existingEntryType = await EntryType.findOne({
-    entryTypeName: entryTypeName.trim(),
+  const existingJobType = await JobType.findOne({
+    jobTypeName: jobTypeName.trim(),
   });
 
-  if (existingEntryType) {
+  if (existingJobType) {
     return errorResponse(res, {
       statusCode: 409,
-      message: "This entry type name already exists.",
+      message: "This job type name already exists.",
     });
   }
 
   // Create
 
-  const entryType = await EntryType.create({
-    entryTypeName: entryTypeName.trim(),
+  const jobType = await JobType.create({
+    jobTypeName: jobTypeName.trim(),
   });
 
   // Clear Redis Cache
 
-  await deleteCacheByPattern("entry-types*");
+  await deleteCacheByPattern("job-types*");
 
   return successResponse(res, {
     statusCode: 201,
 
-    message: "Entry type created successfully.",
+    message: "Job type created successfully.",
 
-    data: entryType,
+    data: jobType,
   });
 });
 
 //==============================
-// Get Entry Types
+// Get Job Types
 //==============================
-export const getEntryTypes = asyncHandler(async (req, res) => {
+export const getJobTypes = asyncHandler(async (req, res) => {
   // Pagination
 
   const { page, limit, skip } = getPagination(req);
@@ -82,7 +82,7 @@ export const getEntryTypes = asyncHandler(async (req, res) => {
   // Search
 
   const searchQuery = buildSearchQuery(req, [
-    "entryTypeName",
+    "jobTypeName",
   ]);
 
   // Filters
@@ -102,7 +102,7 @@ export const getEntryTypes = asyncHandler(async (req, res) => {
 
   // Cache Key
 
-  const cacheKey = `entry-types:${JSON.stringify({
+  const cacheKey = `job-types:${JSON.stringify({
     page,
     limit,
     query,
@@ -116,7 +116,7 @@ export const getEntryTypes = asyncHandler(async (req, res) => {
   if (cachedData) {
     return successResponse(res, {
       message:
-        "Entry types fetched successfully (from cache).",
+        "Job types fetched successfully (from cache).",
 
       data: cachedData.data,
 
@@ -126,13 +126,13 @@ export const getEntryTypes = asyncHandler(async (req, res) => {
 
   // MongoDB
 
-  const [entryTypes, total] = await Promise.all([
-    EntryType.find(query)
+  const [jobTypes, total] = await Promise.all([
+    JobType.find(query)
       .sort(sort)
       .skip(skip)
       .limit(limit),
 
-    EntryType.countDocuments(query),
+    JobType.countDocuments(query),
   ]);
 
   const pagination = buildPaginationMeta(
@@ -146,25 +146,25 @@ export const getEntryTypes = asyncHandler(async (req, res) => {
   await setCache(
     cacheKey,
     {
-      data: entryTypes,
+      data: jobTypes,
       pagination,
     },
     3600,
   );
 
   return successResponse(res, {
-    message: "Entry types fetched successfully.",
+    message: "Job types fetched successfully.",
 
-    data: entryTypes,
+    data: jobTypes,
 
     pagination,
   });
 });
 
 //==============================
-// Get Entry Type By ID
+// Get Job Type By ID
 //==============================
-export const getEntryTypeById = asyncHandler(async (req, res) => {
+export const getJobTypeById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   // Validate ObjectId
@@ -172,13 +172,13 @@ export const getEntryTypeById = asyncHandler(async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return errorResponse(res, {
       statusCode: 400,
-      message: "Invalid entry type ID.",
+      message: "Invalid job type ID.",
     });
   }
 
   // Cache Key
 
-  const cacheKey = `entry-type:${id}`;
+  const cacheKey = `job-type:${id}`;
 
   // Check Redis
 
@@ -187,7 +187,7 @@ export const getEntryTypeById = asyncHandler(async (req, res) => {
   if (cachedData) {
     return successResponse(res, {
       message:
-        "Entry type fetched successfully (from cache).",
+        "Job type fetched successfully (from cache).",
 
       data: cachedData,
     });
@@ -195,98 +195,98 @@ export const getEntryTypeById = asyncHandler(async (req, res) => {
 
   // MongoDB
 
-  const entryType = await EntryType.findById(id);
+  const jobType = await JobType.findById(id);
 
-  if (!entryType) {
+  if (!jobType) {
     return errorResponse(res, {
       statusCode: 404,
-      message: "Entry type not found.",
+      message: "Job type not found.",
     });
   }
 
   // Save Cache
 
-  await setCache(cacheKey, entryType, 3600);
+  await setCache(cacheKey, jobType, 3600);
 
   return successResponse(res, {
-    message: "Entry type fetched successfully.",
+    message: "Job type fetched successfully.",
 
-    data: entryType,
+    data: jobType,
   });
 });
 
 //==============================
-// Update Entry Type
+// Update Job Type
 //==============================
-export const updateEntryType = asyncHandler(async (req, res) => {
+export const updateJobType = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { entryTypeName } = req.body;
+  const { jobTypeName } = req.body;
 
   // Validate ObjectId
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return errorResponse(res, {
       statusCode: 400,
-      message: "Invalid entry type ID.",
+      message: "Invalid job type ID.",
     });
   }
 
   // Validate
 
-  if (!entryTypeName?.trim()) {
+  if (!jobTypeName?.trim()) {
     return errorResponse(res, {
       statusCode: 400,
-      message: "Entry type name is required.",
+      message: "Job type name is required.",
     });
   }
 
-  // Find Entry Type
+  // Find Job Type
 
-  const entryType = await EntryType.findById(id);
+  const jobType = await JobType.findById(id);
 
-  if (!entryType) {
+  if (!jobType) {
     return errorResponse(res, {
       statusCode: 404,
-      message: "Entry type not found.",
+      message: "Job type not found.",
     });
   }
 
   // Check Duplicate
 
-  const existingEntryType = await EntryType.findOne({
-    entryTypeName: entryTypeName.trim(),
+  const existingJobType = await JobType.findOne({
+    jobTypeName: jobTypeName.trim(),
     _id: { $ne: id },
   });
 
-  if (existingEntryType) {
+  if (existingJobType) {
     return errorResponse(res, {
       statusCode: 409,
-      message: "Entry type already exists.",
+      message: "Job type already exists.",
     });
   }
 
   // Update
 
-  entryType.entryTypeName = entryTypeName.trim();
+  jobType.jobTypeName = jobTypeName.trim();
 
-  await entryType.save();
+  await jobType.save();
 
   // Clear Redis Cache
 
-  await deleteCacheByPattern("entry-types*");
-  await deleteCacheByPattern("entry-type*");
+  await deleteCacheByPattern("job-types*");
+  await deleteCacheByPattern("job-type*");
 
   return successResponse(res, {
-    message: "Entry type updated successfully.",
+    message: "Job type updated successfully.",
 
-    data: entryType,
+    data: jobType,
   });
 });
 
 //==============================
-// Delete Entry Type
+// Delete Job Type
 //==============================
-export const deleteEntryType = asyncHandler(async (req, res) => {
+export const deleteJobType = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   // Validate ObjectId
@@ -294,31 +294,31 @@ export const deleteEntryType = asyncHandler(async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return errorResponse(res, {
       statusCode: 400,
-      message: "Invalid entry type ID.",
+      message: "Invalid job type ID.",
     });
   }
 
-  // Find Entry Type
+  // Find Job Type
 
-  const entryType = await EntryType.findById(id);
+  const jobType = await JobType.findById(id);
 
-  if (!entryType) {
+  if (!jobType) {
     return errorResponse(res, {
       statusCode: 404,
-      message: "Entry type not found.",
+      message: "Job type not found.",
     });
   }
 
   // Delete
 
-  await entryType.deleteOne();
+  await jobType.deleteOne();
 
   // Clear Redis Cache
 
-  await deleteCacheByPattern("entry-types*");
-  await deleteCacheByPattern("entry-type*");
+  await deleteCacheByPattern("job-types*");
+  await deleteCacheByPattern("job-type*");
 
   return successResponse(res, {
-    message: "Entry type deleted successfully.",
+    message: "Job type deleted successfully.",
   });
 });

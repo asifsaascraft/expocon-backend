@@ -1,20 +1,20 @@
 import {
-  createEntryTypeExample,
-  updateEntryTypeExample,
+  createConferenceSegmentExample,
+  updateConferenceSegmentExample,
 } from "./examples.js";
 
-const entryTypePaths = {
+const conferenceSegmentPaths = {
   //==============================
-  // Create Entry Type
+  // Create Conference Segment
   //==============================
-  "/entry-types": {
+  "/conference-segments": {
     post: {
-      tags: ["Entry Type"],
+      tags: ["Conference Segment"],
 
-      summary: "Create Entry Type",
+      summary: "Create Conference Segment",
 
       description:
-        "Create a new entry type. Admin only.",
+        "Create a new conference segment. Admin only.",
 
       security: [
         {
@@ -29,10 +29,10 @@ const entryTypePaths = {
           "application/json": {
             schema: {
               $ref:
-                "#/components/schemas/CreateEntryTypeRequest",
+                "#/components/schemas/CreateConferenceSegmentRequest",
             },
 
-            example: createEntryTypeExample,
+            example: createConferenceSegmentExample,
           },
         },
       },
@@ -40,7 +40,7 @@ const entryTypePaths = {
       responses: {
         201: {
           description:
-            "Entry type created successfully.",
+            "Conference segment created successfully.",
         },
 
         400: {
@@ -53,21 +53,21 @@ const entryTypePaths = {
 
         409: {
           description:
-            "Entry type already exists.",
+            "Conference segment already exists.",
         },
       },
     },
 
     //==============================
-    // Get Entry Types
+    // Get Conference Segments
     //==============================
     get: {
-      tags: ["Entry Type"],
+      tags: ["Conference Segment"],
 
-      summary: "Get Entry Types",
+      summary: "Get Conference Segments",
 
       description:
-        "Get paginated entry types with search, sorting and pagination.",
+        "Get paginated conference segments with search, sorting and pagination.",
 
       security: [
         {
@@ -135,7 +135,7 @@ const entryTypePaths = {
       responses: {
         200: {
           description:
-            "Entry types fetched successfully.",
+            "Conference segments fetched successfully.",
         },
 
         401: {
@@ -148,14 +148,14 @@ const entryTypePaths = {
   //==============================
   // Get / Update / Delete By ID
   //==============================
-  "/entry-types/{id}": {
+  "/conference-segments/{id}": {
     //==============================
     // Get By ID
     //==============================
     get: {
-      tags: ["Entry Type"],
+      tags: ["Conference Segment"],
 
-      summary: "Get Entry Type By ID",
+      summary: "Get Conference Segment By ID",
 
       security: [
         {
@@ -180,12 +180,12 @@ const entryTypePaths = {
       responses: {
         200: {
           description:
-            "Entry type fetched successfully.",
+            "Conference segment fetched successfully.",
         },
 
         404: {
           description:
-            "Entry type not found.",
+            "Conference segment not found.",
         },
       },
     },
@@ -194,9 +194,9 @@ const entryTypePaths = {
     // Update
     //==============================
     put: {
-      tags: ["Entry Type"],
+      tags: ["Conference Segment"],
 
-      summary: "Update Entry Type",
+      summary: "Update Conference Segment",
 
       security: [
         {
@@ -225,10 +225,11 @@ const entryTypePaths = {
           "application/json": {
             schema: {
               $ref:
-                "#/components/schemas/UpdateEntryTypeRequest",
+                "#/components/schemas/UpdateConferenceSegmentRequest",
             },
 
-            example: updateEntryTypeExample,
+            example:
+              updateConferenceSegmentExample,
           },
         },
       },
@@ -236,17 +237,17 @@ const entryTypePaths = {
       responses: {
         200: {
           description:
-            "Entry type updated successfully.",
+            "Conference segment updated successfully.",
         },
 
         404: {
           description:
-            "Entry type not found.",
+            "Conference segment not found.",
         },
 
         409: {
           description:
-            "Entry type already exists.",
+            "Conference segment already exists.",
         },
       },
     },
@@ -255,9 +256,9 @@ const entryTypePaths = {
     // Delete
     //==============================
     delete: {
-      tags: ["Entry Type"],
+      tags: ["Conference Segment"],
 
-      summary: "Delete Entry Type",
+      summary: "Delete Conference Segment",
 
       security: [
         {
@@ -282,16 +283,16 @@ const entryTypePaths = {
       responses: {
         200: {
           description:
-            "Entry type deleted successfully.",
+            "Conference segment deleted successfully.",
         },
 
         404: {
           description:
-            "Entry type not found.",
+            "Conference segment not found.",
         },
       },
     },
   },
 };
 
-export default entryTypePaths;
+export default conferenceSegmentPaths;

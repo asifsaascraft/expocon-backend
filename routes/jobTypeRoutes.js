@@ -1,12 +1,12 @@
 import express from "express";
 
 import {
-  createMonth,
-  getMonths,
-  getMonthById,
-  updateMonth,
-  deleteMonth,
-} from "../controllers/monthController.js";
+  createJobType,
+  getJobTypes,
+  getJobTypeById,
+  updateJobType,
+  deleteJobType,
+} from "../controllers/jobTypeController.js";
 
 import protect from "../middlewares/protect.js";
 import verifiedEmail from "../middlewares/verifiedEmail.js";
@@ -21,15 +21,15 @@ router.use(verifiedEmail);
 router.use(checkStatus);
 router.use(authorize("admin"));
 
-// Month
-router.post("/", createMonth);
+// Job Type
+router.post("/", createJobType);
 
-router.get("/", getMonths);
+router.get("/", getJobTypes);
 
-router.get("/:id", getMonthById);
+router.get("/:id", getJobTypeById);
 
-router.put("/:id", updateMonth);
+router.put("/:id", updateJobType);
 
-router.delete("/:id", deleteMonth);
+router.delete("/:id", deleteJobType);
 
 export default router;
