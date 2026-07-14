@@ -287,7 +287,7 @@ export const inviteStaff = asyncHandler(async (req, res) => {
 
   // Invitation Link
 
-  const invitationLink = `${process.env.FRONTEND_URL}/staff/set-password/${rawToken}`;
+  const invitationLink = `${process.env.FRONTEND_URL}/accept-invitation/${rawToken}`;
 
   // Send Invitation Email
 
