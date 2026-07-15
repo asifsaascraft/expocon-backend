@@ -827,6 +827,66 @@ export const schemas = {
       },
     },
   },
+
+  GetAllUsersResponse: {
+    type: "object",
+
+    properties: {
+      success: {
+        type: "boolean",
+        example: true,
+      },
+
+      message: {
+        type: "string",
+        example: "Users fetched successfully.",
+      },
+
+      data: {
+        type: "array",
+
+        items: {
+          $ref: "#/components/schemas/User",
+        },
+      },
+
+      pagination: {
+        type: "object",
+
+        properties: {
+          total: {
+            type: "integer",
+            example: 50,
+          },
+
+          page: {
+            type: "integer",
+            example: 1,
+          },
+
+          limit: {
+            type: "integer",
+            example: 20,
+          },
+
+          totalPages: {
+            type: "integer",
+            example: 3,
+          },
+
+          hasNextPage: {
+            type: "boolean",
+            example: true,
+          },
+
+          hasPreviousPage: {
+            type: "boolean",
+            example: false,
+          },
+        },
+      },
+    },
+  },
   RefreshTokenResponse: {
     type: "object",
 

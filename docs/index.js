@@ -1,5 +1,6 @@
 import authPaths from "./auth.swagger.js";
 import userPaths from "./user.swagger.js";
+import adminUserPaths from "./adminUser.swagger.js";
 import companyTypePaths from "./companyType.swagger.js";
 import statePaths from "./state.swagger.js";
 import associationTypePaths from "./associationType.swagger.js";
@@ -16,6 +17,8 @@ import advertisementLocationPaths from "./advertisementLocation.swagger.js";
 const paths = {
   ...authPaths,
   ...userPaths,
+  ...adminUserPaths,
+  
   ...companyTypePaths,
   ...statePaths,
   ...associationTypePaths,

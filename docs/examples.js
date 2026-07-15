@@ -58,7 +58,6 @@ export const createStaffExample = {
 };
 
 // Partner Examples
-
 export const approvePartnerExample = {
   remarks: "Approved by admin",
 };
@@ -68,14 +67,12 @@ export const rejectPartnerExample = {
 };
 
 // Password Examples
-
 export const changePasswordExample = {
   currentPassword: "OldPassword@123",
   newPassword: "NewPassword@123",
 };
 
 // Response Examples
-
 export const loginSuccessExample = {
   success: true,
   message: "Login successful.",
@@ -177,6 +174,61 @@ export const deleteProfileImageSuccessExample = {
     profileImage: null,
 
     role: "user",
+  },
+};
+
+// Admin User Examples
+export const getAllUsersResponseExample = {
+  success: true,
+  message: "Users fetched successfully.",
+  data: [
+    {
+      _id: "686f9c5c7a4d8b0012345678",
+      fullName: "John Doe",
+      username: "johndoe8x2k",
+      email: "john@example.com",
+      mobile: "9876543210",
+      role: "user",
+      status: "active",
+      isEmailVerified: true,
+      createdAt: "2026-07-15T10:30:00.000Z",
+      updatedAt: "2026-07-15T10:30:00.000Z",
+    },
+  ],
+  pagination: {
+    total: 1,
+    page: 1,
+    limit: 20,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPreviousPage: false,
+  },
+};
+
+export const getAllStaffsResponseExample = {
+  success: true,
+  message: "Staffs fetched successfully.",
+  data: [
+    {
+      _id: "686f9c5c7a4d8b0012345679",
+      fullName: "Rahul Sharma",
+      username: "rahulsharma9jk3",
+      email: "rahul@example.com",
+      mobile: "9876543211",
+      role: "staff",
+      status: "active",
+      isEmailVerified: true,
+      createdAt: "2026-07-15T10:30:00.000Z",
+      updatedAt: "2026-07-15T10:30:00.000Z",
+    },
+  ],
+  pagination: {
+    total: 1,
+    page: 1,
+    limit: 20,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPreviousPage: false,
   },
 };
 
