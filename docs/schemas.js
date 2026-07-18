@@ -409,6 +409,124 @@ export const schemas = {
       },
     },
   },
+  Company: {
+    type: "object",
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f8d0d44e8d2f7f7d8c123",
+      },
+
+      companyName: {
+        type: "string",
+        example: "OpenAI Technologies",
+      },
+
+      companyEmail: {
+        type: "string",
+        example: "info@openai.com",
+      },
+
+      companyTypeId: {
+        $ref: "#/components/schemas/CompanyType",
+      },
+
+      stateId: {
+        $ref: "#/components/schemas/State",
+      },
+
+      city: {
+        type: "string",
+        example: "Hyderabad",
+      },
+
+      address: {
+        type: "string",
+        example: "Madhapur, Hyderabad",
+      },
+
+      website: {
+        type: "string",
+        example: "https://openai.com",
+      },
+
+      featured: {
+        type: "boolean",
+        example: true,
+      },
+
+      mapLink: {
+        type: "string",
+        example: "https://maps.google.com/...",
+        nullable: true,
+      },
+
+      phone: {
+        type: "string",
+        example: "04012345678",
+        nullable: true,
+      },
+
+      mobile: {
+        type: "string",
+        example: "9876543210",
+        nullable: true,
+      },
+
+      uploadLogo: {
+        type: "string",
+        example: "https://bucket.s3.amazonaws.com/company-logo.png",
+        nullable: true,
+      },
+
+      status: {
+        type: "string",
+        enum: ["pending", "approved", "rejected"],
+        example: "approved",
+      },
+
+      createdBy: {
+        $ref: "#/components/schemas/User",
+      },
+
+      updatedBy: {
+        $ref: "#/components/schemas/User",
+        nullable: true,
+      },
+
+      approvedBy: {
+        $ref: "#/components/schemas/User",
+        nullable: true,
+      },
+
+      approvedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
+
+      rejectedBy: {
+        $ref: "#/components/schemas/User",
+        nullable: true,
+      },
+
+      rejectedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
   RegisterAdminRequest: {
     type: "object",
 

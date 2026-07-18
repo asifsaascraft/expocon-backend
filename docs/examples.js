@@ -321,3 +321,55 @@ export const createAdvertisementLocationExample = {
 export const updateAdvertisementLocationExample = {
   advertisementLocationName: "Homepage Top Banner",
 };
+
+// Company Examples
+
+export const createCompanyExample = {
+  companyName: "OpenAI Technologies",
+  companyEmail: "info@openai.com",
+  companyTypeId: "687c9d2ef7b79a3d12345678",
+  stateId: "687c9d2ef7b79a3d87654321",
+  city: "Hyderabad",
+  address: "Madhapur, Hyderabad",
+  website: "https://openai.com",
+  featured: false,
+  mapLink: "https://maps.google.com/...",
+  phone: "04012345678",
+  mobile: "9876543210",
+};
+
+export const updateCompanyExample = {
+  companyName: "OpenAI India Pvt Ltd",
+  companyEmail: "india@openai.com",
+  companyTypeId: "687c9d2ef7b79a3d12345678",
+  stateId: "687c9d2ef7b79a3d87654321",
+  city: "Bengaluru",
+  address: "Whitefield, Bengaluru",
+  website: "https://openai.com",
+  featured: true,
+  mapLink: "https://maps.google.com/...",
+  phone: "08012345678",
+  mobile: "9876543211",
+};
+
+export const uploadCompanyLogoExample = {
+  uploadLogo: "(binary)",
+};
+
+export const companyResponseExample = {
+  success: true,
+  message: "Company fetched successfully.",
+  data: {
+    _id: "687c9d2ef7b79a3d12345678",
+    companyName: "OpenAI Technologies",
+    companyEmail: "info@openai.com",
+    city: "Hyderabad",
+    website: "https://openai.com",
+    featured: false,
+    status: "approved",
+    uploadLogo:
+      "https://your-bucket.s3.ap-south-1.amazonaws.com/company-logos/logo.png",
+    createdAt: "2026-07-20T10:30:00.000Z",
+    updatedAt: "2026-07-20T10:30:00.000Z",
+  },
+};

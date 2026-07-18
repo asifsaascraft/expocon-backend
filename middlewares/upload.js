@@ -40,7 +40,6 @@ const createUploader = (folder) => {
         "image/jpeg",
         "image/jpg",
         "image/png",
-        "image/webp",
       ];
 
       if (!allowedTypes.includes(file.mimetype)) {

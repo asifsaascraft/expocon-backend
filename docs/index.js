@@ -11,6 +11,7 @@ import jobTypePaths from "./jobType.swagger.js";
 import conferenceSegmentPaths from "./conferenceSegment.swagger.js";
 import interestedAsPaths from "./interestedAs.swagger.js";
 import advertisementLocationPaths from "./advertisementLocation.swagger.js";
+import companyPaths from "./company.swagger.js";
 // import partnerPaths from "./partner.swagger.js";
 // import staffPaths from "./staff.swagger.js";
 
@@ -29,6 +30,8 @@ const paths = {
   ...conferenceSegmentPaths,
   ...interestedAsPaths,
   ...advertisementLocationPaths,
+
+  ...companyPaths,
 };
 
 export default paths;
