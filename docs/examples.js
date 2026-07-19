@@ -395,3 +395,134 @@ export const updateVenueExample = {
   featured: false,
   phone: "04087654321",
 };
+
+// Exhibition Examples
+export const createExhibitionExample = {
+  eventTypeId: "687c9d2ef7b79a3d12345678",
+  eventName: "India Pharma Expo 2026",
+  eventShortName: "IPE2026",
+  startDate: "2026-08-10",
+  endDate: "2026-08-12",
+  month: "August",
+  year: "2026",
+  entryType: "Free Entry",
+  city: "Hyderabad",
+  stateId: "687c9d2ef7b79a3d87654321",
+  venueId: "687c9d2ef7b79a3d11111111",
+  website: "https://www.indiapharmaexpo.com",
+  companyId: "687c9d2ef7b79a3d22222222",
+  exhibitionTypeId: "687c9d2ef7b79a3d33333333",
+  frequency: "Annual",
+  aboutExhibition:
+    "India Pharma Expo is one of the largest pharmaceutical exhibitions in India.",
+  exhibitorProfile:
+    "Pharmaceutical Manufacturers, Medical Equipment Suppliers, API Manufacturers",
+  speciality:
+    "Pharmaceutical Machinery, Medical Devices, Healthcare Solutions",
+  visitorProfile:
+    "Doctors, Hospital Administrators, Distributors, Pharma Professionals",
+};
+
+export const updateExhibitionExample = {
+  eventTypeId: "687c9d2ef7b79a3d12345678",
+  eventName: "India Pharma Expo 2026 Updated",
+  eventShortName: "IPE2026",
+  startDate: "2026-08-11",
+  endDate: "2026-08-13",
+  month: "August",
+  year: "2026",
+  entryType: "Paid Registration",
+  city: "Bengaluru",
+  stateId: "687c9d2ef7b79a3d87654321",
+  venueId: "687c9d2ef7b79a3d11111111",
+  website: "https://www.indiapharmaexpo.com",
+  companyId: "687c9d2ef7b79a3d22222222",
+  exhibitionTypeId: "687c9d2ef7b79a3d33333333",
+  frequency: "Bi-Annual",
+  aboutExhibition:
+    "Updated information about India's leading pharmaceutical exhibition.",
+  exhibitorProfile:
+    "Manufacturers, Importers, Exporters, Healthcare Companies",
+  speciality:
+    "Medical Equipment, Pharmaceutical Machinery, Laboratory Technology",
+  visitorProfile:
+    "Doctors, Hospitals, Researchers, Pharma Companies",
+};
+
+export const uploadEventLogoExample = {
+  uploadEventLogo: "(binary)",
+};
+
+export const exhibitionResponseExample = {
+  success: true,
+  message: "Exhibition fetched successfully.",
+  data: {
+    _id: "687c9d2ef7b79a3d44444444",
+
+    eventTypeId: {
+      _id: "687c9d2ef7b79a3d12345678",
+      eventTypeName: "Exhibition",
+    },
+
+    eventName: "India Pharma Expo 2026",
+
+    eventShortName: "IPE2026",
+
+    startDate: "2026-08-10T00:00:00.000Z",
+
+    endDate: "2026-08-12T00:00:00.000Z",
+
+    month: "August",
+
+    year: "2026",
+
+    entryType: "Free Entry",
+
+    city: "Hyderabad",
+
+    stateId: {
+      _id: "687c9d2ef7b79a3d87654321",
+      state: "Telangana",
+    },
+
+    venueId: {
+      _id: "687c9d2ef7b79a3d11111111",
+      venueName: "Hyderabad International Convention Centre",
+    },
+
+    website: "https://www.indiapharmaexpo.com",
+
+    companyId: {
+      _id: "687c9d2ef7b79a3d22222222",
+      companyName: "ABC Events Pvt Ltd",
+    },
+
+    exhibitionTypeId: {
+      _id: "687c9d2ef7b79a3d33333333",
+      exhibitionTypeName: "Trade Exhibition",
+    },
+
+    uploadEventLogo:
+      "https://your-bucket.s3.ap-south-1.amazonaws.com/event-logos/logo.png",
+
+    frequency: "Annual",
+
+    aboutExhibition:
+      "India Pharma Expo is one of the largest pharmaceutical exhibitions in India.",
+
+    exhibitorProfile:
+      "Pharmaceutical Manufacturers, Medical Equipment Suppliers",
+
+    speciality:
+      "Medical Devices, Pharmaceutical Machinery",
+
+    visitorProfile:
+      "Doctors, Hospitals, Pharma Professionals",
+
+    status: "approved",
+
+    createdAt: "2026-07-20T10:30:00.000Z",
+
+    updatedAt: "2026-07-20T10:30:00.000Z",
+  },
+};

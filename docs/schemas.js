@@ -648,6 +648,245 @@ export const schemas = {
       },
     },
   },
+  Exhibition: {
+  type: "object",
+
+  properties: {
+    _id: {
+      type: "string",
+      example: "68820d5b63ab9f0a12345678",
+    },
+
+    eventTypeId: {
+      type: "object",
+
+      properties: {
+        _id: {
+          type: "string",
+          example: "68820d5b63ab9f0a11111111",
+        },
+
+        eventTypeName: {
+          type: "string",
+          example: "Exhibition",
+        },
+      },
+    },
+
+    eventName: {
+      type: "string",
+      example: "India Pharma Expo 2026",
+    },
+
+    eventShortName: {
+      type: "string",
+      example: "IPE2026",
+    },
+
+    startDate: {
+      type: "string",
+      format: "date-time",
+      example: "2026-08-10T00:00:00.000Z",
+    },
+
+    endDate: {
+      type: "string",
+      format: "date-time",
+      example: "2026-08-12T00:00:00.000Z",
+    },
+
+    month: {
+      type: "string",
+      example: "August",
+    },
+
+    year: {
+      type: "string",
+      example: "2026",
+    },
+
+    entryType: {
+      type: "string",
+      example: "Free Entry",
+    },
+
+    city: {
+      type: "string",
+      example: "Hyderabad",
+    },
+
+    stateId: {
+      type: "object",
+
+      properties: {
+        _id: {
+          type: "string",
+          example: "68820d5b63ab9f0a22222222",
+        },
+
+        state: {
+          type: "string",
+          example: "Telangana",
+        },
+      },
+    },
+
+    venueId: {
+      type: "object",
+
+      properties: {
+        _id: {
+          type: "string",
+          example: "68820d5b63ab9f0a33333333",
+        },
+
+        venueName: {
+          type: "string",
+          example: "HITEX Exhibition Centre",
+        },
+      },
+    },
+
+    website: {
+      type: "string",
+      example: "https://pharmaexpo.com",
+    },
+
+    companyId: {
+      type: "object",
+
+      properties: {
+        _id: {
+          type: "string",
+          example: "68820d5b63ab9f0a44444444",
+        },
+
+        companyName: {
+          type: "string",
+          example: "ABC Events Pvt Ltd",
+        },
+      },
+    },
+
+    exhibitionTypeId: {
+      type: "object",
+
+      properties: {
+        _id: {
+          type: "string",
+          example: "68820d5b63ab9f0a55555555",
+        },
+
+        exhibitionTypeName: {
+          type: "string",
+          example: "Trade Show",
+        },
+      },
+    },
+
+    uploadEventLogo: {
+      type: "string",
+      example:
+        "https://your-bucket.s3.amazonaws.com/event-logos/logo.png",
+    },
+
+    frequency: {
+      type: "string",
+      example: "Annual",
+    },
+
+    aboutExhibition: {
+      type: "string",
+      example:
+        "India's leading pharmaceutical exhibition.",
+    },
+
+    exhibitorProfile: {
+      type: "string",
+      example:
+        "Manufacturers, Importers, Exporters",
+    },
+
+    speciality: {
+      type: "string",
+      example:
+        "Medical Equipment & Pharma Machinery",
+    },
+
+    visitorProfile: {
+      type: "string",
+      example:
+        "Doctors, Hospitals, Pharma Companies",
+    },
+
+    status: {
+      type: "string",
+      example: "approved",
+    },
+
+    createdBy: {
+      type: "object",
+
+      properties: {
+        _id: {
+          type: "string",
+        },
+
+        fullName: {
+          type: "string",
+          example: "Admin User",
+        },
+
+        email: {
+          type: "string",
+          example: "admin@example.com",
+        },
+
+        role: {
+          type: "string",
+          example: "admin",
+        },
+      },
+    },
+
+    updatedBy: {
+      type: "object",
+      nullable: true,
+    },
+
+    approvedBy: {
+      type: "object",
+      nullable: true,
+    },
+
+    approvedAt: {
+      type: "string",
+      format: "date-time",
+      nullable: true,
+    },
+
+    rejectedBy: {
+      type: "object",
+      nullable: true,
+    },
+
+    rejectedAt: {
+      type: "string",
+      format: "date-time",
+      nullable: true,
+    },
+
+    createdAt: {
+      type: "string",
+      format: "date-time",
+    },
+
+    updatedAt: {
+      type: "string",
+      format: "date-time",
+    },
+  },
+},
   RegisterAdminRequest: {
     type: "object",
 
