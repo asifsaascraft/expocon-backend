@@ -527,6 +527,127 @@ export const schemas = {
       },
     },
   },
+
+  Venue: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "687c9d2ef7b79a3d12345678",
+      },
+
+      venueName: {
+        type: "string",
+        example: "Hyderabad International Convention Centre",
+      },
+
+      stateId: {
+        $ref: "#/components/schemas/State",
+      },
+
+      city: {
+        type: "string",
+        example: "Hyderabad",
+      },
+
+      address: {
+        type: "string",
+        example: "HITEC City, Hyderabad",
+      },
+
+      website: {
+        type: "string",
+        example: "https://www.hicc.com",
+      },
+
+      mapLink: {
+        type: "string",
+        example: "https://maps.google.com/...",
+      },
+
+      uploadVenuePhoto: {
+        type: "string",
+        example: "https://bucket.s3.amazonaws.com/venue-photos/photo.jpg",
+      },
+
+      uploadVenueLayout: {
+        type: "string",
+        nullable: true,
+        example: "https://bucket.s3.amazonaws.com/venue-layouts/layout.pdf",
+      },
+
+      featured: {
+        type: "boolean",
+        example: true,
+      },
+
+      phone: {
+        type: "string",
+        nullable: true,
+        example: "04012345678",
+      },
+
+      status: {
+        type: "string",
+        enum: ["pending", "approved", "rejected"],
+        example: "approved",
+      },
+
+      createdBy: {
+        $ref: "#/components/schemas/User",
+      },
+
+      updatedBy: {
+        allOf: [
+          {
+            $ref: "#/components/schemas/User",
+          },
+        ],
+        nullable: true,
+      },
+
+      approvedBy: {
+        allOf: [
+          {
+            $ref: "#/components/schemas/User",
+          },
+        ],
+        nullable: true,
+      },
+
+      approvedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
+
+      rejectedBy: {
+        allOf: [
+          {
+            $ref: "#/components/schemas/User",
+          },
+        ],
+        nullable: true,
+      },
+
+      rejectedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
   RegisterAdminRequest: {
     type: "object",
 

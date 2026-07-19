@@ -323,7 +323,6 @@ export const updateAdvertisementLocationExample = {
 };
 
 // Company Examples
-
 export const createCompanyExample = {
   companyName: "OpenAI Technologies",
   companyEmail: "info@openai.com",
@@ -372,4 +371,27 @@ export const companyResponseExample = {
     createdAt: "2026-07-20T10:30:00.000Z",
     updatedAt: "2026-07-20T10:30:00.000Z",
   },
+};
+
+// Company Examples
+export const createVenueExample = {
+  venueName: "Hyderabad International Convention Centre",
+  stateId: "687c9d2ef7b79a3d87654321",
+  city: "Hyderabad",
+  address: "HITEC City, Hyderabad",
+  website: "https://www.hicc.com",
+  mapLink: "https://maps.google.com/...",
+  featured: true,
+  phone: "04012345678",
+};
+
+export const updateVenueExample = {
+  venueName: "HICC Convention Centre",
+  stateId: "687c9d2ef7b79a3d87654321",
+  city: "Hyderabad",
+  address: "HITEC City, Hyderabad",
+  website: "https://www.hicc.com",
+  mapLink: "https://maps.google.com/...",
+  featured: false,
+  phone: "04087654321",
 };

@@ -28,6 +28,7 @@ import conferenceSegmentRoutes from "./routes/conferenceSegmentRoutes.js";
 import interestedAsRoutes from "./routes/interestedAsRoutes.js";
 import advertisementLocationRoutes from "./routes/advertisementLocationRoutes.js";
 import companyRoutes from "./routes/companyRoutes.js";
+import venueRoutes from "./routes/venueRoutes.js";
 
 // Connect Database
 await connectDB();
@@ -138,6 +139,7 @@ app.use("/api/conference-segments", conferenceSegmentRoutes);
 app.use("/api/interested-as", interestedAsRoutes);
 app.use("/api/advertisement-locations", advertisementLocationRoutes);
 app.use("/api/companies", companyRoutes);
+app.use("/api/venues", venueRoutes);
 // app.use("/api/partners", partnerRoutes);
 // app.use("/api/staff", staffRoutes);
 // app.use("/api/events", eventRoutes);
