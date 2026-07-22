@@ -19,7 +19,7 @@ const router = express.Router();
 router.use(protect);
 router.use(verifiedEmail);
 router.use(checkStatus);
-router.use(authorize("admin"));
+router.use(authorize("admin", "staff"));
 
 // Association Type
 router.post("/", createAssociationType);
