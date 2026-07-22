@@ -29,7 +29,6 @@
 // export default buildSort;
 
 
-sort.js 
 
 /**
  * Build MongoDB Sort Query

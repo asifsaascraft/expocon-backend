@@ -49,7 +49,6 @@
 // export default buildFilters;
 
 
-filter 
 /**
  * Build MongoDB Filters
  *
