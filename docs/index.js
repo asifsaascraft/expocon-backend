@@ -6,6 +6,7 @@ import statePaths from "./state.swagger.js";
 import associationTypePaths from "./associationType.swagger.js";
 import eventTypePaths from "./eventType.swagger.js";
 import exhibitionTypePaths from "./exhibitionType.swagger.js";
+import entryTypePaths from "./entryType.swagger.js";
 import conferenceTypePaths from "./conferenceType.swagger.js";
 import jobTypePaths from "./jobType.swagger.js";
 import conferenceSegmentPaths from "./conferenceSegment.swagger.js";
@@ -27,6 +28,7 @@ const paths = {
   ...associationTypePaths,
   ...eventTypePaths,
   ...exhibitionTypePaths,
+  ...entryTypePaths,
   ...conferenceTypePaths,
   ...jobTypePaths,
   ...conferenceSegmentPaths,

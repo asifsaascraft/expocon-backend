@@ -48,10 +48,10 @@ const ExhibitionSchema = new mongoose.Schema(
       required: [true, "year is required."],
       trim: true,
     },
-    entryType: {
-      type: String,
-      enum: ["Paid Registration", "Free Entry"],
-      default: "Free Entry",
+    entryTypeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "EntryType",
+      required: [true, "Entry Type is required."],
       index: true,
     },
     city: {
@@ -81,14 +81,10 @@ const ExhibitionSchema = new mongoose.Schema(
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
-      required: [true, "Company is required."],
-      index: true,
     },
     exhibitionTypeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ExhibitionType",
-      required: [true, "Exhibition type is required."],
-      index: true,
     },
     uploadEventLogo: {
       type: String,

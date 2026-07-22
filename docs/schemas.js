@@ -281,7 +281,31 @@ export const schemas = {
       },
     },
   },
+  EntryType: {
+    type: "object",
 
+    properties: {
+      _id: {
+        type: "string",
+        example: "686f9c5c7a4d8b0012345678",
+      },
+
+      entryTypeName: {
+        type: "string",
+        example: "Visitor",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
   ConferenceType: {
     type: "object",
 
@@ -649,244 +673,250 @@ export const schemas = {
     },
   },
   Exhibition: {
-  type: "object",
+    type: "object",
 
-  properties: {
-    _id: {
-      type: "string",
-      example: "68820d5b63ab9f0a12345678",
-    },
+    properties: {
+      _id: {
+        type: "string",
+        example: "68820d5b63ab9f0a12345678",
+      },
 
-    eventTypeId: {
-      type: "object",
+      eventTypeId: {
+        type: "object",
 
-      properties: {
-        _id: {
-          type: "string",
-          example: "68820d5b63ab9f0a11111111",
-        },
+        properties: {
+          _id: {
+            type: "string",
+            example: "68820d5b63ab9f0a11111111",
+          },
 
-        eventTypeName: {
-          type: "string",
-          example: "Exhibition",
+          eventTypeName: {
+            type: "string",
+            example: "Exhibition",
+          },
         },
       },
-    },
 
-    eventName: {
-      type: "string",
-      example: "India Pharma Expo 2026",
-    },
+      eventName: {
+        type: "string",
+        example: "India Pharma Expo 2026",
+      },
 
-    eventShortName: {
-      type: "string",
-      example: "IPE2026",
-    },
+      eventShortName: {
+        type: "string",
+        example: "IPE2026",
+      },
 
-    startDate: {
-      type: "string",
-      format: "date-time",
-      example: "2026-08-10T00:00:00.000Z",
-    },
+      startDate: {
+        type: "string",
+        format: "date-time",
+        example: "2026-08-10T00:00:00.000Z",
+      },
 
-    endDate: {
-      type: "string",
-      format: "date-time",
-      example: "2026-08-12T00:00:00.000Z",
-    },
+      endDate: {
+        type: "string",
+        format: "date-time",
+        example: "2026-08-12T00:00:00.000Z",
+      },
 
-    month: {
-      type: "string",
-      example: "August",
-    },
+      month: {
+        type: "string",
+        example: "August",
+      },
 
-    year: {
-      type: "string",
-      example: "2026",
-    },
+      year: {
+        type: "string",
+        example: "2026",
+      },
 
-    entryType: {
-      type: "string",
-      example: "Free Entry",
-    },
+      entryTypeId: {
+        type: "object",
 
-    city: {
-      type: "string",
-      example: "Hyderabad",
-    },
+        properties: {
+          _id: {
+            type: "string",
+            example: "68820d5b63ab9f0a66666666",
+          },
 
-    stateId: {
-      type: "object",
-
-      properties: {
-        _id: {
-          type: "string",
-          example: "68820d5b63ab9f0a22222222",
-        },
-
-        state: {
-          type: "string",
-          example: "Telangana",
+          entryTypeName: {
+            type: "string",
+            example: "Free Entry",
+          },
         },
       },
-    },
 
-    venueId: {
-      type: "object",
+      city: {
+        type: "string",
+        example: "Hyderabad",
+      },
 
-      properties: {
-        _id: {
-          type: "string",
-          example: "68820d5b63ab9f0a33333333",
-        },
+      stateId: {
+        type: "object",
 
-        venueName: {
-          type: "string",
-          example: "HITEX Exhibition Centre",
+        properties: {
+          _id: {
+            type: "string",
+            example: "68820d5b63ab9f0a22222222",
+          },
+
+          state: {
+            type: "string",
+            example: "Telangana",
+          },
         },
       },
-    },
 
-    website: {
-      type: "string",
-      example: "https://pharmaexpo.com",
-    },
+      venueId: {
+        type: "object",
 
-    companyId: {
-      type: "object",
+        properties: {
+          _id: {
+            type: "string",
+            example: "68820d5b63ab9f0a33333333",
+          },
 
-      properties: {
-        _id: {
-          type: "string",
-          example: "68820d5b63ab9f0a44444444",
-        },
-
-        companyName: {
-          type: "string",
-          example: "ABC Events Pvt Ltd",
+          venueName: {
+            type: "string",
+            example: "HITEX Exhibition Centre",
+          },
         },
       },
-    },
 
-    exhibitionTypeId: {
-      type: "object",
+      website: {
+        type: "string",
+        example: "https://pharmaexpo.com",
+      },
 
-      properties: {
-        _id: {
-          type: "string",
-          example: "68820d5b63ab9f0a55555555",
-        },
+      companyId: {
+        type: "object",
 
-        exhibitionTypeName: {
-          type: "string",
-          example: "Trade Show",
+        properties: {
+          _id: {
+            type: "string",
+            example: "68820d5b63ab9f0a44444444",
+          },
+
+          companyName: {
+            type: "string",
+            example: "ABC Events Pvt Ltd",
+          },
         },
       },
-    },
 
-    uploadEventLogo: {
-      type: "string",
-      example:
-        "https://your-bucket.s3.amazonaws.com/event-logos/logo.png",
-    },
+      exhibitionTypeId: {
+        type: "object",
 
-    frequency: {
-      type: "string",
-      example: "Annual",
-    },
+        properties: {
+          _id: {
+            type: "string",
+            example: "68820d5b63ab9f0a55555555",
+          },
 
-    aboutExhibition: {
-      type: "string",
-      example:
-        "India's leading pharmaceutical exhibition.",
-    },
-
-    exhibitorProfile: {
-      type: "string",
-      example:
-        "Manufacturers, Importers, Exporters",
-    },
-
-    speciality: {
-      type: "string",
-      example:
-        "Medical Equipment & Pharma Machinery",
-    },
-
-    visitorProfile: {
-      type: "string",
-      example:
-        "Doctors, Hospitals, Pharma Companies",
-    },
-
-    status: {
-      type: "string",
-      example: "approved",
-    },
-
-    createdBy: {
-      type: "object",
-
-      properties: {
-        _id: {
-          type: "string",
-        },
-
-        fullName: {
-          type: "string",
-          example: "Admin User",
-        },
-
-        email: {
-          type: "string",
-          example: "admin@example.com",
-        },
-
-        role: {
-          type: "string",
-          example: "admin",
+          exhibitionTypeName: {
+            type: "string",
+            example: "Trade Show",
+          },
         },
       },
-    },
 
-    updatedBy: {
-      type: "object",
-      nullable: true,
-    },
+      uploadEventLogo: {
+        type: "string",
+        example: "https://your-bucket.s3.amazonaws.com/event-logos/logo.png",
+      },
 
-    approvedBy: {
-      type: "object",
-      nullable: true,
-    },
+      frequency: {
+        type: "string",
+        example: "Annual",
+      },
 
-    approvedAt: {
-      type: "string",
-      format: "date-time",
-      nullable: true,
-    },
+      aboutExhibition: {
+        type: "string",
+        example: "India's leading pharmaceutical exhibition.",
+      },
 
-    rejectedBy: {
-      type: "object",
-      nullable: true,
-    },
+      exhibitorProfile: {
+        type: "string",
+        example: "Manufacturers, Importers, Exporters",
+      },
 
-    rejectedAt: {
-      type: "string",
-      format: "date-time",
-      nullable: true,
-    },
+      speciality: {
+        type: "string",
+        example: "Medical Equipment & Pharma Machinery",
+      },
 
-    createdAt: {
-      type: "string",
-      format: "date-time",
-    },
+      visitorProfile: {
+        type: "string",
+        example: "Doctors, Hospitals, Pharma Companies",
+      },
 
-    updatedAt: {
-      type: "string",
-      format: "date-time",
+      status: {
+        type: "string",
+        example: "approved",
+      },
+
+      createdBy: {
+        type: "object",
+
+        properties: {
+          _id: {
+            type: "string",
+          },
+
+          fullName: {
+            type: "string",
+            example: "Admin User",
+          },
+
+          email: {
+            type: "string",
+            example: "admin@example.com",
+          },
+
+          role: {
+            type: "string",
+            example: "admin",
+          },
+        },
+      },
+
+      updatedBy: {
+        type: "object",
+        nullable: true,
+      },
+
+      approvedBy: {
+        type: "object",
+        nullable: true,
+      },
+
+      approvedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
+
+      rejectedBy: {
+        type: "object",
+        nullable: true,
+      },
+
+      rejectedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
     },
   },
-},
   RegisterAdminRequest: {
     type: "object",
 
@@ -1185,6 +1215,31 @@ export const schemas = {
     },
   },
 
+  CreateEntryTypeRequest: {
+    type: "object",
+
+    required: ["entryTypeName"],
+
+    properties: {
+      entryTypeName: {
+        type: "string",
+        example: "Visitor",
+      },
+    },
+  },
+
+  UpdateEntryTypeRequest: {
+    type: "object",
+
+    required: ["entryTypeName"],
+
+    properties: {
+      entryTypeName: {
+        type: "string",
+        example: "VIP Visitor",
+      },
+    },
+  },
   CreateConferenceTypeRequest: {
     type: "object",
 

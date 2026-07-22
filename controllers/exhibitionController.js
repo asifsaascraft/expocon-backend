@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 import Exhibition from "../models/Exhibition.js";
 import EventType from "../models/EventType.js";
+import EntryType from "../models/EntryType.js";
 import State from "../models/State.js";
 import Venue from "../models/Venue.js";
 import Company from "../models/Company.js";
@@ -31,6 +32,7 @@ import deleteS3Object from "../utils/deleteS3Object.js";
 const populateExhibition = (query) =>
   query
     .populate("eventTypeId", "eventTypeName")
+    .populate("entryTypeId", "entryTypeName")
     .populate("stateId", "state")
     .populate("venueId", "venueName")
     .populate("companyId", "companyName")
@@ -52,7 +54,7 @@ export const createExhibition = asyncHandler(async (req, res) => {
     endDate,
     month,
     year,
-    entryType,
+    entryTypeId,
     city,
     stateId,
     venueId,
@@ -78,12 +80,11 @@ export const createExhibition = asyncHandler(async (req, res) => {
     !endDate ||
     !month?.trim() ||
     !year?.trim() ||
+    !entryTypeId ||
     !city?.trim() ||
     !stateId ||
     !venueId ||
-    !website?.trim() ||
-    !companyId ||
-    !exhibitionTypeId
+    !website?.trim()
   ) {
     return errorResponse(res, {
       statusCode: 400,
@@ -101,20 +102,16 @@ export const createExhibition = asyncHandler(async (req, res) => {
       message: "Invalid event type ID.",
     },
     {
+      value: entryTypeId,
+      message: "Invalid entry type ID.",
+    },
+    {
       value: stateId,
       message: "Invalid state ID.",
     },
     {
       value: venueId,
       message: "Invalid venue ID.",
-    },
-    {
-      value: companyId,
-      message: "Invalid company ID.",
-    },
-    {
-      value: exhibitionTypeId,
-      message: "Invalid exhibition type ID.",
     },
   ];
 
@@ -127,22 +124,45 @@ export const createExhibition = asyncHandler(async (req, res) => {
     }
   }
 
+  if (companyId && !mongoose.Types.ObjectId.isValid(companyId)) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Invalid company ID.",
+    });
+  }
+
+  if (exhibitionTypeId && !mongoose.Types.ObjectId.isValid(exhibitionTypeId)) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Invalid exhibition type ID.",
+    });
+  }
+
   //==============================
   // Validate Master Data
   //==============================
 
-  const [eventType, state, venue, company, exhibitionType] = await Promise.all([
-    EventType.findById(eventTypeId),
-    State.findById(stateId),
-    Venue.findById(venueId),
-    Company.findById(companyId),
-    ExhibitionType.findById(exhibitionTypeId),
-  ]);
+  const [eventType, entryType, state, venue, company, exhibitionType] =
+    await Promise.all([
+      EventType.findById(eventTypeId),
+      EntryType.findById(entryTypeId),
+      State.findById(stateId),
+      Venue.findById(venueId),
+      companyId ? Company.findById(companyId) : null,
+      exhibitionTypeId ? ExhibitionType.findById(exhibitionTypeId) : null,
+    ]);
 
   if (!eventType) {
     return errorResponse(res, {
       statusCode: 404,
       message: "Event type not found.",
+    });
+  }
+
+  if (!entryType) {
+    return errorResponse(res, {
+      statusCode: 404,
+      message: "Entry type not found.",
     });
   }
 
@@ -160,14 +180,14 @@ export const createExhibition = asyncHandler(async (req, res) => {
     });
   }
 
-  if (!company) {
+  if (companyId && !company) {
     return errorResponse(res, {
       statusCode: 404,
       message: "Company not found.",
     });
   }
 
-  if (!exhibitionType) {
+  if (exhibitionTypeId && !exhibitionType) {
     return errorResponse(res, {
       statusCode: 404,
       message: "Exhibition type not found.",
@@ -230,13 +250,13 @@ export const createExhibition = asyncHandler(async (req, res) => {
     endDate,
     month: month.trim(),
     year: year.trim(),
-    entryType: entryType || "Free Entry",
+    entryTypeId,
     city: city.trim(),
     stateId,
     venueId,
     website: website.trim(),
-    companyId,
-    exhibitionTypeId,
+    companyId: companyId?.trim() || null,
+    exhibitionTypeId: exhibitionTypeId?.trim() || null,
     uploadEventLogo: req.file ? req.file.location : null,
     frequency: frequency?.trim() || null,
     aboutExhibition: aboutExhibition?.trim() || null,
@@ -313,7 +333,7 @@ export const getExhibitions = asyncHandler(async (req, res) => {
     "venueId",
     "companyId",
     "exhibitionTypeId",
-    "entryType",
+    "entryTypeId",
   ]);
 
   // Role Based Query
@@ -490,7 +510,7 @@ export const updateExhibition = asyncHandler(async (req, res) => {
     endDate,
     month,
     year,
-    entryType,
+    entryTypeId,
     city,
     stateId,
     venueId,
@@ -560,12 +580,11 @@ export const updateExhibition = asyncHandler(async (req, res) => {
     !endDate ||
     !month?.trim() ||
     !year?.trim() ||
+    !entryTypeId ||
     !city?.trim() ||
     !stateId ||
     !venueId ||
-    !website?.trim() ||
-    !companyId ||
-    !exhibitionTypeId
+    !website?.trim()
   ) {
     return errorResponse(res, {
       statusCode: 400,
@@ -583,20 +602,16 @@ export const updateExhibition = asyncHandler(async (req, res) => {
       message: "Invalid event type ID.",
     },
     {
+      value: entryTypeId,
+      message: "Invalid entry type ID.",
+    },
+    {
       value: stateId,
       message: "Invalid state ID.",
     },
     {
       value: venueId,
       message: "Invalid venue ID.",
-    },
-    {
-      value: companyId,
-      message: "Invalid company ID.",
-    },
-    {
-      value: exhibitionTypeId,
-      message: "Invalid exhibition type ID.",
     },
   ];
 
@@ -609,22 +624,44 @@ export const updateExhibition = asyncHandler(async (req, res) => {
     }
   }
 
+  if (companyId && !mongoose.Types.ObjectId.isValid(companyId)) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Invalid company ID.",
+    });
+  }
+
+  if (exhibitionTypeId && !mongoose.Types.ObjectId.isValid(exhibitionTypeId)) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Invalid exhibition type ID.",
+    });
+  }
+
   //==============================
   // Validate Master Data
   //==============================
 
-  const [eventType, state, venue, company, exhibitionType] = await Promise.all([
-    EventType.findById(eventTypeId),
-    State.findById(stateId),
-    Venue.findById(venueId),
-    Company.findById(companyId),
-    ExhibitionType.findById(exhibitionTypeId),
-  ]);
+  const [eventType, entryType, state, venue, company, exhibitionType] =
+    await Promise.all([
+      EventType.findById(eventTypeId),
+      EntryType.findById(entryTypeId),
+      State.findById(stateId),
+      Venue.findById(venueId),
+      companyId ? Company.findById(companyId) : null,
+      exhibitionTypeId ? ExhibitionType.findById(exhibitionTypeId) : null,
+    ]);
 
   if (!eventType) {
     return errorResponse(res, {
       statusCode: 404,
       message: "Event type not found.",
+    });
+  }
+  if (!entryType) {
+    return errorResponse(res, {
+      statusCode: 404,
+      message: "Entry type not found.",
     });
   }
 
@@ -642,14 +679,14 @@ export const updateExhibition = asyncHandler(async (req, res) => {
     });
   }
 
-  if (!company) {
+  if (companyId && !company) {
     return errorResponse(res, {
       statusCode: 404,
       message: "Company not found.",
     });
   }
 
-  if (!exhibitionType) {
+  if (exhibitionTypeId && !exhibitionType) {
     return errorResponse(res, {
       statusCode: 404,
       message: "Exhibition type not found.",
@@ -717,13 +754,13 @@ export const updateExhibition = asyncHandler(async (req, res) => {
   exhibition.endDate = endDate;
   exhibition.month = month.trim();
   exhibition.year = year.trim();
-  exhibition.entryType = entryType || exhibition.entryType;
+  exhibition.entryTypeId = entryTypeId;
   exhibition.city = city.trim();
   exhibition.stateId = stateId;
   exhibition.venueId = venueId;
   exhibition.website = website.trim();
-  exhibition.companyId = companyId;
-  exhibition.exhibitionTypeId = exhibitionTypeId;
+  exhibition.companyId = companyId?.trim() || null;
+  exhibition.exhibitionTypeId = exhibitionTypeId?.trim() || null;
 
   exhibition.frequency = frequency?.trim() || null;
   exhibition.aboutExhibition = aboutExhibition?.trim() || null;

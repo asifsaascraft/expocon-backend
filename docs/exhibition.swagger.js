@@ -33,12 +33,11 @@ const exhibitionPaths = {
                 "endDate",
                 "month",
                 "year",
+                "entryTypeId",
                 "city",
                 "stateId",
                 "venueId",
                 "website",
-                "companyId",
-                "exhibitionTypeId",
               ],
 
               properties: {
@@ -79,10 +78,9 @@ const exhibitionPaths = {
                   example: "2026",
                 },
 
-                entryType: {
+                entryTypeId: {
                   type: "string",
-                  enum: ["Paid Registration", "Free Entry"],
-                  example: "Free Entry",
+                  example: "687c9d2ef7b79a3d11111111",
                 },
 
                 city: {
@@ -307,12 +305,11 @@ const exhibitionPaths = {
 
         {
           in: "query",
-          name: "entryType",
+          name: "entryTypeId",
           schema: {
             type: "string",
-            enum: ["Paid Registration", "Free Entry"],
           },
-          description: "Filter by Entry Type.",
+          description: "Filter by Entry Type ID.",
         },
       ],
 
@@ -525,12 +522,11 @@ const exhibitionPaths = {
                 "endDate",
                 "month",
                 "year",
+                "entryTypeId",
                 "city",
                 "stateId",
                 "venueId",
                 "website",
-                "companyId",
-                "exhibitionTypeId",
               ],
 
               properties: {
@@ -571,10 +567,9 @@ const exhibitionPaths = {
                   example: "2026",
                 },
 
-                entryType: {
+                entryTypeId: {
                   type: "string",
-                  enum: ["Paid Registration", "Free Entry"],
-                  example: "Paid Registration",
+                  example: "687c9d2ef7b79a3d11111111",
                 },
 
                 city: {

@@ -277,6 +277,15 @@ export const updateExhibitionTypeExample = {
   exhibitionTypeName: "International Trade Exhibition",
 };
 
+// Entry Type Examples
+export const createEntryTypeExample = {
+  entryTypeName: "Visitor",
+};
+
+export const updateEntryTypeExample = {
+  entryTypeName: "VIP Visitor",
+};
+
 // Conference Type Examples
 export const createConferenceTypeExample = {
   conferenceTypeName: "Medical Conference",
@@ -405,7 +414,7 @@ export const createExhibitionExample = {
   endDate: "2026-08-12",
   month: "August",
   year: "2026",
-  entryType: "Free Entry",
+  entryTypeId: "687c9d2ef7b79a3d66666666",
   city: "Hyderabad",
   stateId: "687c9d2ef7b79a3d87654321",
   venueId: "687c9d2ef7b79a3d11111111",
@@ -417,8 +426,7 @@ export const createExhibitionExample = {
     "India Pharma Expo is one of the largest pharmaceutical exhibitions in India.",
   exhibitorProfile:
     "Pharmaceutical Manufacturers, Medical Equipment Suppliers, API Manufacturers",
-  speciality:
-    "Pharmaceutical Machinery, Medical Devices, Healthcare Solutions",
+  speciality: "Pharmaceutical Machinery, Medical Devices, Healthcare Solutions",
   visitorProfile:
     "Doctors, Hospital Administrators, Distributors, Pharma Professionals",
 };
@@ -431,7 +439,7 @@ export const updateExhibitionExample = {
   endDate: "2026-08-13",
   month: "August",
   year: "2026",
-  entryType: "Paid Registration",
+  entryTypeId: "687c9d2ef7b79a3d66666666",
   city: "Bengaluru",
   stateId: "687c9d2ef7b79a3d87654321",
   venueId: "687c9d2ef7b79a3d11111111",
@@ -441,12 +449,10 @@ export const updateExhibitionExample = {
   frequency: "Bi-Annual",
   aboutExhibition:
     "Updated information about India's leading pharmaceutical exhibition.",
-  exhibitorProfile:
-    "Manufacturers, Importers, Exporters, Healthcare Companies",
+  exhibitorProfile: "Manufacturers, Importers, Exporters, Healthcare Companies",
   speciality:
     "Medical Equipment, Pharmaceutical Machinery, Laboratory Technology",
-  visitorProfile:
-    "Doctors, Hospitals, Researchers, Pharma Companies",
+  visitorProfile: "Doctors, Hospitals, Researchers, Pharma Companies",
 };
 
 export const uploadEventLogoExample = {
@@ -476,7 +482,10 @@ export const exhibitionResponseExample = {
 
     year: "2026",
 
-    entryType: "Free Entry",
+    entryTypeId: {
+      _id: "687c9d2ef7b79a3d66666666",
+      entryTypeName: "Free Entry",
+    },
 
     city: "Hyderabad",
 
@@ -513,11 +522,9 @@ export const exhibitionResponseExample = {
     exhibitorProfile:
       "Pharmaceutical Manufacturers, Medical Equipment Suppliers",
 
-    speciality:
-      "Medical Devices, Pharmaceutical Machinery",
+    speciality: "Medical Devices, Pharmaceutical Machinery",
 
-    visitorProfile:
-      "Doctors, Hospitals, Pharma Professionals",
+    visitorProfile: "Doctors, Hospitals, Pharma Professionals",
 
     status: "approved",
 
