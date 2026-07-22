@@ -1,54 +1,161 @@
+// /**
+//  * Get Pagination
+//  *
+//  * Query Params:
+//  * ?page=1
+//  * ?limit=20
+//  */
+
+// export const getPagination = (req) => {
+//   const page = Math.max(
+//     parseInt(req.query.page, 10) || 1,
+//     1,
+//   );
+
+//   const limit = Math.min(
+//     Math.max(
+//       parseInt(req.query.limit, 10) || 20,
+//       1,
+//     ),
+//     100,
+//   );
+
+//   const skip = (page - 1) * limit;
+
+//   return {
+//     page,
+//     limit,
+//     skip,
+//   };
+// };
+
+// /**
+//  * Build Pagination Meta
+//  */
+
+// export const buildPaginationMeta = (
+//   total,
+//   page,
+//   limit,
+// ) => {
+//   const totalPages = Math.ceil(total / limit);
+
+//   return {
+//     page,
+//     limit,
+//     total,
+
+//     totalPages,
+
+//     hasPreviousPage: page > 1,
+
+//     hasNextPage: page < totalPages,
+//   };
+// };  
+
+
+
+pagination.ts 
+
 /**
- * Get Pagination
+ * Pagination Utilities
  *
- * Query Params:
+ * Supports:
+ *
  * ?page=1
  * ?limit=20
  */
 
-export const getPagination = (req) => {
-  const page = Math.max(
-    parseInt(req.query.page, 10) || 1,
-    1,
-  );
+/* -------------------------------------------------------------------------- */
+/* Get Pagination                                                              */
+/* -------------------------------------------------------------------------- */
 
-  const limit = Math.min(
-    Math.max(
-      parseInt(req.query.limit, 10) || 20,
-      1,
-    ),
-    100,
-  );
+export const getPagination = (
+  req,
+  maxLimit = 100,
+  defaultLimit = 20,
+) => {
+  let page = Number.parseInt(
+    req.query.page,
+    10,
+  )
 
-  const skip = (page - 1) * limit;
+  let limit = Number.parseInt(
+    req.query.limit,
+    10,
+  )
+
+  // Page
+
+  if (
+    Number.isNaN(page) ||
+    page < 1
+  ) {
+    page = 1
+  }
+
+  // Limit
+
+  if (
+    Number.isNaN(limit) ||
+    limit < 1
+  ) {
+    limit = defaultLimit
+  }
+
+  if (limit > maxLimit) {
+    limit = maxLimit
+  }
+
+  const skip = (page - 1) * limit
 
   return {
     page,
     limit,
     skip,
-  };
-};
+  }
+}
 
-/**
- * Build Pagination Meta
- */
+/* -------------------------------------------------------------------------- */
+/* Build Pagination Metadata                                                   */
+/* -------------------------------------------------------------------------- */
 
 export const buildPaginationMeta = (
   total,
   page,
   limit,
 ) => {
-  const totalPages = Math.ceil(total / limit);
+  const totalPages =
+    total === 0
+      ? 0
+      : Math.ceil(total / limit)
+
+  const from =
+    total === 0
+      ? 0
+      : (page - 1) * limit + 1
+
+  const to =
+    total === 0
+      ? 0
+      : Math.min(page * limit, total)
 
   return {
     page,
     limit,
+
     total,
 
     totalPages,
 
-    hasPreviousPage: page > 1,
+    from,
 
-    hasNextPage: page < totalPages,
-  };
-};
+    to,
+
+    hasPreviousPage:
+      page > 1,
+
+    hasNextPage:
+      page < totalPages,
+  }
+}
