@@ -533,3 +533,80 @@ export const exhibitionResponseExample = {
     updatedAt: "2026-07-20T10:30:00.000Z",
   },
 };
+
+
+//==============================
+// Association Examples
+//==============================
+
+export const createAssociationExample = {
+  associationName: "Indian Medical Association",
+  stateId: "687c9d2ef7b79a3d87654321",
+  city: "Hyderabad",
+  address: "HITEC City, Hyderabad",
+  website: "https://imaindia.org",
+  associationTypeId: "687c9d2ef7b79a3d99999999",
+};
+
+export const updateAssociationExample = {
+  associationName: "Indian Medical Association Telangana",
+  stateId: "687c9d2ef7b79a3d87654321",
+  city: "Hyderabad",
+  address: "Gachibowli, Hyderabad",
+  website: "https://imaindia.org",
+  associationTypeId: "687c9d2ef7b79a3d99999999",
+};
+
+export const associationResponseExample = {
+  success: true,
+  message: "Association fetched successfully.",
+  data: {
+    _id: "68820d5b63ab9f0a12345678",
+
+    associationName: "Indian Medical Association",
+
+    stateId: {
+      _id: "687c9d2ef7b79a3d87654321",
+      state: "Telangana",
+    },
+
+    city: "Hyderabad",
+
+    address: "HITEC City, Hyderabad",
+
+    website: "https://imaindia.org",
+
+    associationTypeId: {
+      _id: "687c9d2ef7b79a3d99999999",
+      associationTypeName: "Medical Association",
+    },
+
+    status: "approved",
+
+    createdBy: {
+      _id: "687c9d2ef7b79a3d11111111",
+      fullName: "Super Admin",
+      email: "admin@example.com",
+      role: "admin",
+    },
+
+    updatedBy: null,
+
+    approvedBy: {
+      _id: "687c9d2ef7b79a3d11111111",
+      fullName: "Super Admin",
+      email: "admin@example.com",
+      role: "admin",
+    },
+
+    approvedAt: "2026-07-25T10:30:00.000Z",
+
+    rejectedBy: null,
+
+    rejectedAt: null,
+
+    createdAt: "2026-07-25T10:30:00.000Z",
+
+    updatedAt: "2026-07-25T10:30:00.000Z",
+  },
+};

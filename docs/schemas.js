@@ -917,6 +917,103 @@ export const schemas = {
       },
     },
   },
+  Association: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "68820d5b63ab9f0a12345678",
+      },
+
+      associationName: {
+        type: "string",
+        example: "Indian Medical Association",
+      },
+
+      stateId: {
+        $ref: "#/components/schemas/State",
+      },
+
+      city: {
+        type: "string",
+        example: "Hyderabad",
+      },
+
+      address: {
+        type: "string",
+        example: "HITEC City, Hyderabad",
+      },
+
+      website: {
+        type: "string",
+        example: "https://imaindia.org",
+      },
+
+      associationTypeId: {
+        $ref: "#/components/schemas/AssociationType",
+      },
+
+      status: {
+        type: "string",
+        enum: ["pending", "approved", "rejected"],
+        example: "approved",
+      },
+
+      createdBy: {
+        $ref: "#/components/schemas/User",
+      },
+
+      updatedBy: {
+        allOf: [
+          {
+            $ref: "#/components/schemas/User",
+          },
+        ],
+        nullable: true,
+      },
+
+      approvedBy: {
+        allOf: [
+          {
+            $ref: "#/components/schemas/User",
+          },
+        ],
+        nullable: true,
+      },
+
+      approvedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
+
+      rejectedBy: {
+        allOf: [
+          {
+            $ref: "#/components/schemas/User",
+          },
+        ],
+        nullable: true,
+      },
+
+      rejectedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
   RegisterAdminRequest: {
     type: "object",
 
