@@ -15,6 +15,7 @@ import advertisementLocationPaths from "./advertisementLocation.swagger.js";
 import companyPaths from "./company.swagger.js";
 import venuePaths from "./venue.swagger.js";
 import exhibitionPaths from "./exhibition.swagger.js";
+import conferencePaths from "./conference.swagger.js";
 import associationPaths from "./association.swagger.js";
 // import partnerPaths from "./partner.swagger.js";
 // import staffPaths from "./staff.swagger.js";
@@ -39,6 +40,7 @@ const paths = {
   ...companyPaths,
   ...venuePaths,
   ...exhibitionPaths,
+  ...conferencePaths,
   ...associationPaths,
 };
 

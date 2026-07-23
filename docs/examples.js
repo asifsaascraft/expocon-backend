@@ -551,6 +551,129 @@ export const exhibitionResponseExample = {
 };
 
 //==============================
+// Conference  Examples
+//==============================
+export const createConferenceExample = {
+  conferenceTypeId: "686e4c7b12ab34cd56ef7890",
+  conferenceName: "International Cardiology Conference 2026",
+  conferenceShortName: "ICC 2026",
+  startDate: "2026-11-10",
+  endDate: "2026-11-12",
+  month: "November",
+  year: "2026",
+  entryTypeId: "686e4d8c23bc45de67fa8901",
+  city: "Hyderabad",
+  stateId: "686e4e9d34cd56ef78ab9012",
+  venueId: "686e4fab45de67fa89bc0123",
+  website: "https://icc2026.com",
+  companyId: "686e50bc56ef78ab90cd1234",
+  conferenceSegmentId: "686e51cd67fa89bc01de2345",
+  associationId: "686e52de78ab90cd12ef3456",
+  committeeMember: "Organizing Committee",
+  frequency: "Annual",
+  aboutConference:
+    "International conference focused on advancements in cardiology and healthcare.",
+};
+
+export const updateConferenceExample = {
+  conferenceTypeId: "686e4c7b12ab34cd56ef7890",
+  conferenceName: "International Cardiology Conference 2026",
+  conferenceShortName: "ICC 2026",
+  startDate: "2026-11-11",
+  endDate: "2026-11-13",
+  month: "November",
+  year: "2026",
+  entryTypeId: "686e4d8c23bc45de67fa8901",
+  city: "Mumbai",
+  stateId: "686e4e9d34cd56ef78ab9012",
+  venueId: "686e4fab45de67fa89bc0123",
+  website: "https://icc2026.com",
+  companyId: "686e50bc56ef78ab90cd1234",
+  conferenceSegmentId: "686e51cd67fa89bc01de2345",
+  associationId: "686e52de78ab90cd12ef3456",
+  committeeMember: "Scientific Committee",
+  frequency: "Annual",
+  aboutConference: "Updated conference information.",
+};
+
+export const uploadConferenceLogoExample = "(binary file)";
+
+export const rejectConferenceExample = {
+  rejectionReason:
+    "Conference details are incomplete. Please provide valid information.",
+};
+
+export const conferenceResponseExample = {
+  _id: "686e53ef89bc01de23fa4567",
+  conferenceTypeId: {
+    _id: "686e4c7b12ab34cd56ef7890",
+    conferenceTypeName: "Medical Conference",
+  },
+  conferenceName: "International Cardiology Conference 2026",
+  conferenceShortName: "ICC 2026",
+  startDate: "2026-11-10",
+  endDate: "2026-11-12",
+  month: "November",
+  year: "2026",
+  entryTypeId: {
+    _id: "686e4d8c23bc45de67fa8901",
+    entryTypeName: "Paid",
+  },
+  city: "Hyderabad",
+  stateId: {
+    _id: "686e4e9d34cd56ef78ab9012",
+    state: "Telangana",
+  },
+  venueId: {
+    _id: "686e4fab45de67fa89bc0123",
+    venueName: "HICC",
+  },
+  website: "https://icc2026.com",
+  companyId: {
+    _id: "686e50bc56ef78ab90cd1234",
+    companyName: "ABC Events",
+  },
+  conferenceSegmentId: {
+    _id: "686e51cd67fa89bc01de2345",
+    conferenceSegmentName: "Healthcare",
+  },
+  associationId: {
+    _id: "686e52de78ab90cd12ef3456",
+    associationName: "Indian Medical Association",
+  },
+  uploadConferenceLogo: "https://bucket.s3.amazonaws.com/conference-logo.png",
+  committeeMember: "Organizing Committee",
+  frequency: "Annual",
+  aboutConference:
+    "International conference focused on advancements in cardiology and healthcare.",
+  status: "approved",
+  createdBy: {
+    _id: "686e54fa90cd12ef34ab5678",
+    fullName: "Admin User",
+    email: "admin@example.com",
+    role: "admin",
+  },
+  updatedBy: {
+    _id: "686e54fa90cd12ef34ab5678",
+    fullName: "Admin User",
+    email: "admin@example.com",
+    role: "admin",
+  },
+  approvedBy: {
+    _id: "686e54fa90cd12ef34ab5678",
+    fullName: "Admin User",
+    email: "admin@example.com",
+    role: "admin",
+  },
+  approvedAt: "2026-07-23T10:30:00.000Z",
+  rejectedBy: null,
+  rejectedAt: null,
+  rejectionReason: null,
+  createdAt: "2026-07-23T10:00:00.000Z",
+  updatedAt: "2026-07-23T10:30:00.000Z",
+};
+
+//==============================
 // Association Examples
 //==============================
 export const createAssociationExample = {
