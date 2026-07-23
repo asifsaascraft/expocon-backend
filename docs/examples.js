@@ -364,6 +364,10 @@ export const uploadCompanyLogoExample = {
   uploadLogo: "(binary)",
 };
 
+export const rejectCompanyExample = {
+  rejectionReason: "Company registration certificate is missing.",
+};
+
 export const companyResponseExample = {
   success: true,
   message: "Company fetched successfully.",
@@ -382,7 +386,7 @@ export const companyResponseExample = {
   },
 };
 
-// Company Examples
+// Venue Examples
 export const createVenueExample = {
   venueName: "Hyderabad International Convention Centre",
   stateId: "687c9d2ef7b79a3d87654321",
@@ -403,6 +407,10 @@ export const updateVenueExample = {
   mapLink: "https://maps.google.com/...",
   featured: false,
   phone: "04087654321",
+};
+
+export const rejectVenueExample = {
+  rejectionReason: "Venue fire safety certificate is missing.",
 };
 
 // Exhibition Examples
@@ -457,6 +465,11 @@ export const updateExhibitionExample = {
 
 export const uploadEventLogoExample = {
   uploadEventLogo: "(binary)",
+};
+
+export const rejectExhibitionExample = {
+  rejectionReason:
+    "Required event information and supporting documents are incomplete.",
 };
 
 export const exhibitionResponseExample = {
@@ -528,17 +541,18 @@ export const exhibitionResponseExample = {
 
     status: "approved",
 
+    rejectionReason:
+      "Required event information and supporting documents are incomplete.",
+
     createdAt: "2026-07-20T10:30:00.000Z",
 
     updatedAt: "2026-07-20T10:30:00.000Z",
   },
 };
 
-
 //==============================
 // Association Examples
 //==============================
-
 export const createAssociationExample = {
   associationName: "Indian Medical Association",
   stateId: "687c9d2ef7b79a3d87654321",
@@ -555,6 +569,10 @@ export const updateAssociationExample = {
   address: "Gachibowli, Hyderabad",
   website: "https://imaindia.org",
   associationTypeId: "687c9d2ef7b79a3d99999999",
+};
+
+export const rejectAssociationExample = {
+  rejectionReason: "Association registration documents are incomplete.",
 };
 
 export const associationResponseExample = {
@@ -582,6 +600,8 @@ export const associationResponseExample = {
     },
 
     status: "approved",
+
+    rejectionReason: "Association registration documents are incomplete.",
 
     createdBy: {
       _id: "687c9d2ef7b79a3d11111111",

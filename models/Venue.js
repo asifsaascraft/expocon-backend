@@ -105,6 +105,12 @@ const VenueSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    rejectionReason: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+      default: null,
+    },
   },
   {
     timestamps: true,
@@ -125,7 +131,6 @@ VenueSchema.set("toJSON", {
 });
 
 // Export
-const Venue =
-  mongoose.models.Venue || mongoose.model("Venue", VenueSchema);
+const Venue = mongoose.models.Venue || mongoose.model("Venue", VenueSchema);
 
 export default Venue;

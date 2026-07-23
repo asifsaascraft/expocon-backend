@@ -1,3 +1,10 @@
+import {
+  createCompanyExample,
+  updateCompanyExample,
+  rejectCompanyExample,
+  uploadCompanyLogoExample,
+} from "./examples.js";
+
 const companyPaths = {
   //==============================
   // Create Company
@@ -730,6 +737,29 @@ const companyPaths = {
           description: "Company ID.",
         },
       ],
+
+      requestBody: {
+        required: true,
+
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+
+              required: ["rejectionReason"],
+
+              properties: {
+                rejectionReason: {
+                  type: "string",
+                  example: "Company registration certificate is missing.",
+                },
+              },
+            },
+
+            example: rejectCompanyExample,
+          },
+        },
+      },
 
       responses: {
         200: {

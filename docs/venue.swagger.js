@@ -1,3 +1,9 @@
+import {
+  createVenueExample,
+  updateVenueExample,
+  rejectVenueExample,
+} from "./examples.js";
+
 const venuePaths = {
   //==============================
   // Create Venue
@@ -707,6 +713,29 @@ const venuePaths = {
           description: "Venue ID.",
         },
       ],
+
+      requestBody: {
+        required: true,
+
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+
+              required: ["rejectionReason"],
+
+              properties: {
+                rejectionReason: {
+                  type: "string",
+                  example: "Venue fire safety certificate is missing.",
+                },
+              },
+            },
+
+            example: rejectVenueExample,
+          },
+        },
+      },
 
       responses: {
         200: {

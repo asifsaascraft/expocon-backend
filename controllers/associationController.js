@@ -337,9 +337,7 @@ export const getAssociationById = asyncHandler(async (req, res) => {
 
   // Find Association
 
-  const association = await populateAssociation(
-    Association.findById(id),
-  );
+  const association = await populateAssociation(Association.findById(id));
 
   if (!association) {
     return errorResponse(res, {
@@ -353,16 +351,14 @@ export const getAssociationById = asyncHandler(async (req, res) => {
   if (req.user.role === "staff") {
     const isOwner =
       association.createdBy &&
-      association.createdBy._id.toString() ===
-        req.user._id.toString();
+      association.createdBy._id.toString() === req.user._id.toString();
 
     const isApproved = association.status === "approved";
 
     if (!isApproved && !isOwner) {
       return errorResponse(res, {
         statusCode: 403,
-        message:
-          "You are not authorized to view this association.",
+        message: "You are not authorized to view this association.",
       });
     }
   }
@@ -570,7 +566,6 @@ export const updateAssociation = asyncHandler(async (req, res) => {
   });
 });
 
-
 //==============================
 // Delete Association
 //==============================
@@ -681,6 +676,7 @@ export const approveAssociation = asyncHandler(async (req, res) => {
 
   association.rejectedBy = null;
   association.rejectedAt = null;
+  association.rejectionReason = null;
 
   // Track Update
 
@@ -710,6 +706,7 @@ export const approveAssociation = asyncHandler(async (req, res) => {
 //==============================
 export const rejectAssociation = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const { rejectionReason } = req.body;
 
   // Validate Association ID
 
@@ -717,6 +714,15 @@ export const rejectAssociation = asyncHandler(async (req, res) => {
     return errorResponse(res, {
       statusCode: 400,
       message: "Invalid association ID.",
+    });
+  }
+
+  // Validate Rejection Reason
+
+  if (!rejectionReason?.trim()) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Rejection reason is required.",
     });
   }
 
@@ -752,6 +758,7 @@ export const rejectAssociation = asyncHandler(async (req, res) => {
   association.status = "rejected";
   association.rejectedBy = req.user._id;
   association.rejectedAt = new Date();
+  association.rejectionReason = rejectionReason.trim();
 
   // Clear Approval Info
 

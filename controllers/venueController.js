@@ -651,7 +651,8 @@ export const approveVenue = asyncHandler(async (req, res) => {
 
   venue.rejectedBy = null;
   venue.rejectedAt = null;
-
+  venue.rejectionReason = null;
+  
   // Track Update
 
   venue.updatedBy = req.user._id;
@@ -678,7 +679,7 @@ export const approveVenue = asyncHandler(async (req, res) => {
 //==============================
 export const rejectVenue = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
+  const { rejectionReason } = req.body;
   // Validate Venue ID
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -687,6 +688,15 @@ export const rejectVenue = asyncHandler(async (req, res) => {
       message: "Invalid venue ID.",
     });
   }
+
+  // Validate Rejection Reason
+
+if (!rejectionReason?.trim()) {
+  return errorResponse(res, {
+    statusCode: 400,
+    message: "Rejection reason is required.",
+  });
+}
 
   // Find Venue
 
@@ -720,7 +730,7 @@ export const rejectVenue = asyncHandler(async (req, res) => {
   venue.status = "rejected";
   venue.rejectedBy = req.user._id;
   venue.rejectedAt = new Date();
-
+  venue.rejectionReason = rejectionReason.trim();
   // Clear Approval Info
 
   venue.approvedBy = null;

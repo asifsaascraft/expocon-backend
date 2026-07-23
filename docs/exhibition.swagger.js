@@ -1,3 +1,10 @@
+import {
+  createExhibitionExample,
+  updateExhibitionExample,
+  rejectExhibitionExample,
+  uploadEventLogoExample,
+} from "./examples.js";
+
 const exhibitionPaths = {
   //==============================
   // Create Exhibition
@@ -882,6 +889,30 @@ const exhibitionPaths = {
           description: "Exhibition ID.",
         },
       ],
+
+      requestBody: {
+        required: true,
+
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+
+              required: ["rejectionReason"],
+
+              properties: {
+                rejectionReason: {
+                  type: "string",
+                  example:
+                    "Required event information and supporting documents are incomplete.",
+                },
+              },
+            },
+
+            example: rejectExhibitionExample,
+          },
+        },
+      },
 
       responses: {
         200: {

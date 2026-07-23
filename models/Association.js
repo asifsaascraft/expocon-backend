@@ -85,6 +85,12 @@ const AssociationSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    rejectionReason: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+      default: null,
+    },
   },
   {
     timestamps: true,
@@ -106,6 +112,7 @@ AssociationSchema.set("toJSON", {
 
 // Export
 const Association =
-  mongoose.models.Association || mongoose.model("Association", AssociationSchema);
+  mongoose.models.Association ||
+  mongoose.model("Association", AssociationSchema);
 
 export default Association;

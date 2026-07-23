@@ -1,3 +1,9 @@
+import {
+  createAssociationExample,
+  updateAssociationExample,
+  rejectAssociationExample,
+} from "./examples.js";
+
 const associationPaths = {
   //==============================
   // Create Association
@@ -52,8 +58,7 @@ const associationPaths = {
 
                 address: {
                   type: "string",
-                  example:
-                    "HITEC City, Hyderabad, Telangana",
+                  example: "HITEC City, Hyderabad, Telangana",
                 },
 
                 website: {
@@ -72,7 +77,7 @@ const associationPaths = {
       },
 
       responses: {
-                201: {
+        201: {
           description: "Association created successfully.",
         },
 
@@ -89,8 +94,7 @@ const associationPaths = {
         },
 
         404: {
-          description:
-            "State or Association Type not found.",
+          description: "State or Association Type not found.",
         },
 
         409: {
@@ -121,7 +125,7 @@ const associationPaths = {
       ],
 
       parameters: [
-                {
+        {
           in: "query",
           name: "page",
           schema: {
@@ -145,8 +149,7 @@ const associationPaths = {
           schema: {
             type: "string",
           },
-          description:
-            "Search by association name, city or website.",
+          description: "Search by association name, city or website.",
         },
         {
           in: "query",
@@ -195,7 +198,7 @@ const associationPaths = {
       ],
 
       responses: {
-                200: {
+        200: {
           description: "Associations fetched successfully.",
 
           content: {
@@ -320,7 +323,7 @@ const associationPaths = {
               schema: {
                 type: "object",
 
-                                properties: {
+                properties: {
                   success: {
                     type: "boolean",
                     example: true,
@@ -449,7 +452,7 @@ const associationPaths = {
       },
 
       responses: {
-                200: {
+        200: {
           description: "Association updated successfully.",
 
           content: {
@@ -537,7 +540,7 @@ const associationPaths = {
       ],
 
       responses: {
-                200: {
+        200: {
           description: "Association deleted successfully.",
 
           content: {
@@ -620,7 +623,7 @@ const associationPaths = {
       ],
 
       responses: {
-                200: {
+        200: {
           description: "Association approved successfully.",
 
           content: {
@@ -707,8 +710,31 @@ const associationPaths = {
         },
       ],
 
+      requestBody: {
+        required: true,
+
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+
+              required: ["rejectionReason"],
+
+              properties: {
+                rejectionReason: {
+                  type: "string",
+                  example: "Association registration documents are incomplete.",
+                },
+              },
+            },
+
+            example: rejectAssociationExample,
+          },
+        },
+      },
+
       responses: {
-                200: {
+        200: {
           description: "Association rejected successfully.",
 
           content: {
@@ -763,4 +789,3 @@ const associationPaths = {
 };
 
 export default associationPaths;
-                

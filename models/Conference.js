@@ -106,7 +106,7 @@ const ConferenceSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    
+
     // Approval Status
     status: {
       type: String,
@@ -148,6 +148,12 @@ const ConferenceSchema = new mongoose.Schema(
 
     rejectedAt: {
       type: Date,
+      default: null,
+    },
+    rejectionReason: {
+      type: String,
+      trim: true,
+      maxlength: 500,
       default: null,
     },
   },

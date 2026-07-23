@@ -933,6 +933,7 @@ export const approveExhibition = asyncHandler(async (req, res) => {
 
   exhibition.rejectedBy = null;
   exhibition.rejectedAt = null;
+  exhibition.rejectionReason = null;
 
   // Audit
 
@@ -962,6 +963,7 @@ export const approveExhibition = asyncHandler(async (req, res) => {
 //==============================
 export const rejectExhibition = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const { rejectionReason } = req.body;
 
   // Validate Exhibition ID
 
@@ -969,6 +971,15 @@ export const rejectExhibition = asyncHandler(async (req, res) => {
     return errorResponse(res, {
       statusCode: 400,
       message: "Invalid exhibition ID.",
+    });
+  }
+
+  // Validate Rejection Reason
+
+  if (!rejectionReason?.trim()) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Rejection reason is required.",
     });
   }
 
@@ -1004,6 +1015,7 @@ export const rejectExhibition = asyncHandler(async (req, res) => {
   exhibition.status = "rejected";
   exhibition.rejectedBy = req.user._id;
   exhibition.rejectedAt = new Date();
+  exhibition.rejectionReason = rejectionReason.trim();
 
   // Clear Approval Info
 

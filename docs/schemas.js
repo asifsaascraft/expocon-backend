@@ -540,6 +540,12 @@ export const schemas = {
         nullable: true,
       },
 
+      rejectionReason: {
+        type: "string",
+        example: "Company registration documents are incomplete.",
+        nullable: true,
+      },
+
       createdAt: {
         type: "string",
         format: "date-time",
@@ -659,6 +665,12 @@ export const schemas = {
         type: "string",
         format: "date-time",
         nullable: true,
+      },
+
+      rejectionReason: {
+        type: "string",
+        nullable: true,
+        example: "Venue fire safety certificate is missing.",
       },
 
       createdAt: {
@@ -906,6 +918,13 @@ export const schemas = {
         nullable: true,
       },
 
+      rejectionReason: {
+        type: "string",
+        nullable: true,
+        example:
+          "Required event information and supporting documents are incomplete.",
+      },
+
       createdAt: {
         type: "string",
         format: "date-time",
@@ -1001,6 +1020,12 @@ export const schemas = {
         type: "string",
         format: "date-time",
         nullable: true,
+      },
+
+      rejectionReason: {
+        type: "string",
+        nullable: true,
+        example: "Association registration documents are incomplete.",
       },
 
       createdAt: {

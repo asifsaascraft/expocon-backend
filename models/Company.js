@@ -132,6 +132,12 @@ const CompanySchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    rejectionReason: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+      default: null,
+    },
   },
   {
     timestamps: true,

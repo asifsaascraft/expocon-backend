@@ -649,7 +649,6 @@ export const deleteCompany = asyncHandler(async (req, res) => {
   });
 });
 
-
 //==============================
 // Approve Company
 //==============================
@@ -702,6 +701,7 @@ export const approveCompany = asyncHandler(async (req, res) => {
 
   company.rejectedBy = null;
   company.rejectedAt = null;
+  company.rejectionReason = null;
 
   // Track Update
 
@@ -711,9 +711,7 @@ export const approveCompany = asyncHandler(async (req, res) => {
 
   // Populate
 
-  const populatedCompany = await populateCompany(
-    Company.findById(company._id)
-  );
+  const populatedCompany = await populateCompany(Company.findById(company._id));
 
   // Clear Cache
 
@@ -726,12 +724,12 @@ export const approveCompany = asyncHandler(async (req, res) => {
   });
 });
 
-
 //==============================
 // Reject Company
 //==============================
 export const rejectCompany = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const { rejectionReason } = req.body;
 
   // Validate Company ID
 
@@ -739,6 +737,15 @@ export const rejectCompany = asyncHandler(async (req, res) => {
     return errorResponse(res, {
       statusCode: 400,
       message: "Invalid company ID.",
+    });
+  }
+
+  // Validate Rejection Reason
+
+  if (!rejectionReason?.trim()) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Rejection reason is required.",
     });
   }
 
@@ -774,6 +781,7 @@ export const rejectCompany = asyncHandler(async (req, res) => {
   company.status = "rejected";
   company.rejectedBy = req.user._id;
   company.rejectedAt = new Date();
+  company.rejectionReason = rejectionReason.trim();
 
   // Clear Approval Info
 
@@ -788,9 +796,7 @@ export const rejectCompany = asyncHandler(async (req, res) => {
 
   // Populate
 
-  const populatedCompany = await populateCompany(
-    Company.findById(company._id)
-  );
+  const populatedCompany = await populateCompany(Company.findById(company._id));
 
   // Clear Cache
 
