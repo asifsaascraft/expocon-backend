@@ -753,3 +753,95 @@ export const associationResponseExample = {
     updatedAt: "2026-07-25T10:30:00.000Z",
   },
 };
+
+
+//==============================
+// Contact Examples
+//==============================
+export const createContactExample = {
+  fullName: "Asif Jamal",
+  email: "asif@example.com",
+  mobile: "9876543210",
+  stateId: "687c9d2ef7b79a3d87654321",
+  companyId: "687c9d2ef7b79a3d11111111",
+  venueId: "687c9d2ef7b79a3d22222222",
+  associationId: "687c9d2ef7b79a3d33333333",
+};
+
+export const updateContactExample = {
+  fullName: "Asif Jamal Khan",
+  email: "asifkhan@example.com",
+  mobile: "9876543210",
+  stateId: "687c9d2ef7b79a3d87654321",
+  companyId: "687c9d2ef7b79a3d11111111",
+  venueId: "687c9d2ef7b79a3d22222222",
+  associationId: "687c9d2ef7b79a3d33333333",
+};
+
+export const rejectContactExample = {
+  rejectionReason: "Contact information is incomplete.",
+};
+
+export const contactResponseExample = {
+  success: true,
+  message: "Contact fetched successfully.",
+  data: {
+    _id: "68820d5b63ab9f0a12345678",
+
+    fullName: "Asif Jamal",
+
+    email: "asif@example.com",
+
+    mobile: "9876543210",
+
+    stateId: {
+      _id: "687c9d2ef7b79a3d87654321",
+      state: "Telangana",
+    },
+
+    companyId: {
+      _id: "687c9d2ef7b79a3d11111111",
+      companyName: "ABC Technologies",
+    },
+
+    venueId: {
+      _id: "687c9d2ef7b79a3d22222222",
+      venueName: "HICC Hyderabad",
+    },
+
+    associationId: {
+      _id: "687c9d2ef7b79a3d33333333",
+      associationName: "Indian Medical Association",
+    },
+
+    status: "approved",
+
+    rejectionReason: null,
+
+    createdBy: {
+      _id: "687c9d2ef7b79a3d99999999",
+      fullName: "Super Admin",
+      email: "admin@example.com",
+      role: "admin",
+    },
+
+    updatedBy: null,
+
+    approvedBy: {
+      _id: "687c9d2ef7b79a3d99999999",
+      fullName: "Super Admin",
+      email: "admin@example.com",
+      role: "admin",
+    },
+
+    approvedAt: "2026-07-25T10:30:00.000Z",
+
+    rejectedBy: null,
+
+    rejectedAt: null,
+
+    createdAt: "2026-07-25T10:30:00.000Z",
+
+    updatedAt: "2026-07-25T10:30:00.000Z",
+  },
+};

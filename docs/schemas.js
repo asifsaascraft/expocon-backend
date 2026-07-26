@@ -1299,6 +1299,117 @@ export const schemas = {
       },
     },
   },
+  //==============================
+// Contact Schema
+//==============================
+Contact: {
+  type: "object",
+  properties: {
+    _id: {
+      type: "string",
+      example: "68820d5b63ab9f0a12345678",
+    },
+
+    fullName: {
+      type: "string",
+      example: "Asif Jamal",
+    },
+
+    email: {
+      type: "string",
+      example: "asif@example.com",
+      nullable: true,
+    },
+
+    mobile: {
+      type: "string",
+      example: "9876543210",
+      nullable: true,
+    },
+
+    stateId: {
+      type: "string",
+      example: "687c9d2ef7b79a3d87654321",
+      nullable: true,
+    },
+
+    companyId: {
+      type: "string",
+      example: "687c9d2ef7b79a3d11111111",
+      nullable: true,
+    },
+
+    venueId: {
+      type: "string",
+      example: "687c9d2ef7b79a3d22222222",
+      nullable: true,
+    },
+
+    associationId: {
+      type: "string",
+      example: "687c9d2ef7b79a3d33333333",
+      nullable: true,
+    },
+
+    status: {
+      type: "string",
+      enum: ["pending", "approved", "rejected"],
+      example: "approved",
+    },
+
+    createdBy: {
+      type: "string",
+      example: "687c9d2ef7b79a3d99999999",
+      nullable: true,
+    },
+
+    updatedBy: {
+      type: "string",
+      example: "687c9d2ef7b79a3d99999999",
+      nullable: true,
+    },
+
+    approvedBy: {
+      type: "string",
+      example: "687c9d2ef7b79a3d99999999",
+      nullable: true,
+    },
+
+    approvedAt: {
+      type: "string",
+      format: "date-time",
+      nullable: true,
+    },
+
+    rejectedBy: {
+      type: "string",
+      example: "687c9d2ef7b79a3d99999999",
+      nullable: true,
+    },
+
+    rejectedAt: {
+      type: "string",
+      format: "date-time",
+      nullable: true,
+    },
+
+    rejectionReason: {
+      type: "string",
+      example: "Contact information is incomplete.",
+      nullable: true,
+    },
+
+    createdAt: {
+      type: "string",
+      format: "date-time",
+    },
+
+    updatedAt: {
+      type: "string",
+      format: "date-time",
+    },
+  },
+},
   RegisterAdminRequest: {
     type: "object",
 
