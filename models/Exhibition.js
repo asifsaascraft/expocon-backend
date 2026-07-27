@@ -170,13 +170,47 @@ ExhibitionSchema.index({
   createdAt: -1,
 });
 
+
+// Dynamic Event Status
+ExhibitionSchema.virtual("dynamicStatus").get(function () {
+  if (!this.startDate || !this.endDate) {
+    return null;
+  }
+
+  const today = new Date();
+
+  // Ignore time part
+  today.setHours(0, 0, 0, 0);
+
+  const startDate = new Date(this.startDate);
+  startDate.setHours(0, 0, 0, 0);
+
+  const endDate = new Date(this.endDate);
+  endDate.setHours(23, 59, 59, 999);
+
+  if (today < startDate) {
+    return "Upcoming";
+  }
+  if (today > endDate) {
+    return "Past";
+  }
+  return "Live";
+});
+
 // JSON Transform
 ExhibitionSchema.set("toJSON", {
+  virtuals: true,
+
   transform(doc, ret) {
     delete ret.__v;
     return ret;
   },
 });
+
+ExhibitionSchema.set("toObject", {
+  virtuals: true,
+});
+
 
 // Export
 const Exhibition =
