@@ -40,12 +40,14 @@ const createUploader = (folder) => {
         "image/jpeg",
         "image/jpg",
         "image/png",
+        "image/webp",
+        "image/svg",
       ];
 
       if (!allowedTypes.includes(file.mimetype)) {
         return cb(
           new Error(
-            "Only JPG, JPEG and PNG images are allowed.",
+            "Only JPG, JPEG, PNG, WEBP and SVG images are allowed.",
           ),
         );
       }

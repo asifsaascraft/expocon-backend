@@ -1300,116 +1300,220 @@ export const schemas = {
     },
   },
   //==============================
-// Contact Schema
-//==============================
-Contact: {
-  type: "object",
-  properties: {
-    _id: {
-      type: "string",
-      example: "68820d5b63ab9f0a12345678",
-    },
+  // Contact Schema
+  //==============================
+  Contact: {
+    type: "object",
+    properties: {
+      _id: {
+        type: "string",
+        example: "68820d5b63ab9f0a12345678",
+      },
 
-    fullName: {
-      type: "string",
-      example: "Asif Jamal",
-    },
+      fullName: {
+        type: "string",
+        example: "Asif Jamal",
+      },
 
-    email: {
-      type: "string",
-      example: "asif@example.com",
-      nullable: true,
-    },
+      email: {
+        type: "string",
+        example: "asif@example.com",
+        nullable: true,
+      },
 
-    mobile: {
-      type: "string",
-      example: "9876543210",
-      nullable: true,
-    },
+      mobile: {
+        type: "string",
+        example: "9876543210",
+        nullable: true,
+      },
 
-    stateId: {
-      type: "string",
-      example: "687c9d2ef7b79a3d87654321",
-      nullable: true,
-    },
+      stateId: {
+        type: "string",
+        example: "687c9d2ef7b79a3d87654321",
+        nullable: true,
+      },
 
-    companyId: {
-      type: "string",
-      example: "687c9d2ef7b79a3d11111111",
-      nullable: true,
-    },
+      companyId: {
+        type: "string",
+        example: "687c9d2ef7b79a3d11111111",
+        nullable: true,
+      },
 
-    venueId: {
-      type: "string",
-      example: "687c9d2ef7b79a3d22222222",
-      nullable: true,
-    },
+      venueId: {
+        type: "string",
+        example: "687c9d2ef7b79a3d22222222",
+        nullable: true,
+      },
 
-    associationId: {
-      type: "string",
-      example: "687c9d2ef7b79a3d33333333",
-      nullable: true,
-    },
+      associationId: {
+        type: "string",
+        example: "687c9d2ef7b79a3d33333333",
+        nullable: true,
+      },
 
-    status: {
-      type: "string",
-      enum: ["pending", "approved", "rejected"],
-      example: "approved",
-    },
+      status: {
+        type: "string",
+        enum: ["pending", "approved", "rejected"],
+        example: "approved",
+      },
 
-    createdBy: {
-      type: "string",
-      example: "687c9d2ef7b79a3d99999999",
-      nullable: true,
-    },
+      createdBy: {
+        type: "string",
+        example: "687c9d2ef7b79a3d99999999",
+        nullable: true,
+      },
 
-    updatedBy: {
-      type: "string",
-      example: "687c9d2ef7b79a3d99999999",
-      nullable: true,
-    },
+      updatedBy: {
+        type: "string",
+        example: "687c9d2ef7b79a3d99999999",
+        nullable: true,
+      },
 
-    approvedBy: {
-      type: "string",
-      example: "687c9d2ef7b79a3d99999999",
-      nullable: true,
-    },
+      approvedBy: {
+        type: "string",
+        example: "687c9d2ef7b79a3d99999999",
+        nullable: true,
+      },
 
-    approvedAt: {
-      type: "string",
-      format: "date-time",
-      nullable: true,
-    },
+      approvedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
 
-    rejectedBy: {
-      type: "string",
-      example: "687c9d2ef7b79a3d99999999",
-      nullable: true,
-    },
+      rejectedBy: {
+        type: "string",
+        example: "687c9d2ef7b79a3d99999999",
+        nullable: true,
+      },
 
-    rejectedAt: {
-      type: "string",
-      format: "date-time",
-      nullable: true,
-    },
+      rejectedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
 
-    rejectionReason: {
-      type: "string",
-      example: "Contact information is incomplete.",
-      nullable: true,
-    },
+      rejectionReason: {
+        type: "string",
+        example: "Contact information is incomplete.",
+        nullable: true,
+      },
 
-    createdAt: {
-      type: "string",
-      format: "date-time",
-    },
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
 
-    updatedAt: {
-      type: "string",
-      format: "date-time",
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
     },
   },
-},
+  Advertisement: {
+    type: "object",
+
+    properties: {
+      _id: {
+        type: "string",
+        example: "68820d5b63ab9f0a12345678",
+      },
+
+      advertisementLocationId: {
+        type: "object",
+
+        properties: {
+          _id: {
+            type: "string",
+            example: "68820d5b63ab9f0a11111111",
+          },
+
+          advertisementLocationName: {
+            type: "string",
+            example: "Homepage Banner",
+          },
+        },
+      },
+
+      uploadAdvertisementLogo: {
+        type: "string",
+        example: "https://your-bucket.s3.amazonaws.com/advertisements/logo.png",
+      },
+
+      status: {
+        type: "string",
+        example: "approved",
+      },
+
+      createdBy: {
+        type: "object",
+
+        properties: {
+          _id: {
+            type: "string",
+          },
+
+          fullName: {
+            type: "string",
+            example: "Admin User",
+          },
+
+          email: {
+            type: "string",
+            example: "admin@example.com",
+          },
+
+          role: {
+            type: "string",
+            example: "admin",
+          },
+        },
+      },
+
+      updatedBy: {
+        type: "object",
+        nullable: true,
+      },
+
+      approvedBy: {
+        type: "object",
+        nullable: true,
+      },
+
+      approvedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
+
+      rejectedBy: {
+        type: "object",
+        nullable: true,
+      },
+
+      rejectedAt: {
+        type: "string",
+        format: "date-time",
+        nullable: true,
+      },
+
+      rejectionReason: {
+        type: "string",
+        nullable: true,
+        example: "Advertisement image does not meet the required guidelines.",
+      },
+
+      createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+
+      updatedAt: {
+        type: "string",
+        format: "date-time",
+      },
+    },
+  },
   RegisterAdminRequest: {
     type: "object",
 

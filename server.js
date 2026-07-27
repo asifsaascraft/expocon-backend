@@ -34,6 +34,7 @@ import exhibitionRoutes from "./routes/exhibitionRoutes.js";
 import conferenceRoutes from "./routes/conferenceRoutes.js";
 import associationRoutes from "./routes/associationRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
+import advertisementRoutes from "./routes/advertisementRoutes.js";
 
 
 // Connect Database
@@ -151,6 +152,7 @@ app.use("/api/exhibitions", exhibitionRoutes);
 app.use("/api/conferences", conferenceRoutes);
 app.use("/api/associations", associationRoutes);
 app.use("/api/contacts", contactRoutes);
+app.use("/api/advertisements", advertisementRoutes);
 
 // app.use("/api/partners", partnerRoutes);
 // app.use("/api/staff", staffRoutes);

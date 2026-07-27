@@ -845,3 +845,69 @@ export const contactResponseExample = {
     updatedAt: "2026-07-25T10:30:00.000Z",
   },
 };
+
+//==============================
+// Advertisement Examples
+//==============================
+
+export const createAdvertisementExample = {
+  advertisementLocationId: "687c9d2ef7b79a3d11111111",
+};
+
+export const updateAdvertisementExample = {
+  advertisementLocationId: "687c9d2ef7b79a3d11111111",
+};
+
+export const rejectAdvertisementExample = {
+  rejectionReason: "Advertisement image does not meet the required guidelines.",
+};
+
+export const uploadAdvertisementLogoExample =
+  "Select an image file (jpg, jpeg, png, webp)";
+
+
+  export const advertisementResponseExample = {
+  success: true,
+  message: "Advertisement fetched successfully.",
+  data: {
+    _id: "68820d5b63ab9f0a12345678",
+
+    advertisementLocationId: {
+      _id: "687c9d2ef7b79a3d11111111",
+      advertisementLocationName: "Homepage Banner",
+    },
+
+    uploadAdvertisementLogo:
+      "https://your-bucket.s3.amazonaws.com/advertisements/logo.png",
+
+    status: "approved",
+
+    rejectionReason: null,
+
+    createdBy: {
+      _id: "687c9d2ef7b79a3d99999999",
+      fullName: "Super Admin",
+      email: "admin@example.com",
+      role: "admin",
+    },
+
+    updatedBy: null,
+
+    approvedBy: {
+      _id: "687c9d2ef7b79a3d99999999",
+      fullName: "Super Admin",
+      email: "admin@example.com",
+      role: "admin",
+    },
+
+    approvedAt: "2026-07-25T10:30:00.000Z",
+
+    rejectedBy: null,
+
+    rejectedAt: null,
+
+    createdAt: "2026-07-25T10:30:00.000Z",
+
+    updatedAt: "2026-07-25T10:30:00.000Z",
+  },
+};

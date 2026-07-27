@@ -18,6 +18,7 @@ import exhibitionPaths from "./exhibition.swagger.js";
 import conferencePaths from "./conference.swagger.js";
 import associationPaths from "./association.swagger.js";
 import contactPaths from "./contact.swagger.js";
+import advertisementPaths from "./advertisement.swagger.js";
 
 // import partnerPaths from "./partner.swagger.js";
 // import staffPaths from "./staff.swagger.js";
@@ -45,6 +46,7 @@ const paths = {
   ...conferencePaths,
   ...associationPaths,
   ...contactPaths,
+  ...advertisementPaths,
 };
 
 export default paths;
