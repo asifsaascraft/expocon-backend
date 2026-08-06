@@ -1,7 +1,5 @@
 import { createClient } from "redis";
 
-console.log("REDIS_URL =", process.env.REDIS_URL);
-
 const redisClient = createClient({
   url: process.env.REDIS_URL || "redis://127.0.0.1:6379",
 });
