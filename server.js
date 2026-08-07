@@ -45,6 +45,9 @@ await connectRedis();
 
 const app = express();
 
+// Trust the first reverse proxy (Nginx)
+app.set("trust proxy", 1);
+
 // Allowed Origins
 const allowedOrigins = [
   "http://localhost:3000",
