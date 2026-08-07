@@ -38,7 +38,6 @@ const VenueSchema = new mongoose.Schema(
       type: String,
       required: [true, "Map link is required."],
       trim: true,
-      maxlength: 255,
     },
     uploadVenuePhoto: {
       type: String,
