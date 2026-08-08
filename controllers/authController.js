@@ -13,6 +13,11 @@ import generateRandomToken from "../utils/generateRandomToken.js";
 import generateUsername from "../utils/generateUsername.js";
 import sendEmail from "../utils/sendEmail.js";
 import checkDuplicateFields from "../utils/checkDuplicateFields.js";
+import {
+  getCache,
+  setCache,
+  deleteCacheByPattern,
+} from "../utils/redisCache.js";
 import { successResponse, errorResponse } from "../utils/response.js";
 
 //=========================
@@ -284,6 +289,9 @@ export const inviteStaff = asyncHandler(async (req, res) => {
 
     createdBy: req.user._id,
   });
+
+  // Clear Staff Redis Cache
+await deleteCacheByPattern("admin-staffs:*");
 
   // Invitation Link
 
