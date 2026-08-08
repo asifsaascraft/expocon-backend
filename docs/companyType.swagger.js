@@ -57,8 +57,7 @@ const companyTypePaths = {
 
       summary: "Get Company Types",
 
-      description:
-        "Get paginated company types with search, sorting and pagination.",
+      description: "Get all company types with search and sorting.",
 
       security: [
         {
@@ -69,62 +68,87 @@ const companyTypePaths = {
       parameters: [
         {
           in: "query",
-          name: "page",
 
-          schema: {
-            type: "integer",
-            default: 1,
-          },
-        },
-
-        {
-          in: "query",
-          name: "limit",
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-
-        {
-          in: "query",
           name: "search",
 
           schema: {
             type: "string",
           },
+
+          description: "Search company types by company type name.",
         },
 
         {
           in: "query",
+
           name: "sortBy",
 
           schema: {
             type: "string",
-            example: "createdAt",
+            example: "companyTypeName",
           },
+
+          description: "Field to sort by.",
         },
 
         {
           in: "query",
+
           name: "order",
 
           schema: {
             type: "string",
             enum: ["asc", "desc"],
-            example: "desc",
+            example: "asc",
           },
+
+          description: "Sorting order.",
         },
       ],
 
       responses: {
         200: {
           description: "Company types fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "Company types fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      $ref: "#/components/schemas/CompanyType",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
 
         401: {
           description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden.",
+        },
+
+        500: {
+          description: "Internal server error.",
         },
       },
     },

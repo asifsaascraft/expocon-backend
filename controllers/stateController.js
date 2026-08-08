@@ -9,11 +9,6 @@ import {
   errorResponse,
 } from "../utils/response.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
-
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
@@ -75,10 +70,6 @@ export const createState = asyncHandler(async (req, res) => {
 // Get States
 //==============================
 export const getStates = asyncHandler(async (req, res) => {
-  // Pagination
-
-  const { page, limit, skip } = getPagination(req);
-
   // Search
 
   const searchQuery = buildSearchQuery(req, [
@@ -103,8 +94,6 @@ export const getStates = asyncHandler(async (req, res) => {
   // Cache Key
 
   const cacheKey = `states:${JSON.stringify({
-    page,
-    limit,
     query,
     sort,
   })}`;
@@ -117,37 +106,19 @@ export const getStates = asyncHandler(async (req, res) => {
     return successResponse(res, {
       message: "States fetched successfully (from cache).",
 
-      data: cachedData.data,
-
-      pagination: cachedData.pagination,
+      data: cachedData,
     });
   }
 
   // MongoDB
 
-  const [states, total] = await Promise.all([
-    State.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
-
-    State.countDocuments(query),
-  ]);
-
-  const pagination = buildPaginationMeta(
-    total,
-    page,
-    limit,
-  );
+  const states = await State.find(query).sort(sort);
 
   // Save Cache
 
   await setCache(
     cacheKey,
-    {
-      data: states,
-      pagination,
-    },
+    states,
     3600,
   );
 
@@ -155,8 +126,6 @@ export const getStates = asyncHandler(async (req, res) => {
     message: "States fetched successfully.",
 
     data: states,
-
-    pagination,
   });
 });
 

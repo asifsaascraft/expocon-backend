@@ -1,7 +1,4 @@
-import {
-  createStateExample,
-  updateStateExample,
-} from "./examples.js";
+import { createStateExample, updateStateExample } from "./examples.js";
 
 const statePaths = {
   //==============================
@@ -62,8 +59,7 @@ const statePaths = {
 
       summary: "Get States",
 
-      description:
-        "Get paginated states with search, sorting and pagination.",
+      description: "Get all states with search and sorting.",
 
       security: [
         {
@@ -75,33 +71,13 @@ const statePaths = {
         {
           in: "query",
 
-          name: "page",
-
-          schema: {
-            type: "integer",
-            default: 1,
-          },
-        },
-
-        {
-          in: "query",
-
-          name: "limit",
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-
-        {
-          in: "query",
-
           name: "search",
 
           schema: {
             type: "string",
           },
+
+          description: "Search states by state name.",
         },
 
         {
@@ -111,8 +87,10 @@ const statePaths = {
 
           schema: {
             type: "string",
-            example: "createdAt",
+            example: "state",
           },
+
+          description: "Field to sort by.",
         },
 
         {
@@ -123,18 +101,56 @@ const statePaths = {
           schema: {
             type: "string",
             enum: ["asc", "desc"],
-            example: "desc",
+            example: "asc",
           },
+
+          description: "Sorting order.",
         },
       ],
 
       responses: {
         200: {
           description: "States fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "States fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      $ref: "#/components/schemas/State",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
 
         401: {
           description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden.",
+        },
+
+        500: {
+          description: "Internal server error.",
         },
       },
     },

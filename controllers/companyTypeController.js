@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import CompanyType from "../models/CompanyType.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { successResponse, errorResponse } from "../utils/response.js";
-import { getPagination, buildPaginationMeta } from "../utils/pagination.js";
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
@@ -63,28 +62,30 @@ export const createCompanyType = asyncHandler(async (req, res) => {
 // Get Company Types
 //==============================
 export const getCompanyTypes = asyncHandler(async (req, res) => {
-  // Pagination
-  const { page, limit, skip } = getPagination(req);
-
   // Search
-  const searchQuery = buildSearchQuery(req, ["companyTypeName"]);
+
+  const searchQuery = buildSearchQuery(req, [
+    "companyTypeName",
+  ]);
 
   // Filters
+
   const filtersQuery = buildFiltersQuery(req, []);
 
   // Final Query
+
   const query = {
     ...searchQuery,
     ...filtersQuery,
   };
 
   // Sorting
+
   const sort = buildSortQuery(req);
 
   // Cache Key
+
   const cacheKey = `company-types:${JSON.stringify({
-    page,
-    limit,
     query,
     sort,
   })}`;
@@ -99,9 +100,7 @@ export const getCompanyTypes = asyncHandler(async (req, res) => {
     return successResponse(res, {
       message: "Company types fetched successfully (from cache).",
 
-      data: cachedData.data,
-
-      pagination: cachedData.pagination,
+      data: cachedData,
     });
   }
 
@@ -109,13 +108,7 @@ export const getCompanyTypes = asyncHandler(async (req, res) => {
   // MongoDB
   // ==========================
 
-  const [companyTypes, total] = await Promise.all([
-    CompanyType.find(query).sort(sort).skip(skip).limit(limit),
-
-    CompanyType.countDocuments(query),
-  ]);
-
-  const pagination = buildPaginationMeta(total, page, limit);
+  const companyTypes = await CompanyType.find(query).sort(sort);
 
   // ==========================
   // Save into Redis
@@ -123,10 +116,7 @@ export const getCompanyTypes = asyncHandler(async (req, res) => {
 
   await setCache(
     cacheKey,
-    {
-      data: companyTypes,
-      pagination,
-    },
+    companyTypes,
     3600, // 1 hour
   );
 
@@ -134,8 +124,6 @@ export const getCompanyTypes = asyncHandler(async (req, res) => {
     message: "Company types fetched successfully.",
 
     data: companyTypes,
-
-    pagination,
   });
 });
 
