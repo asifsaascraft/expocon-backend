@@ -9,11 +9,6 @@ import {
   errorResponse,
 } from "../utils/response.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
-
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
@@ -75,10 +70,6 @@ export const createInterestedAs = asyncHandler(async (req, res) => {
 // Get Interested As
 //==============================
 export const getInterestedAs = asyncHandler(async (req, res) => {
-  // Pagination
-
-  const { page, limit, skip } = getPagination(req);
-
   // Search
 
   const searchQuery = buildSearchQuery(req, [
@@ -103,8 +94,6 @@ export const getInterestedAs = asyncHandler(async (req, res) => {
   // Cache Key
 
   const cacheKey = `interested-as:${JSON.stringify({
-    page,
-    limit,
     query,
     sort,
   })}`;
@@ -118,37 +107,20 @@ export const getInterestedAs = asyncHandler(async (req, res) => {
       message:
         "Interested As fetched successfully (from cache).",
 
-      data: cachedData.data,
-
-      pagination: cachedData.pagination,
+      data: cachedData,
     });
   }
 
   // MongoDB
 
-  const [interestedAsList, total] = await Promise.all([
-    InterestedAs.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
-
-    InterestedAs.countDocuments(query),
-  ]);
-
-  const pagination = buildPaginationMeta(
-    total,
-    page,
-    limit,
-  );
+  const interestedAsList =
+    await InterestedAs.find(query).sort(sort);
 
   // Save Cache
 
   await setCache(
     cacheKey,
-    {
-      data: interestedAsList,
-      pagination,
-    },
+    interestedAsList,
     3600,
   );
 
@@ -156,8 +128,6 @@ export const getInterestedAs = asyncHandler(async (req, res) => {
     message: "Interested As fetched successfully.",
 
     data: interestedAsList,
-
-    pagination,
   });
 });
 

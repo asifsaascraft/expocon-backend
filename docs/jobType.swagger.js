@@ -1,7 +1,4 @@
-import {
-  createJobTypeExample,
-  updateJobTypeExample,
-} from "./examples.js";
+import { createJobTypeExample, updateJobTypeExample } from "./examples.js";
 
 const jobTypePaths = {
   //==============================
@@ -13,8 +10,7 @@ const jobTypePaths = {
 
       summary: "Create Job Type",
 
-      description:
-        "Create a new job type. Admin only.",
+      description: "Create a new job type. Admin only.",
 
       security: [
         {
@@ -28,8 +24,7 @@ const jobTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/CreateJobTypeRequest",
+              $ref: "#/components/schemas/CreateJobTypeRequest",
             },
 
             example: createJobTypeExample,
@@ -39,8 +34,7 @@ const jobTypePaths = {
 
       responses: {
         201: {
-          description:
-            "Job type created successfully.",
+          description: "Job type created successfully.",
         },
 
         400: {
@@ -52,8 +46,7 @@ const jobTypePaths = {
         },
 
         409: {
-          description:
-            "Job type already exists.",
+          description: "Job type already exists.",
         },
       },
     },
@@ -66,8 +59,7 @@ const jobTypePaths = {
 
       summary: "Get Job Types",
 
-      description:
-        "Get paginated job types with search, sorting and pagination.",
+      description: "Get all job types with search and sorting.",
 
       security: [
         {
@@ -79,33 +71,13 @@ const jobTypePaths = {
         {
           in: "query",
 
-          name: "page",
-
-          schema: {
-            type: "integer",
-            default: 1,
-          },
-        },
-
-        {
-          in: "query",
-
-          name: "limit",
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-
-        {
-          in: "query",
-
           name: "search",
 
           schema: {
             type: "string",
           },
+
+          description: "Search job types by job type name.",
         },
 
         {
@@ -115,8 +87,10 @@ const jobTypePaths = {
 
           schema: {
             type: "string",
-            example: "createdAt",
+            example: "jobTypeName",
           },
+
+          description: "Field to sort by.",
         },
 
         {
@@ -127,19 +101,56 @@ const jobTypePaths = {
           schema: {
             type: "string",
             enum: ["asc", "desc"],
-            example: "desc",
+            example: "asc",
           },
+
+          description: "Sorting order.",
         },
       ],
 
       responses: {
         200: {
-          description:
-            "Job types fetched successfully.",
+          description: "Job types fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "Job types fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      $ref: "#/components/schemas/JobType",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
 
         401: {
           description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden.",
+        },
+
+        500: {
+          description: "Internal server error.",
         },
       },
     },
@@ -179,13 +190,11 @@ const jobTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Job type fetched successfully.",
+          description: "Job type fetched successfully.",
         },
 
         404: {
-          description:
-            "Job type not found.",
+          description: "Job type not found.",
         },
       },
     },
@@ -224,8 +233,7 @@ const jobTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/UpdateJobTypeRequest",
+              $ref: "#/components/schemas/UpdateJobTypeRequest",
             },
 
             example: updateJobTypeExample,
@@ -235,18 +243,15 @@ const jobTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Job type updated successfully.",
+          description: "Job type updated successfully.",
         },
 
         404: {
-          description:
-            "Job type not found.",
+          description: "Job type not found.",
         },
 
         409: {
-          description:
-            "Job type already exists.",
+          description: "Job type already exists.",
         },
       },
     },
@@ -281,13 +286,11 @@ const jobTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Job type deleted successfully.",
+          description: "Job type deleted successfully.",
         },
 
         404: {
-          description:
-            "Job type not found.",
+          description: "Job type not found.",
         },
       },
     },

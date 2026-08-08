@@ -9,11 +9,6 @@ import {
   errorResponse,
 } from "../utils/response.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
-
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
@@ -82,101 +77,71 @@ export const createConferenceSegment = asyncHandler(async (req, res) => {
 //==============================
 // Get Conference Segments
 //==============================
-export const getConferenceSegments = asyncHandler(async (req, res) => {
-  // Pagination
+export const getConferenceSegments =
+  asyncHandler(async (req, res) => {
+    // Search
 
-  const { page, limit, skip } =
-    getPagination(req);
-
-  // Search
-
-  const searchQuery = buildSearchQuery(req, [
-    "conferenceSegmentName",
-  ]);
-
-  // Filters
-
-  const filtersQuery = buildFiltersQuery(
-    req,
-    [],
-  );
-
-  // Final Query
-
-  const query = {
-    ...searchQuery,
-    ...filtersQuery,
-  };
-
-  // Sorting
-
-  const sort = buildSortQuery(req);
-
-  // Cache Key
-
-  const cacheKey = `conference-segments:${JSON.stringify(
-    {
-      page,
-      limit,
-      query,
-      sort,
-    },
-  )}`;
-
-  // Check Redis
-
-  const cachedData = await getCache(cacheKey);
-
-  if (cachedData) {
-    return successResponse(res, {
-      message:
-        "Conference segments fetched successfully (from cache).",
-
-      data: cachedData.data,
-
-      pagination: cachedData.pagination,
-    });
-  }
-
-  // MongoDB
-
-  const [conferenceSegments, total] =
-    await Promise.all([
-      ConferenceSegment.find(query)
-        .sort(sort)
-        .skip(skip)
-        .limit(limit),
-
-      ConferenceSegment.countDocuments(query),
+    const searchQuery = buildSearchQuery(req, [
+      "conferenceSegmentName",
     ]);
 
-  const pagination =
-    buildPaginationMeta(
-      total,
-      page,
-      limit,
+    // Filters
+
+    const filtersQuery =
+      buildFiltersQuery(req, []);
+
+    // Final Query
+
+    const query = {
+      ...searchQuery,
+      ...filtersQuery,
+    };
+
+    // Sorting
+
+    const sort = buildSortQuery(req);
+
+    // Cache Key
+
+    const cacheKey = `conference-segments:${JSON.stringify({
+      query,
+      sort,
+    })}`;
+
+    // Check Redis
+
+    const cachedData =
+      await getCache(cacheKey);
+
+    if (cachedData) {
+      return successResponse(res, {
+        message:
+          "Conference segments fetched successfully (from cache).",
+
+        data: cachedData,
+      });
+    }
+
+    // MongoDB
+
+    const conferenceSegments =
+      await ConferenceSegment.find(query).sort(sort);
+
+    // Save Cache
+
+    await setCache(
+      cacheKey,
+      conferenceSegments,
+      3600,
     );
 
-  // Save Cache
+    return successResponse(res, {
+      message:
+        "Conference segments fetched successfully.",
 
-  await setCache(
-    cacheKey,
-    {
       data: conferenceSegments,
-      pagination,
-    },
-    3600,
-  );
-
-  return successResponse(res, {
-    message:
-      "Conference segments fetched successfully.",
-
-    data: conferenceSegments,
-
-    pagination,
+    });
   });
-});
 
 //==============================
 // Get Conference Segment By ID

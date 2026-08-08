@@ -13,8 +13,7 @@ const associationTypePaths = {
 
       summary: "Create Association Type",
 
-      description:
-        "Create a new association type. Admin only.",
+      description: "Create a new association type. Admin only.",
 
       security: [
         {
@@ -28,8 +27,7 @@ const associationTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/CreateAssociationTypeRequest",
+              $ref: "#/components/schemas/CreateAssociationTypeRequest",
             },
 
             example: createAssociationTypeExample,
@@ -39,8 +37,7 @@ const associationTypePaths = {
 
       responses: {
         201: {
-          description:
-            "Association type created successfully.",
+          description: "Association type created successfully.",
         },
 
         400: {
@@ -52,8 +49,7 @@ const associationTypePaths = {
         },
 
         409: {
-          description:
-            "Association type already exists.",
+          description: "Association type already exists.",
         },
       },
     },
@@ -66,8 +62,7 @@ const associationTypePaths = {
 
       summary: "Get Association Types",
 
-      description:
-        "Get paginated association types with search, sorting and pagination.",
+      description: "Get all association types with search and sorting.",
 
       security: [
         {
@@ -79,33 +74,13 @@ const associationTypePaths = {
         {
           in: "query",
 
-          name: "page",
-
-          schema: {
-            type: "integer",
-            default: 1,
-          },
-        },
-
-        {
-          in: "query",
-
-          name: "limit",
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-
-        {
-          in: "query",
-
           name: "search",
 
           schema: {
             type: "string",
           },
+
+          description: "Search association types by association type name.",
         },
 
         {
@@ -115,8 +90,10 @@ const associationTypePaths = {
 
           schema: {
             type: "string",
-            example: "createdAt",
+            example: "associationTypeName",
           },
+
+          description: "Field to sort by.",
         },
 
         {
@@ -127,19 +104,56 @@ const associationTypePaths = {
           schema: {
             type: "string",
             enum: ["asc", "desc"],
-            example: "desc",
+            example: "asc",
           },
+
+          description: "Sorting order.",
         },
       ],
 
       responses: {
         200: {
-          description:
-            "Association types fetched successfully.",
+          description: "Association types fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "Association types fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      $ref: "#/components/schemas/AssociationType",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
 
         401: {
           description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden.",
+        },
+
+        500: {
+          description: "Internal server error.",
         },
       },
     },
@@ -179,13 +193,11 @@ const associationTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Association type fetched successfully.",
+          description: "Association type fetched successfully.",
         },
 
         404: {
-          description:
-            "Association type not found.",
+          description: "Association type not found.",
         },
       },
     },
@@ -224,8 +236,7 @@ const associationTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/UpdateAssociationTypeRequest",
+              $ref: "#/components/schemas/UpdateAssociationTypeRequest",
             },
 
             example: updateAssociationTypeExample,
@@ -235,18 +246,15 @@ const associationTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Association type updated successfully.",
+          description: "Association type updated successfully.",
         },
 
         404: {
-          description:
-            "Association type not found.",
+          description: "Association type not found.",
         },
 
         409: {
-          description:
-            "Association type already exists.",
+          description: "Association type already exists.",
         },
       },
     },
@@ -281,13 +289,11 @@ const associationTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Association type deleted successfully.",
+          description: "Association type deleted successfully.",
         },
 
         404: {
-          description:
-            "Association type not found.",
+          description: "Association type not found.",
         },
       },
     },

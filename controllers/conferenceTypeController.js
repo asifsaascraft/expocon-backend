@@ -9,11 +9,6 @@ import {
   errorResponse,
 } from "../utils/response.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
-
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
@@ -83,11 +78,6 @@ export const createConferenceType = asyncHandler(async (req, res) => {
 // Get Conference Types
 //==============================
 export const getConferenceTypes = asyncHandler(async (req, res) => {
-  // Pagination
-
-  const { page, limit, skip } =
-    getPagination(req);
-
   // Search
 
   const searchQuery = buildSearchQuery(req, [
@@ -116,8 +106,6 @@ export const getConferenceTypes = asyncHandler(async (req, res) => {
 
   const cacheKey = `conference-types:${JSON.stringify(
     {
-      page,
-      limit,
       query,
       sort,
     },
@@ -132,39 +120,20 @@ export const getConferenceTypes = asyncHandler(async (req, res) => {
       message:
         "Conference types fetched successfully (from cache).",
 
-      data: cachedData.data,
-
-      pagination: cachedData.pagination,
+      data: cachedData,
     });
   }
 
   // MongoDB
 
-  const [conferenceTypes, total] =
-    await Promise.all([
-      ConferenceType.find(query)
-        .sort(sort)
-        .skip(skip)
-        .limit(limit),
-
-      ConferenceType.countDocuments(query),
-    ]);
-
-  const pagination =
-    buildPaginationMeta(
-      total,
-      page,
-      limit,
-    );
+  const conferenceTypes =
+    await ConferenceType.find(query).sort(sort);
 
   // Save Cache
 
   await setCache(
     cacheKey,
-    {
-      data: conferenceTypes,
-      pagination,
-    },
+    conferenceTypes,
     3600,
   );
 
@@ -173,8 +142,6 @@ export const getConferenceTypes = asyncHandler(async (req, res) => {
       "Conference types fetched successfully.",
 
     data: conferenceTypes,
-
-    pagination,
   });
 });
 

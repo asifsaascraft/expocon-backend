@@ -1,7 +1,4 @@
-import {
-  createEventTypeExample,
-  updateEventTypeExample,
-} from "./examples.js";
+import { createEventTypeExample, updateEventTypeExample } from "./examples.js";
 
 const eventTypePaths = {
   //==============================
@@ -13,8 +10,7 @@ const eventTypePaths = {
 
       summary: "Create Event Type",
 
-      description:
-        "Create a new event type. Admin only.",
+      description: "Create a new event type. Admin only.",
 
       security: [
         {
@@ -28,8 +24,7 @@ const eventTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/CreateEventTypeRequest",
+              $ref: "#/components/schemas/CreateEventTypeRequest",
             },
 
             example: createEventTypeExample,
@@ -39,8 +34,7 @@ const eventTypePaths = {
 
       responses: {
         201: {
-          description:
-            "Event type created successfully.",
+          description: "Event type created successfully.",
         },
 
         400: {
@@ -52,8 +46,7 @@ const eventTypePaths = {
         },
 
         409: {
-          description:
-            "Event type already exists.",
+          description: "Event type already exists.",
         },
       },
     },
@@ -66,8 +59,7 @@ const eventTypePaths = {
 
       summary: "Get Event Types",
 
-      description:
-        "Get paginated event types with search, sorting and pagination.",
+      description: "Get all event types with search and sorting.",
 
       security: [
         {
@@ -79,33 +71,13 @@ const eventTypePaths = {
         {
           in: "query",
 
-          name: "page",
-
-          schema: {
-            type: "integer",
-            default: 1,
-          },
-        },
-
-        {
-          in: "query",
-
-          name: "limit",
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-
-        {
-          in: "query",
-
           name: "search",
 
           schema: {
             type: "string",
           },
+
+          description: "Search event types by event type name.",
         },
 
         {
@@ -115,8 +87,10 @@ const eventTypePaths = {
 
           schema: {
             type: "string",
-            example: "createdAt",
+            example: "eventTypeName",
           },
+
+          description: "Field to sort by.",
         },
 
         {
@@ -127,19 +101,56 @@ const eventTypePaths = {
           schema: {
             type: "string",
             enum: ["asc", "desc"],
-            example: "desc",
+            example: "asc",
           },
+
+          description: "Sorting order.",
         },
       ],
 
       responses: {
         200: {
-          description:
-            "Event types fetched successfully.",
+          description: "Event types fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "Event types fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      $ref: "#/components/schemas/EventType",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
 
         401: {
           description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden.",
+        },
+
+        500: {
+          description: "Internal server error.",
         },
       },
     },
@@ -179,13 +190,11 @@ const eventTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Event type fetched successfully.",
+          description: "Event type fetched successfully.",
         },
 
         404: {
-          description:
-            "Event type not found.",
+          description: "Event type not found.",
         },
       },
     },
@@ -224,8 +233,7 @@ const eventTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/UpdateEventTypeRequest",
+              $ref: "#/components/schemas/UpdateEventTypeRequest",
             },
 
             example: updateEventTypeExample,
@@ -235,18 +243,15 @@ const eventTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Event type updated successfully.",
+          description: "Event type updated successfully.",
         },
 
         404: {
-          description:
-            "Event type not found.",
+          description: "Event type not found.",
         },
 
         409: {
-          description:
-            "Event type already exists.",
+          description: "Event type already exists.",
         },
       },
     },
@@ -281,13 +286,11 @@ const eventTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Event type deleted successfully.",
+          description: "Event type deleted successfully.",
         },
 
         404: {
-          description:
-            "Event type not found.",
+          description: "Event type not found.",
         },
       },
     },

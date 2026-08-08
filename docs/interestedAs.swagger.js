@@ -13,8 +13,7 @@ const interestedAsPaths = {
 
       summary: "Create Interested As",
 
-      description:
-        "Create a new Interested As. Admin only.",
+      description: "Create a new Interested As. Admin only.",
 
       security: [
         {
@@ -28,8 +27,7 @@ const interestedAsPaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/CreateInterestedAsRequest",
+              $ref: "#/components/schemas/CreateInterestedAsRequest",
             },
 
             example: createInterestedAsExample,
@@ -39,8 +37,7 @@ const interestedAsPaths = {
 
       responses: {
         201: {
-          description:
-            "Interested As created successfully.",
+          description: "Interested As created successfully.",
         },
 
         400: {
@@ -52,8 +49,7 @@ const interestedAsPaths = {
         },
 
         409: {
-          description:
-            "Interested As already exists.",
+          description: "Interested As already exists.",
         },
       },
     },
@@ -66,8 +62,7 @@ const interestedAsPaths = {
 
       summary: "Get Interested As",
 
-      description:
-        "Get paginated Interested As with search, sorting and pagination.",
+      description: "Get all Interested As with search and sorting.",
 
       security: [
         {
@@ -79,33 +74,13 @@ const interestedAsPaths = {
         {
           in: "query",
 
-          name: "page",
-
-          schema: {
-            type: "integer",
-            default: 1,
-          },
-        },
-
-        {
-          in: "query",
-
-          name: "limit",
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-
-        {
-          in: "query",
-
           name: "search",
 
           schema: {
             type: "string",
           },
+
+          description: "Search Interested As by name.",
         },
 
         {
@@ -115,8 +90,10 @@ const interestedAsPaths = {
 
           schema: {
             type: "string",
-            example: "createdAt",
+            example: "interestedAsName",
           },
+
+          description: "Field to sort by.",
         },
 
         {
@@ -127,19 +104,56 @@ const interestedAsPaths = {
           schema: {
             type: "string",
             enum: ["asc", "desc"],
-            example: "desc",
+            example: "asc",
           },
+
+          description: "Sorting order.",
         },
       ],
 
       responses: {
         200: {
-          description:
-            "Interested As fetched successfully.",
+          description: "Interested As fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "Interested As fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      $ref: "#/components/schemas/InterestedAs",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
 
         401: {
           description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden.",
+        },
+
+        500: {
+          description: "Internal server error.",
         },
       },
     },
@@ -179,13 +193,11 @@ const interestedAsPaths = {
 
       responses: {
         200: {
-          description:
-            "Interested As fetched successfully.",
+          description: "Interested As fetched successfully.",
         },
 
         404: {
-          description:
-            "Interested As not found.",
+          description: "Interested As not found.",
         },
       },
     },
@@ -224,30 +236,25 @@ const interestedAsPaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/UpdateInterestedAsRequest",
+              $ref: "#/components/schemas/UpdateInterestedAsRequest",
             },
 
-            example:
-              updateInterestedAsExample,
+            example: updateInterestedAsExample,
           },
         },
       },
 
       responses: {
         200: {
-          description:
-            "Interested As updated successfully.",
+          description: "Interested As updated successfully.",
         },
 
         404: {
-          description:
-            "Interested As not found.",
+          description: "Interested As not found.",
         },
 
         409: {
-          description:
-            "Interested As already exists.",
+          description: "Interested As already exists.",
         },
       },
     },
@@ -282,13 +289,11 @@ const interestedAsPaths = {
 
       responses: {
         200: {
-          description:
-            "Interested As deleted successfully.",
+          description: "Interested As deleted successfully.",
         },
 
         404: {
-          description:
-            "Interested As not found.",
+          description: "Interested As not found.",
         },
       },
     },

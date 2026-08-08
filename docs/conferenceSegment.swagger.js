@@ -13,8 +13,7 @@ const conferenceSegmentPaths = {
 
       summary: "Create Conference Segment",
 
-      description:
-        "Create a new conference segment. Admin only.",
+      description: "Create a new conference segment. Admin only.",
 
       security: [
         {
@@ -28,8 +27,7 @@ const conferenceSegmentPaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/CreateConferenceSegmentRequest",
+              $ref: "#/components/schemas/CreateConferenceSegmentRequest",
             },
 
             example: createConferenceSegmentExample,
@@ -39,8 +37,7 @@ const conferenceSegmentPaths = {
 
       responses: {
         201: {
-          description:
-            "Conference segment created successfully.",
+          description: "Conference segment created successfully.",
         },
 
         400: {
@@ -52,8 +49,7 @@ const conferenceSegmentPaths = {
         },
 
         409: {
-          description:
-            "Conference segment already exists.",
+          description: "Conference segment already exists.",
         },
       },
     },
@@ -66,8 +62,7 @@ const conferenceSegmentPaths = {
 
       summary: "Get Conference Segments",
 
-      description:
-        "Get paginated conference segments with search, sorting and pagination.",
+      description: "Get all conference segments with search and sorting.",
 
       security: [
         {
@@ -79,33 +74,13 @@ const conferenceSegmentPaths = {
         {
           in: "query",
 
-          name: "page",
-
-          schema: {
-            type: "integer",
-            default: 1,
-          },
-        },
-
-        {
-          in: "query",
-
-          name: "limit",
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-
-        {
-          in: "query",
-
           name: "search",
 
           schema: {
             type: "string",
           },
+
+          description: "Search conference segments by segment name.",
         },
 
         {
@@ -115,8 +90,10 @@ const conferenceSegmentPaths = {
 
           schema: {
             type: "string",
-            example: "createdAt",
+            example: "conferenceSegmentName",
           },
+
+          description: "Field to sort by.",
         },
 
         {
@@ -127,19 +104,56 @@ const conferenceSegmentPaths = {
           schema: {
             type: "string",
             enum: ["asc", "desc"],
-            example: "desc",
+            example: "asc",
           },
+
+          description: "Sorting order.",
         },
       ],
 
       responses: {
         200: {
-          description:
-            "Conference segments fetched successfully.",
+          description: "Conference segments fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "Conference segments fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      $ref: "#/components/schemas/ConferenceSegment",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
 
         401: {
           description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden.",
+        },
+
+        500: {
+          description: "Internal server error.",
         },
       },
     },
@@ -179,13 +193,11 @@ const conferenceSegmentPaths = {
 
       responses: {
         200: {
-          description:
-            "Conference segment fetched successfully.",
+          description: "Conference segment fetched successfully.",
         },
 
         404: {
-          description:
-            "Conference segment not found.",
+          description: "Conference segment not found.",
         },
       },
     },
@@ -224,30 +236,25 @@ const conferenceSegmentPaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/UpdateConferenceSegmentRequest",
+              $ref: "#/components/schemas/UpdateConferenceSegmentRequest",
             },
 
-            example:
-              updateConferenceSegmentExample,
+            example: updateConferenceSegmentExample,
           },
         },
       },
 
       responses: {
         200: {
-          description:
-            "Conference segment updated successfully.",
+          description: "Conference segment updated successfully.",
         },
 
         404: {
-          description:
-            "Conference segment not found.",
+          description: "Conference segment not found.",
         },
 
         409: {
-          description:
-            "Conference segment already exists.",
+          description: "Conference segment already exists.",
         },
       },
     },
@@ -282,13 +289,11 @@ const conferenceSegmentPaths = {
 
       responses: {
         200: {
-          description:
-            "Conference segment deleted successfully.",
+          description: "Conference segment deleted successfully.",
         },
 
         404: {
-          description:
-            "Conference segment not found.",
+          description: "Conference segment not found.",
         },
       },
     },

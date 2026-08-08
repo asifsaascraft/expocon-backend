@@ -9,11 +9,6 @@ import {
   errorResponse,
 } from "../utils/response.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
-
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
@@ -75,10 +70,6 @@ export const createJobType = asyncHandler(async (req, res) => {
 // Get Job Types
 //==============================
 export const getJobTypes = asyncHandler(async (req, res) => {
-  // Pagination
-
-  const { page, limit, skip } = getPagination(req);
-
   // Search
 
   const searchQuery = buildSearchQuery(req, [
@@ -103,8 +94,6 @@ export const getJobTypes = asyncHandler(async (req, res) => {
   // Cache Key
 
   const cacheKey = `job-types:${JSON.stringify({
-    page,
-    limit,
     query,
     sort,
   })}`;
@@ -118,37 +107,20 @@ export const getJobTypes = asyncHandler(async (req, res) => {
       message:
         "Job types fetched successfully (from cache).",
 
-      data: cachedData.data,
-
-      pagination: cachedData.pagination,
+      data: cachedData,
     });
   }
 
   // MongoDB
 
-  const [jobTypes, total] = await Promise.all([
-    JobType.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
-
-    JobType.countDocuments(query),
-  ]);
-
-  const pagination = buildPaginationMeta(
-    total,
-    page,
-    limit,
-  );
+  const jobTypes =
+    await JobType.find(query).sort(sort);
 
   // Save Cache
 
   await setCache(
     cacheKey,
-    {
-      data: jobTypes,
-      pagination,
-    },
+    jobTypes,
     3600,
   );
 
@@ -156,8 +128,6 @@ export const getJobTypes = asyncHandler(async (req, res) => {
     message: "Job types fetched successfully.",
 
     data: jobTypes,
-
-    pagination,
   });
 });
 

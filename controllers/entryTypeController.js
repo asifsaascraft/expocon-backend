@@ -9,11 +9,6 @@ import {
   errorResponse,
 } from "../utils/response.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
-
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
@@ -75,10 +70,6 @@ export const createEntryType = asyncHandler(async (req, res) => {
 // Get Entry Types
 //==============================
 export const getEntryTypes = asyncHandler(async (req, res) => {
-  // Pagination
-
-  const { page, limit, skip } = getPagination(req);
-
   // Search
 
   const searchQuery = buildSearchQuery(req, [
@@ -103,8 +94,6 @@ export const getEntryTypes = asyncHandler(async (req, res) => {
   // Cache Key
 
   const cacheKey = `entry-types:${JSON.stringify({
-    page,
-    limit,
     query,
     sort,
   })}`;
@@ -118,46 +107,28 @@ export const getEntryTypes = asyncHandler(async (req, res) => {
       message:
         "Entry types fetched successfully (from cache).",
 
-      data: cachedData.data,
-
-      pagination: cachedData.pagination,
+      data: cachedData,
     });
   }
 
   // MongoDB
 
-  const [entryTypes, total] = await Promise.all([
-    EntryType.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
-
-    EntryType.countDocuments(query),
-  ]);
-
-  const pagination = buildPaginationMeta(
-    total,
-    page,
-    limit,
-  );
+  const entryTypes =
+    await EntryType.find(query).sort(sort);
 
   // Save Cache
 
   await setCache(
     cacheKey,
-    {
-      data: entryTypes,
-      pagination,
-    },
+    entryTypes,
     3600,
   );
 
   return successResponse(res, {
-    message: "Entry types fetched successfully.",
+    message:
+      "Entry types fetched successfully.",
 
     data: entryTypes,
-
-    pagination,
   });
 });
 

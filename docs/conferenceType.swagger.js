@@ -13,8 +13,7 @@ const conferenceTypePaths = {
 
       summary: "Create Conference Type",
 
-      description:
-        "Create a new conference type. Admin only.",
+      description: "Create a new conference type. Admin only.",
 
       security: [
         {
@@ -28,8 +27,7 @@ const conferenceTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/CreateConferenceTypeRequest",
+              $ref: "#/components/schemas/CreateConferenceTypeRequest",
             },
 
             example: createConferenceTypeExample,
@@ -39,8 +37,7 @@ const conferenceTypePaths = {
 
       responses: {
         201: {
-          description:
-            "Conference type created successfully.",
+          description: "Conference type created successfully.",
         },
 
         400: {
@@ -52,8 +49,7 @@ const conferenceTypePaths = {
         },
 
         409: {
-          description:
-            "Conference type already exists.",
+          description: "Conference type already exists.",
         },
       },
     },
@@ -66,8 +62,7 @@ const conferenceTypePaths = {
 
       summary: "Get Conference Types",
 
-      description:
-        "Get paginated conference types with search, sorting and pagination.",
+      description: "Get all conference types with search and sorting.",
 
       security: [
         {
@@ -79,33 +74,13 @@ const conferenceTypePaths = {
         {
           in: "query",
 
-          name: "page",
-
-          schema: {
-            type: "integer",
-            default: 1,
-          },
-        },
-
-        {
-          in: "query",
-
-          name: "limit",
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-
-        {
-          in: "query",
-
           name: "search",
 
           schema: {
             type: "string",
           },
+
+          description: "Search conference types by conference type name.",
         },
 
         {
@@ -115,8 +90,10 @@ const conferenceTypePaths = {
 
           schema: {
             type: "string",
-            example: "createdAt",
+            example: "conferenceTypeName",
           },
+
+          description: "Field to sort by.",
         },
 
         {
@@ -126,20 +103,61 @@ const conferenceTypePaths = {
 
           schema: {
             type: "string",
+
             enum: ["asc", "desc"],
-            example: "desc",
+
+            example: "asc",
           },
+
+          description: "Sorting order.",
         },
       ],
 
       responses: {
         200: {
-          description:
-            "Conference types fetched successfully.",
+          description: "Conference types fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+
+                    example: "Conference types fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      $ref: "#/components/schemas/ConferenceType",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
 
         401: {
           description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden.",
+        },
+
+        500: {
+          description: "Internal server error.",
         },
       },
     },
@@ -179,13 +197,11 @@ const conferenceTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Conference type fetched successfully.",
+          description: "Conference type fetched successfully.",
         },
 
         404: {
-          description:
-            "Conference type not found.",
+          description: "Conference type not found.",
         },
       },
     },
@@ -224,30 +240,25 @@ const conferenceTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/UpdateConferenceTypeRequest",
+              $ref: "#/components/schemas/UpdateConferenceTypeRequest",
             },
 
-            example:
-              updateConferenceTypeExample,
+            example: updateConferenceTypeExample,
           },
         },
       },
 
       responses: {
         200: {
-          description:
-            "Conference type updated successfully.",
+          description: "Conference type updated successfully.",
         },
 
         404: {
-          description:
-            "Conference type not found.",
+          description: "Conference type not found.",
         },
 
         409: {
-          description:
-            "Conference type already exists.",
+          description: "Conference type already exists.",
         },
       },
     },
@@ -282,13 +293,11 @@ const conferenceTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Conference type deleted successfully.",
+          description: "Conference type deleted successfully.",
         },
 
         404: {
-          description:
-            "Conference type not found.",
+          description: "Conference type not found.",
         },
       },
     },

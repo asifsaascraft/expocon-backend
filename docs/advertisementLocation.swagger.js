@@ -13,8 +13,7 @@ const advertisementLocationPaths = {
 
       summary: "Create Advertisement Location",
 
-      description:
-        "Create a new advertisement location. Admin only.",
+      description: "Create a new advertisement location. Admin only.",
 
       security: [
         {
@@ -28,20 +27,17 @@ const advertisementLocationPaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/CreateAdvertisementLocationRequest",
+              $ref: "#/components/schemas/CreateAdvertisementLocationRequest",
             },
 
-            example:
-              createAdvertisementLocationExample,
+            example: createAdvertisementLocationExample,
           },
         },
       },
 
       responses: {
         201: {
-          description:
-            "Advertisement location created successfully.",
+          description: "Advertisement location created successfully.",
         },
 
         400: {
@@ -53,8 +49,7 @@ const advertisementLocationPaths = {
         },
 
         409: {
-          description:
-            "Advertisement location already exists.",
+          description: "Advertisement location already exists.",
         },
       },
     },
@@ -67,8 +62,7 @@ const advertisementLocationPaths = {
 
       summary: "Get Advertisement Locations",
 
-      description:
-        "Get paginated advertisement locations with search, sorting and pagination.",
+      description: "Get all advertisement locations with search and sorting.",
 
       security: [
         {
@@ -80,33 +74,13 @@ const advertisementLocationPaths = {
         {
           in: "query",
 
-          name: "page",
-
-          schema: {
-            type: "integer",
-            default: 1,
-          },
-        },
-
-        {
-          in: "query",
-
-          name: "limit",
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-
-        {
-          in: "query",
-
           name: "search",
 
           schema: {
             type: "string",
           },
+
+          description: "Search advertisement locations by location name.",
         },
 
         {
@@ -116,8 +90,10 @@ const advertisementLocationPaths = {
 
           schema: {
             type: "string",
-            example: "createdAt",
+            example: "advertisementLocationName",
           },
+
+          description: "Field to sort by.",
         },
 
         {
@@ -128,19 +104,56 @@ const advertisementLocationPaths = {
           schema: {
             type: "string",
             enum: ["asc", "desc"],
-            example: "desc",
+            example: "asc",
           },
+
+          description: "Sorting order.",
         },
       ],
 
       responses: {
         200: {
-          description:
-            "Advertisement locations fetched successfully.",
+          description: "Advertisement locations fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "Advertisement Locations fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      $ref: "#/components/schemas/AdvertisementLocation",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
 
         401: {
           description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden.",
+        },
+
+        500: {
+          description: "Internal server error.",
         },
       },
     },
@@ -180,13 +193,11 @@ const advertisementLocationPaths = {
 
       responses: {
         200: {
-          description:
-            "Advertisement location fetched successfully.",
+          description: "Advertisement location fetched successfully.",
         },
 
         404: {
-          description:
-            "Advertisement location not found.",
+          description: "Advertisement location not found.",
         },
       },
     },
@@ -225,30 +236,25 @@ const advertisementLocationPaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/UpdateAdvertisementLocationRequest",
+              $ref: "#/components/schemas/UpdateAdvertisementLocationRequest",
             },
 
-            example:
-              updateAdvertisementLocationExample,
+            example: updateAdvertisementLocationExample,
           },
         },
       },
 
       responses: {
         200: {
-          description:
-            "Advertisement location updated successfully.",
+          description: "Advertisement location updated successfully.",
         },
 
         404: {
-          description:
-            "Advertisement location not found.",
+          description: "Advertisement location not found.",
         },
 
         409: {
-          description:
-            "Advertisement location already exists.",
+          description: "Advertisement location already exists.",
         },
       },
     },
@@ -283,13 +289,11 @@ const advertisementLocationPaths = {
 
       responses: {
         200: {
-          description:
-            "Advertisement location deleted successfully.",
+          description: "Advertisement location deleted successfully.",
         },
 
         404: {
-          description:
-            "Advertisement location not found.",
+          description: "Advertisement location not found.",
         },
       },
     },

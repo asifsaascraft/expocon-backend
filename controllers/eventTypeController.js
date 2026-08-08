@@ -9,11 +9,6 @@ import {
   errorResponse,
 } from "../utils/response.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
-
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
@@ -75,10 +70,6 @@ export const createEventType = asyncHandler(async (req, res) => {
 // Get Event Types
 //==============================
 export const getEventTypes = asyncHandler(async (req, res) => {
-  // Pagination
-
-  const { page, limit, skip } = getPagination(req);
-
   // Search
 
   const searchQuery = buildSearchQuery(req, [
@@ -103,8 +94,6 @@ export const getEventTypes = asyncHandler(async (req, res) => {
   // Cache Key
 
   const cacheKey = `event-types:${JSON.stringify({
-    page,
-    limit,
     query,
     sort,
   })}`;
@@ -118,46 +107,28 @@ export const getEventTypes = asyncHandler(async (req, res) => {
       message:
         "Event types fetched successfully (from cache).",
 
-      data: cachedData.data,
-
-      pagination: cachedData.pagination,
+      data: cachedData,
     });
   }
 
   // MongoDB
 
-  const [eventTypes, total] = await Promise.all([
-    EventType.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
-
-    EventType.countDocuments(query),
-  ]);
-
-  const pagination = buildPaginationMeta(
-    total,
-    page,
-    limit,
-  );
+  const eventTypes =
+    await EventType.find(query).sort(sort);
 
   // Save Cache
 
   await setCache(
     cacheKey,
-    {
-      data: eventTypes,
-      pagination,
-    },
+    eventTypes,
     3600,
   );
 
   return successResponse(res, {
-    message: "Event types fetched successfully.",
+    message:
+      "Event types fetched successfully.",
 
     data: eventTypes,
-
-    pagination,
   });
 });
 

@@ -9,11 +9,6 @@ import {
   errorResponse,
 } from "../utils/response.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
-
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
@@ -77,10 +72,6 @@ export const createExhibitionType = asyncHandler(async (req, res) => {
 // Get Exhibition Types
 //==============================
 export const getExhibitionTypes = asyncHandler(async (req, res) => {
-  // Pagination
-
-  const { page, limit, skip } = getPagination(req);
-
   // Search
 
   const searchQuery = buildSearchQuery(req, [
@@ -105,8 +96,6 @@ export const getExhibitionTypes = asyncHandler(async (req, res) => {
   // Cache Key
 
   const cacheKey = `exhibition-types:${JSON.stringify({
-    page,
-    limit,
     query,
     sort,
   })}`;
@@ -120,46 +109,28 @@ export const getExhibitionTypes = asyncHandler(async (req, res) => {
       message:
         "Exhibition types fetched successfully (from cache).",
 
-      data: cachedData.data,
-
-      pagination: cachedData.pagination,
+      data: cachedData,
     });
   }
 
   // MongoDB
 
-  const [exhibitionTypes, total] = await Promise.all([
-    ExhibitionType.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
-
-    ExhibitionType.countDocuments(query),
-  ]);
-
-  const pagination = buildPaginationMeta(
-    total,
-    page,
-    limit,
-  );
+  const exhibitionTypes =
+    await ExhibitionType.find(query).sort(sort);
 
   // Save Cache
 
   await setCache(
     cacheKey,
-    {
-      data: exhibitionTypes,
-      pagination,
-    },
+    exhibitionTypes,
     3600,
   );
 
   return successResponse(res, {
-    message: "Exhibition types fetched successfully.",
+    message:
+      "Exhibition types fetched successfully.",
 
     data: exhibitionTypes,
-
-    pagination,
   });
 });
 

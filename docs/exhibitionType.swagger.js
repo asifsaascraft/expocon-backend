@@ -13,8 +13,7 @@ const exhibitionTypePaths = {
 
       summary: "Create Exhibition Type",
 
-      description:
-        "Create a new exhibition type. Admin only.",
+      description: "Create a new exhibition type. Admin only.",
 
       security: [
         {
@@ -28,8 +27,7 @@ const exhibitionTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/CreateExhibitionTypeRequest",
+              $ref: "#/components/schemas/CreateExhibitionTypeRequest",
             },
 
             example: createExhibitionTypeExample,
@@ -39,8 +37,7 @@ const exhibitionTypePaths = {
 
       responses: {
         201: {
-          description:
-            "Exhibition type created successfully.",
+          description: "Exhibition type created successfully.",
         },
 
         400: {
@@ -52,8 +49,7 @@ const exhibitionTypePaths = {
         },
 
         409: {
-          description:
-            "Exhibition type already exists.",
+          description: "Exhibition type already exists.",
         },
       },
     },
@@ -66,8 +62,7 @@ const exhibitionTypePaths = {
 
       summary: "Get Exhibition Types",
 
-      description:
-        "Get paginated exhibition types with search, sorting and pagination.",
+      description: "Get all exhibition types with search and sorting.",
 
       security: [
         {
@@ -79,33 +74,13 @@ const exhibitionTypePaths = {
         {
           in: "query",
 
-          name: "page",
-
-          schema: {
-            type: "integer",
-            default: 1,
-          },
-        },
-
-        {
-          in: "query",
-
-          name: "limit",
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-
-        {
-          in: "query",
-
           name: "search",
 
           schema: {
             type: "string",
           },
+
+          description: "Search exhibition types by exhibition type name.",
         },
 
         {
@@ -115,8 +90,10 @@ const exhibitionTypePaths = {
 
           schema: {
             type: "string",
-            example: "createdAt",
+            example: "exhibitionTypeName",
           },
+
+          description: "Field to sort by.",
         },
 
         {
@@ -127,19 +104,56 @@ const exhibitionTypePaths = {
           schema: {
             type: "string",
             enum: ["asc", "desc"],
-            example: "desc",
+            example: "asc",
           },
+
+          description: "Sorting order.",
         },
       ],
 
       responses: {
         200: {
-          description:
-            "Exhibition types fetched successfully.",
+          description: "Exhibition types fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "Exhibition types fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      $ref: "#/components/schemas/ExhibitionType",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
 
         401: {
           description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden.",
+        },
+
+        500: {
+          description: "Internal server error.",
         },
       },
     },
@@ -179,13 +193,11 @@ const exhibitionTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Exhibition type fetched successfully.",
+          description: "Exhibition type fetched successfully.",
         },
 
         404: {
-          description:
-            "Exhibition type not found.",
+          description: "Exhibition type not found.",
         },
       },
     },
@@ -224,8 +236,7 @@ const exhibitionTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/UpdateExhibitionTypeRequest",
+              $ref: "#/components/schemas/UpdateExhibitionTypeRequest",
             },
 
             example: updateExhibitionTypeExample,
@@ -235,18 +246,15 @@ const exhibitionTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Exhibition type updated successfully.",
+          description: "Exhibition type updated successfully.",
         },
 
         404: {
-          description:
-            "Exhibition type not found.",
+          description: "Exhibition type not found.",
         },
 
         409: {
-          description:
-            "Exhibition type already exists.",
+          description: "Exhibition type already exists.",
         },
       },
     },
@@ -281,13 +289,11 @@ const exhibitionTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Exhibition type deleted successfully.",
+          description: "Exhibition type deleted successfully.",
         },
 
         404: {
-          description:
-            "Exhibition type not found.",
+          description: "Exhibition type not found.",
         },
       },
     },

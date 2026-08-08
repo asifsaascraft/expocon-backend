@@ -1,7 +1,4 @@
-import {
-  createEntryTypeExample,
-  updateEntryTypeExample,
-} from "./examples.js";
+import { createEntryTypeExample, updateEntryTypeExample } from "./examples.js";
 
 const entryTypePaths = {
   //==============================
@@ -13,8 +10,7 @@ const entryTypePaths = {
 
       summary: "Create Entry Type",
 
-      description:
-        "Create a new entry type. Admin only.",
+      description: "Create a new entry type. Admin only.",
 
       security: [
         {
@@ -28,8 +24,7 @@ const entryTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/CreateEntryTypeRequest",
+              $ref: "#/components/schemas/CreateEntryTypeRequest",
             },
 
             example: createEntryTypeExample,
@@ -39,8 +34,7 @@ const entryTypePaths = {
 
       responses: {
         201: {
-          description:
-            "Entry type created successfully.",
+          description: "Entry type created successfully.",
         },
 
         400: {
@@ -52,8 +46,7 @@ const entryTypePaths = {
         },
 
         409: {
-          description:
-            "Entry type already exists.",
+          description: "Entry type already exists.",
         },
       },
     },
@@ -66,8 +59,7 @@ const entryTypePaths = {
 
       summary: "Get Entry Types",
 
-      description:
-        "Get paginated entry types with search, sorting and pagination.",
+      description: "Get all entry types with search and sorting.",
 
       security: [
         {
@@ -79,33 +71,13 @@ const entryTypePaths = {
         {
           in: "query",
 
-          name: "page",
-
-          schema: {
-            type: "integer",
-            default: 1,
-          },
-        },
-
-        {
-          in: "query",
-
-          name: "limit",
-
-          schema: {
-            type: "integer",
-            default: 20,
-          },
-        },
-
-        {
-          in: "query",
-
           name: "search",
 
           schema: {
             type: "string",
           },
+
+          description: "Search entry types by entry type name.",
         },
 
         {
@@ -115,8 +87,10 @@ const entryTypePaths = {
 
           schema: {
             type: "string",
-            example: "createdAt",
+            example: "entryTypeName",
           },
+
+          description: "Field to sort by.",
         },
 
         {
@@ -126,20 +100,61 @@ const entryTypePaths = {
 
           schema: {
             type: "string",
+
             enum: ["asc", "desc"],
-            example: "desc",
+
+            example: "asc",
           },
+
+          description: "Sorting order.",
         },
       ],
 
       responses: {
         200: {
-          description:
-            "Entry types fetched successfully.",
+          description: "Entry types fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+
+                    example: "Entry types fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      $ref: "#/components/schemas/EntryType",
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
 
         401: {
           description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden.",
+        },
+
+        500: {
+          description: "Internal server error.",
         },
       },
     },
@@ -179,13 +194,11 @@ const entryTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Entry type fetched successfully.",
+          description: "Entry type fetched successfully.",
         },
 
         404: {
-          description:
-            "Entry type not found.",
+          description: "Entry type not found.",
         },
       },
     },
@@ -224,8 +237,7 @@ const entryTypePaths = {
         content: {
           "application/json": {
             schema: {
-              $ref:
-                "#/components/schemas/UpdateEntryTypeRequest",
+              $ref: "#/components/schemas/UpdateEntryTypeRequest",
             },
 
             example: updateEntryTypeExample,
@@ -235,18 +247,15 @@ const entryTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Entry type updated successfully.",
+          description: "Entry type updated successfully.",
         },
 
         404: {
-          description:
-            "Entry type not found.",
+          description: "Entry type not found.",
         },
 
         409: {
-          description:
-            "Entry type already exists.",
+          description: "Entry type already exists.",
         },
       },
     },
@@ -281,13 +290,11 @@ const entryTypePaths = {
 
       responses: {
         200: {
-          description:
-            "Entry type deleted successfully.",
+          description: "Entry type deleted successfully.",
         },
 
         404: {
-          description:
-            "Entry type not found.",
+          description: "Entry type not found.",
         },
       },
     },

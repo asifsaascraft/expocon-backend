@@ -9,11 +9,6 @@ import {
   errorResponse,
 } from "../utils/response.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
-
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
@@ -82,11 +77,6 @@ export const createAssociationType = asyncHandler(async (req, res) => {
 //==============================
 export const getAssociationTypes =
   asyncHandler(async (req, res) => {
-    // Pagination
-
-    const { page, limit, skip } =
-      getPagination(req);
-
     // Search
 
     const searchQuery = buildSearchQuery(req, [
@@ -111,14 +101,10 @@ export const getAssociationTypes =
 
     // Cache Key
 
-    const cacheKey = `association-types:${JSON.stringify(
-      {
-        page,
-        limit,
-        query,
-        sort,
-      },
-    )}`;
+    const cacheKey = `association-types:${JSON.stringify({
+      query,
+      sort,
+    })}`;
 
     // Check Redis
 
@@ -130,42 +116,20 @@ export const getAssociationTypes =
         message:
           "Association types fetched successfully (from cache).",
 
-        data: cachedData.data,
-
-        pagination:
-          cachedData.pagination,
+        data: cachedData,
       });
     }
 
     // MongoDB
 
-    const [associationTypes, total] =
-      await Promise.all([
-        AssociationType.find(query)
-          .sort(sort)
-          .skip(skip)
-          .limit(limit),
-
-        AssociationType.countDocuments(
-          query,
-        ),
-      ]);
-
-    const pagination =
-      buildPaginationMeta(
-        total,
-        page,
-        limit,
-      );
+    const associationTypes =
+      await AssociationType.find(query).sort(sort);
 
     // Save Cache
 
     await setCache(
       cacheKey,
-      {
-        data: associationTypes,
-        pagination,
-      },
+      associationTypes,
       3600,
     );
 
@@ -174,8 +138,6 @@ export const getAssociationTypes =
         "Association types fetched successfully.",
 
       data: associationTypes,
-
-      pagination,
     });
   });
 
