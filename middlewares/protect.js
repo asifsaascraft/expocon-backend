@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import UserSession from "../models/UserSession.js";
 
-
 const protect = async (req, res, next) => {
   try {
     let token;
@@ -54,6 +53,15 @@ const protect = async (req, res, next) => {
       return res.status(403).json({
         success: false,
         message: "This account has been deleted.",
+      });
+    }
+
+    // Suspended User
+
+    if (user.status === "suspended") {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been suspended.",
       });
     }
 

@@ -3,6 +3,7 @@ import express from "express";
 import {
   getAllUsers,
   getAllStaffs,
+  toggleUserSuspension,
 } from "../controllers/adminUserController.js";
 
 import protect from "../middlewares/protect.js";
@@ -23,5 +24,11 @@ router.get("/users", getAllUsers);
 
 // Staffs
 router.get("/staffs", getAllStaffs);
+
+// SUSPEND / UNSUSPEND (all role)
+router.post(
+  "/suspend/:id",
+  toggleUserSuspension,
+);
 
 export default router;

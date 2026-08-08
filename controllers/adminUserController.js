@@ -1,9 +1,10 @@
 import User from "../models/User.js";
-
+import UserSession from "../models/UserSession.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 import {
   successResponse,
+  errorResponse,
 } from "../utils/response.js";
 
 import {
@@ -18,6 +19,7 @@ import buildFiltersQuery from "../utils/filters.js";
 import {
   getCache,
   setCache,
+  deleteCacheByPattern,
 } from "../utils/redisCache.js";
 
 //==============================
@@ -215,3 +217,113 @@ export const getAllStaffs = asyncHandler(async (req, res) => {
     pagination,
   });
 });
+
+//==============================
+// Suspend / Unsuspend User
+//==============================
+export const toggleUserSuspension = asyncHandler(
+  async (req, res) => {
+    const { id } = req.params;
+
+    // Find User
+    const user = await User.findOne({
+      _id: id,
+      isDeleted: false,
+    });
+
+    if (!user) {
+      return errorResponse(res, {
+        statusCode: 404,
+        message: "User not found.",
+      });
+    }
+
+    // Admin cannot suspend another admin
+    if (user.role === "admin") {
+      return errorResponse(res, {
+        statusCode: 403,
+        message: "Admin accounts cannot be suspended.",
+      });
+    }
+
+    // Only these roles can be suspended
+    const allowedRoles = [
+      "user",
+      "partner",
+      "staff",
+    ];
+
+    if (!allowedRoles.includes(user.role)) {
+      return errorResponse(res, {
+        statusCode: 400,
+        message: "This role cannot be suspended.",
+      });
+    }
+
+    //==============================
+    // UNSUSPEND
+    //==============================
+    if (user.status === "suspended") {
+      user.status = "active";
+
+      await user.save();
+
+      // Clear Redis cache
+      await deleteCacheByPattern("admin-users:*");
+      await deleteCacheByPattern("admin-staffs:*");
+
+      return successResponse(res, {
+        message: "User unsuspended successfully.",
+
+        data: {
+          id: user._id,
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role,
+          status: user.status,
+        },
+      });
+    }
+
+    //==============================
+    // SUSPEND
+    //==============================
+    user.status = "suspended";
+
+    await user.save();
+
+    //==============================
+    // Logout From All Devices
+    //==============================
+
+    await UserSession.updateMany(
+      {
+        user: user._id,
+        isActive: true,
+      },
+      {
+        isActive: false,
+        loggedOutAt: new Date(),
+      },
+    );
+
+    //==============================
+    // Clear Redis Cache
+    //==============================
+
+    await deleteCacheByPattern("admin-users:*");
+    await deleteCacheByPattern("admin-staffs:*");
+
+    return successResponse(res, {
+      message: "User suspended successfully.",
+
+      data: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      },
+    });
+  },
+);
