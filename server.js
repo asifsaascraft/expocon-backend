@@ -13,6 +13,8 @@ import rateLimit from "express-rate-limit";
 import connectDB from "./config/db.js";
 import { connectRedis } from "./config/redis.js";
 
+import publicRoutes from "./routes/publicRoutes.js";
+
 import swaggerRoutes from "./routes/swaggerRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -53,6 +55,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
   "http://localhost:3002",
+  process.env.PUBLIC_FRONTEND_URL,
   process.env.FRONTEND_URL,
 ];
 
@@ -130,9 +133,13 @@ app.get("/", (req, res) => {
     version: "1.0.0",
   });
 });
+// =======================
+// Public API Routes
+// =======================
+app.use("/api/public", publicRoutes);
 
 // =======================
-// API Routes
+// Protected  API Routes
 // =======================
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -184,7 +191,5 @@ app.use((err, req, res, next) => {
 // =======================
 // Start server
 // =======================
-
-
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => console.log(`Server running on port ${PORT}`));
