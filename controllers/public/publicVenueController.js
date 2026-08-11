@@ -6,15 +6,9 @@ import Conference from "../../models/Conference.js";
 import Contact from "../../models/Contact.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 
-import {
-  successResponse,
-  errorResponse,
-} from "../../utils/response.js";
+import { successResponse, errorResponse } from "../../utils/response.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../../utils/pagination.js";
+import { getPagination, buildPaginationMeta } from "../../utils/pagination.js";
 
 import {
   getCache,
@@ -30,8 +24,7 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
   // Pagination
   // =====================================
 
-  const { page, limit, skip } =
-    getPagination(req);
+  const { page, limit, skip } = getPagination(req);
 
   // =====================================
   // Query Parameters
@@ -59,10 +52,7 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
   // =====================================
 
   if (search?.trim()) {
-    const searchRegex = new RegExp(
-      search.trim(),
-      "i",
-    );
+    const searchRegex = new RegExp(search.trim(), "i");
 
     query.$or = [
       {
@@ -79,10 +69,7 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
   // =====================================
 
   if (city?.trim()) {
-    query.city = new RegExp(
-      `^${city.trim()}$`,
-      "i",
-    );
+    query.city = new RegExp(`^${city.trim()}$`, "i");
   }
 
   // =====================================
@@ -90,11 +77,7 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
   // =====================================
 
   if (stateId) {
-    if (
-      !mongoose.Types.ObjectId.isValid(
-        stateId,
-      )
-    ) {
+    if (!mongoose.Types.ObjectId.isValid(stateId)) {
       return errorResponse(res, {
         statusCode: 400,
         message: "Invalid state ID.",
@@ -122,20 +105,11 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
   // Sorting
   // =====================================
 
-  const allowedSortFields = [
-    "createdAt",
-    "venueName",
-    "city",
-    "featured",
-  ];
+  const allowedSortFields = ["createdAt", "venueName", "city", "featured"];
 
-  const safeSortBy =
-    allowedSortFields.includes(sortBy)
-      ? sortBy
-      : "createdAt";
+  const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : "createdAt";
 
-  const safeOrder =
-    order === "asc" ? 1 : -1;
+  const safeOrder = order === "asc" ? 1 : -1;
 
   const sort = {
     [safeSortBy]: safeOrder,
@@ -156,18 +130,15 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
   // Check Redis
   // =====================================
 
-  const cachedData =
-    await getCache(cacheKey);
+  const cachedData = await getCache(cacheKey);
 
   if (cachedData) {
     return successResponse(res, {
-      message:
-        "Public venues fetched successfully (from cache).",
+      message: "Public venues fetched successfully (from cache).",
 
       data: cachedData.data,
 
-      pagination:
-        cachedData.pagination,
+      pagination: cachedData.pagination,
     });
   }
 
@@ -175,37 +146,29 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
   // Get Venues + Total
   // =====================================
 
-  const [venues, total] =
-    await Promise.all([
-      Venue.find(query)
-        .select(
-          "_id venueName stateId city uploadVenuePhoto featured",
-        )
+  const [venues, total] = await Promise.all([
+    Venue.find(query)
+      .select("_id venueName stateId city uploadVenuePhoto featured")
 
-        // FIXED: State model field is "state"
-        .populate({
-          path: "stateId",
-          select: "_id state",
-        })
+      // FIXED: State model field is "state"
+      .populate({
+        path: "stateId",
+        select: "_id state",
+      })
 
-        .sort(sort)
-        .skip(skip)
-        .limit(limit)
-        .lean(),
+      .sort(sort)
+      .skip(skip)
+      .limit(limit)
+      .lean(),
 
-      Venue.countDocuments(query),
-    ]);
+    Venue.countDocuments(query),
+  ]);
 
   // =====================================
   // Pagination Metadata
   // =====================================
 
-  const pagination =
-    buildPaginationMeta(
-      total,
-      page,
-      limit,
-    );
+  const pagination = buildPaginationMeta(total, page, limit);
 
   // =====================================
   // No Venues
@@ -217,15 +180,10 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
       pagination,
     };
 
-    await setCache(
-      cacheKey,
-      responseData,
-      3600,
-    );
+    await setCache(cacheKey, responseData, 3600);
 
     return successResponse(res, {
-      message:
-        "Public venues fetched successfully.",
+      message: "Public venues fetched successfully.",
 
       data: [],
 
@@ -237,9 +195,7 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
   // Current Page Venue IDs
   // =====================================
 
-  const venueIds = venues.map(
-    (venue) => venue._id,
-  );
+  const venueIds = venues.map((venue) => venue._id);
 
   // =====================================
   // Upcoming Date
@@ -247,153 +203,120 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
 
   const tomorrow = new Date();
 
-  tomorrow.setHours(
-    0,
-    0,
-    0,
-    0,
-  );
+  tomorrow.setHours(0, 0, 0, 0);
 
-  tomorrow.setDate(
-    tomorrow.getDate() + 1,
-  );
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
   // =====================================
   // Upcoming Exhibition Counts
   // =====================================
 
-  const exhibitionCounts =
-    await Exhibition.aggregate([
-      {
-        $match: {
-          venueId: {
-            $in: venueIds,
-          },
+  const exhibitionCounts = await Exhibition.aggregate([
+    {
+      $match: {
+        venueId: {
+          $in: venueIds,
+        },
 
-          status: "approved",
+        status: "approved",
 
-          startDate: {
-            $gte: tomorrow,
-          },
+        startDate: {
+          $gte: tomorrow,
         },
       },
+    },
 
-      {
-        $group: {
-          _id: "$venueId",
+    {
+      $group: {
+        _id: "$venueId",
 
-          count: {
-            $sum: 1,
-          },
+        count: {
+          $sum: 1,
         },
       },
-    ]);
+    },
+  ]);
 
   // =====================================
   // Upcoming Conference Counts
   // =====================================
 
-  const conferenceCounts =
-    await Conference.aggregate([
-      {
-        $match: {
-          venueId: {
-            $in: venueIds,
-          },
+  const conferenceCounts = await Conference.aggregate([
+    {
+      $match: {
+        venueId: {
+          $in: venueIds,
+        },
 
-          status: "approved",
+        status: "approved",
 
-          startDate: {
-            $gte: tomorrow,
-          },
+        startDate: {
+          $gte: tomorrow,
         },
       },
+    },
 
-      {
-        $group: {
-          _id: "$venueId",
+    {
+      $group: {
+        _id: "$venueId",
 
-          count: {
-            $sum: 1,
-          },
+        count: {
+          $sum: 1,
         },
       },
-    ]);
+    },
+  ]);
 
   // =====================================
   // Create Count Maps
   // =====================================
 
-  const exhibitionCountMap =
-    new Map();
+  const exhibitionCountMap = new Map();
 
   for (const item of exhibitionCounts) {
-    exhibitionCountMap.set(
-      item._id.toString(),
-      item.count,
-    );
+    exhibitionCountMap.set(item._id.toString(), item.count);
   }
 
-  const conferenceCountMap =
-    new Map();
+  const conferenceCountMap = new Map();
 
   for (const item of conferenceCounts) {
-    conferenceCountMap.set(
-      item._id.toString(),
-      item.count,
-    );
+    conferenceCountMap.set(item._id.toString(), item.count);
   }
 
   // =====================================
   // Build Public Venue Response
   // =====================================
 
-  const publicVenues =
-    venues.map((venue) => {
-      const venueId =
-        venue._id.toString();
+  const publicVenues = venues.map((venue) => {
+    const venueId = venue._id.toString();
 
-      const exhibitionCount =
-        exhibitionCountMap.get(
-          venueId,
-        ) || 0;
+    const exhibitionCount = exhibitionCountMap.get(venueId) || 0;
 
-      const conferenceCount =
-        conferenceCountMap.get(
-          venueId,
-        ) || 0;
+    const conferenceCount = conferenceCountMap.get(venueId) || 0;
 
-      return {
-        _id: venue._id,
+    return {
+      _id: venue._id,
 
-        venueName:
-          venue.venueName,
+      venueName: venue.venueName,
 
-        city:
-          venue.city,
+      city: venue.city,
 
-        // FIXED: Return actual State field
-        state: venue.stateId
-          ? {
-              _id:
-                venue.stateId._id,
+      // FIXED: Return actual State field
+      state: venue.stateId
+        ? {
+            _id: venue.stateId._id,
 
-              state:
-                venue.stateId.state,
-            }
-          : null,
+            state: venue.stateId.state,
+          }
+        : null,
 
-        uploadVenuePhoto:
-          venue.uploadVenuePhoto,
+      uploadVenuePhoto: venue.uploadVenuePhoto,
 
-        featured:
-          venue.featured,
+      featured: venue.featured,
 
-        upcomingEvents:
-          exhibitionCount +
-          conferenceCount,
-      };
-    });
+      upcomingEvents: exhibitionCount + conferenceCount,
+    };
+  });
 
   // =====================================
   // Save Cache
@@ -404,19 +327,14 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
     pagination,
   };
 
-  await setCache(
-    cacheKey,
-    responseData,
-    3600,
-  );
+  await setCache(cacheKey, responseData, 3600);
 
   // =====================================
   // Response
   // =====================================
 
   return successResponse(res, {
-    message:
-      "Public venues fetched successfully.",
+    message: "Public venues fetched successfully.",
 
     data: publicVenues,
 
@@ -424,16 +342,200 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
   });
 });
 
-
 // =====================================
 // Get Public Venue By ID
 // =====================================
-export const getPublicVenueById = asyncHandler(
+export const getPublicVenueById = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  // =====================================
+  // Validate ObjectId
+  // =====================================
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Invalid venue ID.",
+    });
+  }
+
+  // =====================================
+  // Cache Key
+  // =====================================
+
+  const cacheKey = `public-venue:${id}`;
+
+  // =====================================
+  // Check Redis Cache
+  // =====================================
+
+  const cachedData = await getCache(cacheKey);
+
+  if (cachedData) {
+    return successResponse(res, {
+      message: "Public venue fetched successfully (from cache).",
+
+      data: cachedData,
+    });
+  }
+
+  // =====================================
+  // Find Approved Venue
+  // =====================================
+
+  const venue = await Venue.findOne({
+    _id: id,
+    status: "approved",
+  })
+    .select(
+      "_id venueName stateId city address website mapLink uploadVenuePhoto featured phone uploadVenueLayout status createdAt updatedAt __v",
+    )
+    .populate({
+      path: "stateId",
+      select: "_id state",
+    })
+    .lean();
+
+  // =====================================
+  // Venue Not Found
+  // =====================================
+
+  if (!venue) {
+    return errorResponse(res, {
+      statusCode: 404,
+      message: "Public venue not found.",
+    });
+  }
+
+  // =====================================
+  // Upcoming Date
+  // =====================================
+
+  const tomorrow = new Date();
+
+  tomorrow.setHours(0, 0, 0, 0);
+
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  // =====================================
+  // Upcoming Exhibition Count
+  // =====================================
+
+  const upcomingExhibitionCount = await Exhibition.countDocuments({
+    venueId: venue._id,
+
+    status: "approved",
+
+    startDate: {
+      $gte: tomorrow,
+    },
+  });
+
+  // =====================================
+  // Upcoming Conference Count
+  // =====================================
+
+  const upcomingConferenceCount = await Conference.countDocuments({
+    venueId: venue._id,
+
+    status: "approved",
+
+    startDate: {
+      $gte: tomorrow,
+    },
+  });
+
+  // =====================================
+  // Total Upcoming Events
+  // =====================================
+
+  const upcomingEvents = upcomingExhibitionCount + upcomingConferenceCount;
+
+  // =====================================
+  // Get Venue Key Contacts
+  // =====================================
+
+  const keyContacts = await Contact.find({
+    venueId: venue._id,
+    status: "approved",
+  })
+    .select(
+      "_id fullName email mobile stateId companyId venueId associationId status",
+    )
+    .lean();
+
+  // =====================================
+  // Build Public Venue Response
+  // =====================================
+
+  const publicVenue = {
+    _id: venue._id,
+
+    venueName: venue.venueName,
+
+    stateId: venue.stateId
+      ? {
+          _id: venue.stateId._id,
+
+          state: venue.stateId.state,
+        }
+      : null,
+
+    city: venue.city,
+
+    address: venue.address,
+
+    website: venue.website,
+
+    mapLink: venue.mapLink,
+
+    uploadVenuePhoto: venue.uploadVenuePhoto,
+
+    featured: venue.featured,
+
+    phone: venue.phone,
+
+    uploadVenueLayout: venue.uploadVenueLayout,
+
+    status: venue.status,
+
+    createdAt: venue.createdAt,
+
+    updatedAt: venue.updatedAt,
+
+    __v: venue.__v,
+
+    upcomingEvents,
+
+    keyContacts,
+  };
+
+  // =====================================
+  // Save Redis Cache
+  // =====================================
+
+  await setCache(cacheKey, publicVenue, 3600);
+
+  // =====================================
+  // Response
+  // =====================================
+
+  return successResponse(res, {
+    message: "Public venue fetched successfully.",
+
+    data: publicVenue,
+  });
+});
+
+// =====================================
+// Get Upcoming Conferences By Venue ID
+// =====================================
+export const getUpcomingConferencesByVenueId = asyncHandler(
   async (req, res) => {
     const { id } = req.params;
 
     // =====================================
-    // Validate ObjectId
+    // Validate Venue ID
     // =====================================
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -444,28 +546,19 @@ export const getPublicVenueById = asyncHandler(
     }
 
     // =====================================
-    // Cache Key
+    // Pagination
     // =====================================
 
-    const cacheKey = `public-venue:${id}`;
+    const { page, limit, skip } = getPagination(req);
 
     // =====================================
-    // Check Redis Cache
+    // Query Parameters
     // =====================================
 
-    const cachedData = await getCache(cacheKey);
-
-    if (cachedData) {
-      return successResponse(res, {
-        message:
-          "Public venue fetched successfully (from cache).",
-
-        data: cachedData,
-      });
-    }
+    const { sortBy = "startDate", order = "asc" } = req.query;
 
     // =====================================
-    // Find Approved Venue
+    // Get Approved Venue
     // =====================================
 
     const venue = await Venue.findOne({
@@ -473,7 +566,7 @@ export const getPublicVenueById = asyncHandler(
       status: "approved",
     })
       .select(
-        "_id venueName stateId city address website mapLink uploadVenuePhoto featured phone uploadVenueLayout status createdAt updatedAt __v",
+        "_id venueName stateId city address website mapLink uploadVenuePhoto featured phone uploadVenueLayout status",
       )
       .populate({
         path: "stateId",
@@ -498,170 +591,460 @@ export const getPublicVenueById = asyncHandler(
 
     const tomorrow = new Date();
 
-    tomorrow.setHours(
-      0,
-      0,
-      0,
-      0,
-    );
+    tomorrow.setHours(0, 0, 0, 0);
 
-    tomorrow.setDate(
-      tomorrow.getDate() + 1,
-    );
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
     // =====================================
-    // Upcoming Exhibition Count
+    // Allowed Sort Fields
     // =====================================
 
-    const upcomingExhibitionCount =
-      await Exhibition.countDocuments({
-        venueId: venue._id,
+    const allowedSortFields = [
+      "startDate",
+      "endDate",
+      "conferenceName",
+      "createdAt",
+    ];
 
-        status: "approved",
+    const safeSortBy = allowedSortFields.includes(sortBy)
+      ? sortBy
+      : "startDate";
 
-        startDate: {
-          $gte: tomorrow,
-        },
+    const safeOrder = order === "desc" ? -1 : 1;
+
+    const sort = {
+      [safeSortBy]: safeOrder,
+    };
+
+    // =====================================
+    // Cache Key
+    // =====================================
+
+    const cacheKey = `public-venues:${id}:upcoming-conferences:${JSON.stringify(
+      {
+        page,
+        limit,
+        sort,
+      },
+    )}`;
+
+    // =====================================
+    // Check Redis Cache
+    // =====================================
+
+    const cachedData = await getCache(cacheKey);
+
+    if (cachedData) {
+      return successResponse(res, {
+        message: "Upcoming conferences fetched successfully (from cache).",
+
+        data: cachedData.data,
       });
+    }
 
     // =====================================
-    // Upcoming Conference Count
+    // Conference Query
     // =====================================
 
-    const upcomingConferenceCount =
-      await Conference.countDocuments({
-        venueId: venue._id,
+    const query = {
+      venueId: venue._id,
 
-        status: "approved",
+      status: "approved",
 
-        startDate: {
-          $gte: tomorrow,
-        },
-      });
-
-    // =====================================
-    // Total Upcoming Events
-    // =====================================
-
-    const upcomingEvents =
-      upcomingExhibitionCount +
-      upcomingConferenceCount;
+      startDate: {
+        $gte: tomorrow,
+      },
+    };
 
     // =====================================
-    // Get Venue Key Contacts
+    // Get Conferences + Total
     // =====================================
 
-    const keyContacts =
-      await Contact.find({
-        venueId: venue._id,
-        status: "approved",
-      })
+    const [conferences, total] = await Promise.all([
+      Conference.find(query)
+
+        // =====================================
+        // Only required conference fields
+        // =====================================
         .select(
-          "_id fullName email mobile stateId companyId venueId associationId status",
+          "_id conferenceTypeId conferenceName conferenceShortName startDate endDate month year entryTypeId city stateId website companyId conferenceSegmentId uploadConferenceLogo committeeMember frequency aboutConference status",
         )
-        .lean();
+
+        // =====================================
+        // Populate State
+        // =====================================
+        .populate({
+          path: "stateId",
+          select: "_id state",
+        })
+
+        // =====================================
+        // Populate Company
+        // Only companyName
+        // =====================================
+        .populate({
+          path: "companyId",
+          select: "_id companyName",
+        })
+
+        // =====================================
+        // Populate Conference Type
+        // Only conferenceTypeName
+        // =====================================
+        .populate({
+          path: "conferenceTypeId",
+          select: "_id conferenceTypeName",
+        })
+
+        // =====================================
+        // Populate Conference Segment
+        // Only conferenceSegmentName
+        // =====================================
+        .populate({
+          path: "conferenceSegmentId",
+          select: "_id conferenceSegmentName",
+        })
+
+        // =====================================
+        // Populate Entry Type
+        // Only entryTypeName
+        // =====================================
+        .populate({
+          path: "entryTypeId",
+          select: "_id entryTypeName",
+        })
+
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+
+      Conference.countDocuments(query),
+    ]);
 
     // =====================================
-    // Build Public Venue Response
+    // Pagination Metadata
+    // =====================================
+
+    const pagination = buildPaginationMeta(total, page, limit);
+
+    // =====================================
+    // Build Venue Response
     // =====================================
 
     const publicVenue = {
       _id: venue._id,
 
-      venueName:
-        venue.venueName,
+      venueName: venue.venueName,
 
       stateId: venue.stateId
         ? {
-            _id:
-              venue.stateId._id,
+            _id: venue.stateId._id,
 
-            state:
-              venue.stateId.state,
+            state: venue.stateId.state,
           }
         : null,
 
-      city:
-        venue.city,
+      city: venue.city,
 
-      address:
-        venue.address,
+      address: venue.address,
 
-      website:
-        venue.website,
+      website: venue.website,
 
-      mapLink:
-        venue.mapLink,
+      mapLink: venue.mapLink,
 
-      uploadVenuePhoto:
-        venue.uploadVenuePhoto,
+      uploadVenuePhoto: venue.uploadVenuePhoto,
 
-      featured:
-        venue.featured,
+      featured: venue.featured,
 
-      phone:
-        venue.phone,
+      phone: venue.phone,
 
-      uploadVenueLayout:
-        venue.uploadVenueLayout,
+      uploadVenueLayout: venue.uploadVenueLayout,
 
-      status:
-        venue.status,
+      status: venue.status,
 
-      createdAt:
-        venue.createdAt,
+      upcomingConferences: conferences,
 
-      updatedAt:
-        venue.updatedAt,
-
-      __v:
-        venue.__v,
-
-      upcomingEvents,
-
-      keyContacts,
+      pagination,
     };
 
     // =====================================
-    // Save Redis Cache
+    // Save Cache
     // =====================================
 
-    await setCache(
-      cacheKey,
-      publicVenue,
-      3600,
-    );
+    await setCache(cacheKey, publicVenue, 3600);
 
     // =====================================
     // Response
     // =====================================
 
     return successResponse(res, {
-      message:
-        "Public venue fetched successfully.",
+      message: "Upcoming conferences fetched successfully.",
 
       data: publicVenue,
     });
   },
 );
 
+// =====================================
+// Get Upcoming Exhibitions By Venue ID
+// =====================================
+export const getUpcomingExhibitionsByVenueId = asyncHandler(
+  async (req, res) => {
+    const { id } = req.params;
+
+    // =====================================
+    // Validate Venue ID
+    // =====================================
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return errorResponse(res, {
+        statusCode: 400,
+        message: "Invalid venue ID.",
+      });
+    }
+
+    // =====================================
+    // Pagination
+    // =====================================
+
+    const { page, limit, skip } = getPagination(req);
+
+    // =====================================
+    // Query Parameters
+    // =====================================
+
+    const { sortBy = "startDate", order = "asc" } = req.query;
+
+    // =====================================
+    // Get Approved Venue
+    // =====================================
+
+    const venue = await Venue.findOne({
+      _id: id,
+      status: "approved",
+    })
+      .select(
+        "_id venueName stateId city address website mapLink uploadVenuePhoto featured phone uploadVenueLayout status",
+      )
+      .populate({
+        path: "stateId",
+        select: "_id state",
+      })
+      .lean();
+
+    // =====================================
+    // Venue Not Found
+    // =====================================
+
+    if (!venue) {
+      return errorResponse(res, {
+        statusCode: 404,
+        message: "Public venue not found.",
+      });
+    }
+
+    // =====================================
+    // Upcoming Date
+    // =====================================
+
+    const tomorrow = new Date();
+
+    tomorrow.setHours(0, 0, 0, 0);
+
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    // =====================================
+    // Allowed Sort Fields
+    // =====================================
+
+    const allowedSortFields = [
+      "startDate",
+      "endDate",
+      "eventName",
+      "createdAt",
+    ];
+
+    const safeSortBy = allowedSortFields.includes(sortBy)
+      ? sortBy
+      : "startDate";
+
+    const safeOrder = order === "desc" ? -1 : 1;
+
+    const sort = {
+      [safeSortBy]: safeOrder,
+    };
+
+    // =====================================
+    // Cache Key
+    // =====================================
+
+    const cacheKey = `public-venues:${id}:upcoming-exhibitions:${JSON.stringify(
+      {
+        page,
+        limit,
+        sort,
+      },
+    )}`;
+
+    // =====================================
+    // Check Redis Cache
+    // =====================================
+
+    const cachedData = await getCache(cacheKey);
+
+    if (cachedData) {
+      return successResponse(res, {
+        message: "Upcoming exhibitions fetched successfully (from cache).",
+
+        data: cachedData.data,
+      });
+    }
+
+    // =====================================
+    // Exhibition Query
+    // =====================================
+
+    const query = {
+      venueId: venue._id,
+
+      status: "approved",
+
+      startDate: {
+        $gte: tomorrow,
+      },
+    };
+
+    // =====================================
+    // Get Exhibitions + Total
+    // =====================================
+
+    const [exhibitions, total] = await Promise.all([
+      Exhibition.find(query)
+
+        // =====================================
+        // Only return required exhibition fields
+        // =====================================
+        .select(
+          "_id eventTypeId eventName eventShortName startDate endDate month year entryTypeId city stateId website companyId exhibitionTypeId uploadEventLogo frequency aboutExhibition exhibitorProfile speciality visitorProfile status",
+        )
+
+        // =====================================
+        // Populate State
+        // =====================================
+        .populate({
+          path: "stateId",
+          select: "_id state",
+        })
+
+        // =====================================
+        // Populate Company
+        // Only companyName
+        // =====================================
+        .populate({
+          path: "companyId",
+          select: "_id companyName",
+        })
+
+        // =====================================
+        // Populate Exhibition Type
+        // Only exhibitionTypeName
+        // =====================================
+        .populate({
+          path: "exhibitionTypeId",
+          select: "_id exhibitionTypeName",
+        })
+
+        // =====================================
+        // Populate Entry Type
+        // Only entryTypeName
+        // =====================================
+        .populate({
+          path: "entryTypeId",
+          select: "_id entryTypeName",
+        })
+
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+
+      Exhibition.countDocuments(query),
+    ]);
+
+    // =====================================
+    // Pagination Metadata
+    // =====================================
+
+    const pagination = buildPaginationMeta(total, page, limit);
+
+    // =====================================
+    // Build Venue Response
+    // =====================================
+
+    const publicVenue = {
+      _id: venue._id,
+
+      venueName: venue.venueName,
+
+      stateId: venue.stateId
+        ? {
+            _id: venue.stateId._id,
+
+            state: venue.stateId.state,
+          }
+        : null,
+
+      city: venue.city,
+
+      address: venue.address,
+
+      website: venue.website,
+
+      mapLink: venue.mapLink,
+
+      uploadVenuePhoto: venue.uploadVenuePhoto,
+
+      featured: venue.featured,
+
+      phone: venue.phone,
+
+      uploadVenueLayout: venue.uploadVenueLayout,
+
+      status: venue.status,
+
+      upcomingExhibitions: exhibitions,
+
+      pagination,
+    };
+
+    // =====================================
+    // Save Cache
+    // =====================================
+
+    await setCache(cacheKey, publicVenue, 3600);
+
+    // =====================================
+    // Response
+    // =====================================
+
+    return successResponse(res, {
+      message: "Upcoming exhibitions fetched successfully.",
+
+      data: publicVenue,
+    });
+  },
+);
 
 // =====================================
 // Clear Public Venue Cache
 // =====================================
-export const clearPublicVenueCache = asyncHandler(
-  async (req, res) => {
-    await deleteCacheByPattern(
-      "public-venues*",
-    );
+export const clearPublicVenueCache = asyncHandler(async (req, res) => {
+  await deleteCacheByPattern("public-venues*");
 
-    await deleteCacheByPattern(
-      "public-venue*",
-    );
+  await deleteCacheByPattern("public-venue*");
 
-    return successResponse(res, {
-      message:
-        "Public venue cache cleared successfully.",
-    });
-  },
-);
+  return successResponse(res, {
+    message: "Public venue cache cleared successfully.",
+  });
+});

@@ -72,6 +72,8 @@ const CompanySchema = new mongoose.Schema(
       trim: true,
       maxlength: 20,
       default: null,
+
+      
     },
 
     mobile: {
