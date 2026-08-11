@@ -520,6 +520,8 @@ const publicVenuePaths = {
 
                       aboutConference: "About the conference",
 
+                      featured: true,
+
                       status: "approved",
                     },
                   ],
@@ -786,6 +788,8 @@ const publicVenuePaths = {
 
                       visitorProfile: "Visitor information",
 
+                      featured: true,
+                      
                       status: "approved",
                     },
                   ],

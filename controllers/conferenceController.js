@@ -11,10 +11,7 @@ import Association from "../models/Association.js";
 
 import asyncHandler from "../utils/asyncHandler.js";
 
-import {
-  successResponse,
-  errorResponse,
-} from "../utils/response.js";
+import { successResponse, errorResponse } from "../utils/response.js";
 
 import {
   deleteCacheByPattern,
@@ -22,10 +19,7 @@ import {
   setCache,
 } from "../utils/redisCache.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
+import { getPagination, buildPaginationMeta } from "../utils/pagination.js";
 
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
@@ -51,8 +45,7 @@ const populateConference = (query) =>
     .populate("approvedBy", "fullName email role")
     .populate("rejectedBy", "fullName email role");
 
-
-    //==============================
+//==============================
 // Create Conference
 //==============================
 export const createConference = asyncHandler(async (req, res) => {
@@ -75,6 +68,7 @@ export const createConference = asyncHandler(async (req, res) => {
     committeeMember,
     frequency,
     aboutConference,
+    featured,
   } = req.body;
 
   //==============================
@@ -150,10 +144,7 @@ export const createConference = asyncHandler(async (req, res) => {
     });
   }
 
-  if (
-    associationId &&
-    !mongoose.Types.ObjectId.isValid(associationId)
-  ) {
+  if (associationId && !mongoose.Types.ObjectId.isValid(associationId)) {
     return errorResponse(res, {
       statusCode: 400,
       message: "Invalid association ID.",
@@ -181,9 +172,7 @@ export const createConference = asyncHandler(async (req, res) => {
     conferenceSegmentId
       ? ConferenceSegment.findById(conferenceSegmentId)
       : null,
-    associationId
-      ? Association.findById(associationId)
-      : null,
+    associationId ? Association.findById(associationId) : null,
   ]);
 
   if (!conferenceType) {
@@ -265,13 +254,12 @@ export const createConference = asyncHandler(async (req, res) => {
     .trim()
     .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-  const existingConferenceShortName =
-    await Conference.findOne({
-      conferenceShortName: {
-        $regex: `^${escapedConferenceShortName}$`,
-        $options: "i",
-      },
-    });
+  const existingConferenceShortName = await Conference.findOne({
+    conferenceShortName: {
+      $regex: `^${escapedConferenceShortName}$`,
+      $options: "i",
+    },
+  });
 
   if (existingConferenceShortName) {
     return errorResponse(res, {
@@ -298,17 +286,14 @@ export const createConference = asyncHandler(async (req, res) => {
     venueId,
     website: website.trim(),
     companyId: companyId?.trim() || null,
-    conferenceSegmentId:
-      conferenceSegmentId?.trim() || null,
+    conferenceSegmentId: conferenceSegmentId?.trim() || null,
     associationId: associationId?.trim() || null,
-    uploadConferenceLogo: req.file
-      ? req.file.location
-      : null,
-    committeeMember:
-      committeeMember?.trim() || null,
+    uploadConferenceLogo: req.file ? req.file.location : null,
+    committeeMember: committeeMember?.trim() || null,
     frequency: frequency?.trim() || null,
-    aboutConference:
-      aboutConference?.trim() || null,
+    aboutConference: aboutConference?.trim() || null,
+    featured:
+      featured !== undefined ? featured === true || featured === "true" : true,
     createdBy: req.user._id,
   };
 
@@ -328,18 +313,15 @@ export const createConference = asyncHandler(async (req, res) => {
   // Create Conference
   //==============================
 
-  const conference = await Conference.create(
-    conferenceData,
-  );
+  const conference = await Conference.create(conferenceData);
 
   //==============================
   // Populate Conference
   //==============================
 
-  const populatedConference =
-    await populateConference(
-      Conference.findById(conference._id),
-    );
+  const populatedConference = await populateConference(
+    Conference.findById(conference._id),
+  );
 
   //==============================
   // Clear Cache
@@ -357,7 +339,6 @@ export const createConference = asyncHandler(async (req, res) => {
     data: populatedConference,
   });
 });
-
 
 //==============================
 // Get Conferences
@@ -465,9 +446,7 @@ export const getConferences = asyncHandler(async (req, res) => {
   //==============================
 
   const [conferences, total] = await Promise.all([
-    populateConference(
-      Conference.find(query),
-    )
+    populateConference(Conference.find(query))
       .sort(sort)
       .skip(skip)
       .limit(limit),
@@ -479,11 +458,7 @@ export const getConferences = asyncHandler(async (req, res) => {
   // Pagination
   //==============================
 
-  const pagination = buildPaginationMeta(
-    total,
-    page,
-    limit,
-  );
+  const pagination = buildPaginationMeta(total, page, limit);
 
   //==============================
   // Save Cache
@@ -545,9 +520,7 @@ export const getConferenceById = asyncHandler(async (req, res) => {
   // Find Conference
   //==============================
 
-  const conference = await populateConference(
-    Conference.findById(id),
-  );
+  const conference = await populateConference(Conference.findById(id));
 
   if (!conference) {
     return errorResponse(res, {
@@ -563,17 +536,14 @@ export const getConferenceById = asyncHandler(async (req, res) => {
   if (req.user.role === "staff") {
     const isOwner =
       conference.createdBy &&
-      conference.createdBy._id.toString() ===
-        req.user._id.toString();
+      conference.createdBy._id.toString() === req.user._id.toString();
 
-    const isApproved =
-      conference.status === "approved";
+    const isApproved = conference.status === "approved";
 
     if (!isApproved && !isOwner) {
       return errorResponse(res, {
         statusCode: 403,
-        message:
-          "You are not authorized to view this conference.",
+        message: "You are not authorized to view this conference.",
       });
     }
   }
@@ -582,18 +552,13 @@ export const getConferenceById = asyncHandler(async (req, res) => {
   // Save Cache
   //==============================
 
-  await setCache(
-    cacheKey,
-    conference,
-    3600,
-  );
+  await setCache(cacheKey, conference, 3600);
 
   return successResponse(res, {
     message: "Conference fetched successfully.",
     data: conference,
   });
 });
-
 
 //==============================
 // Update Conference
@@ -620,6 +585,7 @@ export const updateConference = asyncHandler(async (req, res) => {
     committeeMember,
     frequency,
     aboutConference,
+    featured,
   } = req.body;
 
   //==============================
@@ -739,10 +705,7 @@ export const updateConference = asyncHandler(async (req, res) => {
     });
   }
 
-  if (
-    associationId &&
-    !mongoose.Types.ObjectId.isValid(associationId)
-  ) {
+  if (associationId && !mongoose.Types.ObjectId.isValid(associationId)) {
     return errorResponse(res, {
       statusCode: 400,
       message: "Invalid association ID.",
@@ -770,9 +733,7 @@ export const updateConference = asyncHandler(async (req, res) => {
     conferenceSegmentId
       ? ConferenceSegment.findById(conferenceSegmentId)
       : null,
-    associationId
-      ? Association.findById(associationId)
-      : null,
+    associationId ? Association.findById(associationId) : null,
   ]);
 
   if (!conferenceType) {
@@ -891,15 +852,14 @@ export const updateConference = asyncHandler(async (req, res) => {
   conference.venueId = venueId;
   conference.website = website.trim();
   conference.companyId = companyId?.trim() || null;
-  conference.conferenceSegmentId =
-    conferenceSegmentId?.trim() || null;
-  conference.associationId =
-    associationId?.trim() || null;
-  conference.committeeMember =
-    committeeMember?.trim() || null;
+  conference.conferenceSegmentId = conferenceSegmentId?.trim() || null;
+  conference.associationId = associationId?.trim() || null;
+  conference.committeeMember = committeeMember?.trim() || null;
   conference.frequency = frequency?.trim() || null;
-  conference.aboutConference =
-    aboutConference?.trim() || null;
+  conference.aboutConference = aboutConference?.trim() || null;
+  if (featured !== undefined) {
+    conference.featured = featured === true || featured === "true";
+  }
 
   //==============================
   // Replace Conference Logo
@@ -945,7 +905,6 @@ export const updateConference = asyncHandler(async (req, res) => {
     data: populatedConference,
   });
 });
-
 
 //==============================
 // Delete Conference

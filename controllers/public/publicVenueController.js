@@ -105,15 +105,38 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
   // Sorting
   // =====================================
 
-  const allowedSortFields = ["createdAt", "venueName", "city", "featured"];
+  const allowedSortFields = [
+    "createdAt",
+    "venueName",
+    "city",
+    "featured",
+  ];
 
-  const safeSortBy = allowedSortFields.includes(sortBy) ? sortBy : "createdAt";
+  const safeSortBy = allowedSortFields.includes(sortBy)
+    ? sortBy
+    : "createdAt";
 
   const safeOrder = order === "asc" ? 1 : -1;
 
-  const sort = {
-    [safeSortBy]: safeOrder,
-  };
+  // =====================================
+  // Featured Always Has Highest Priority
+  // =====================================
+
+  let sort;
+
+  if (safeSortBy === "featured") {
+    // Always keep featured=true first
+    sort = {
+      featured: -1,
+    };
+  } else {
+    // Featured=true first,
+    // then apply the requested secondary sorting
+    sort = {
+      featured: -1,
+      [safeSortBy]: safeOrder,
+    };
+  }
 
   // =====================================
   // Cache Key
@@ -135,9 +158,7 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
   if (cachedData) {
     return successResponse(res, {
       message: "Public venues fetched successfully (from cache).",
-
       data: cachedData.data,
-
       pagination: cachedData.pagination,
     });
   }
@@ -184,9 +205,7 @@ export const getPublicVenues = asyncHandler(async (req, res) => {
 
     return successResponse(res, {
       message: "Public venues fetched successfully.",
-
       data: [],
-
       pagination,
     });
   }
@@ -555,7 +574,10 @@ export const getUpcomingConferencesByVenueId = asyncHandler(
     // Query Parameters
     // =====================================
 
-    const { sortBy = "startDate", order = "asc" } = req.query;
+    const {
+      sortBy = "startDate",
+      order = "asc",
+    } = req.query;
 
     // =====================================
     // Get Approved Venue
@@ -604,6 +626,7 @@ export const getUpcomingConferencesByVenueId = asyncHandler(
       "endDate",
       "conferenceName",
       "createdAt",
+      "featured",
     ];
 
     const safeSortBy = allowedSortFields.includes(sortBy)
@@ -612,9 +635,25 @@ export const getUpcomingConferencesByVenueId = asyncHandler(
 
     const safeOrder = order === "desc" ? -1 : 1;
 
-    const sort = {
-      [safeSortBy]: safeOrder,
-    };
+    // =====================================
+    // Sorting
+    // =====================================
+
+    let sort;
+
+    if (safeSortBy === "featured") {
+      // Always keep featured=true first
+      sort = {
+        featured: -1,
+      };
+    } else {
+      // Featured=true first,
+      // then requested secondary sorting
+      sort = {
+        featured: -1,
+        [safeSortBy]: safeOrder,
+      };
+    }
 
     // =====================================
     // Cache Key
@@ -667,7 +706,7 @@ export const getUpcomingConferencesByVenueId = asyncHandler(
         // Only required conference fields
         // =====================================
         .select(
-          "_id conferenceTypeId conferenceName conferenceShortName startDate endDate month year entryTypeId city stateId website companyId conferenceSegmentId uploadConferenceLogo committeeMember frequency aboutConference status",
+          "_id conferenceTypeId conferenceName conferenceShortName startDate endDate month year entryTypeId city stateId website companyId conferenceSegmentId uploadConferenceLogo committeeMember frequency aboutConference featured status",
         )
 
         // =====================================
@@ -714,9 +753,15 @@ export const getUpcomingConferencesByVenueId = asyncHandler(
           select: "_id entryTypeName",
         })
 
+        // =====================================
+        // Sort
+        // =====================================
         .sort(sort)
+
         .skip(skip)
+
         .limit(limit)
+
         .lean(),
 
       Conference.countDocuments(query),
@@ -769,7 +814,7 @@ export const getUpcomingConferencesByVenueId = asyncHandler(
     };
 
     // =====================================
-    // Save Cache
+    // Save Redis Cache
     // =====================================
 
     await setCache(cacheKey, publicVenue, 3600);
@@ -814,7 +859,10 @@ export const getUpcomingExhibitionsByVenueId = asyncHandler(
     // Query Parameters
     // =====================================
 
-    const { sortBy = "startDate", order = "asc" } = req.query;
+    const {
+      sortBy = "startDate",
+      order = "asc",
+    } = req.query;
 
     // =====================================
     // Get Approved Venue
@@ -863,6 +911,7 @@ export const getUpcomingExhibitionsByVenueId = asyncHandler(
       "endDate",
       "eventName",
       "createdAt",
+      "featured",
     ];
 
     const safeSortBy = allowedSortFields.includes(sortBy)
@@ -871,9 +920,25 @@ export const getUpcomingExhibitionsByVenueId = asyncHandler(
 
     const safeOrder = order === "desc" ? -1 : 1;
 
-    const sort = {
-      [safeSortBy]: safeOrder,
-    };
+    // =====================================
+    // Sorting
+    // =====================================
+
+    let sort;
+
+    if (safeSortBy === "featured") {
+      // Always keep featured=true first
+      sort = {
+        featured: -1,
+      };
+    } else {
+      // Featured=true first,
+      // then requested secondary sorting
+      sort = {
+        featured: -1,
+        [safeSortBy]: safeOrder,
+      };
+    }
 
     // =====================================
     // Cache Key
@@ -926,7 +991,7 @@ export const getUpcomingExhibitionsByVenueId = asyncHandler(
         // Only return required exhibition fields
         // =====================================
         .select(
-          "_id eventTypeId eventName eventShortName startDate endDate month year entryTypeId city stateId website companyId exhibitionTypeId uploadEventLogo frequency aboutExhibition exhibitorProfile speciality visitorProfile status",
+          "_id eventTypeId eventName eventShortName startDate endDate month year entryTypeId city stateId website companyId exhibitionTypeId uploadEventLogo frequency aboutExhibition exhibitorProfile speciality visitorProfile featured status",
         )
 
         // =====================================
@@ -964,9 +1029,15 @@ export const getUpcomingExhibitionsByVenueId = asyncHandler(
           select: "_id entryTypeName",
         })
 
+        // =====================================
+        // Sort
+        // =====================================
         .sort(sort)
+
         .skip(skip)
+
         .limit(limit)
+
         .lean(),
 
       Exhibition.countDocuments(query),
@@ -1019,7 +1090,7 @@ export const getUpcomingExhibitionsByVenueId = asyncHandler(
     };
 
     // =====================================
-    // Save Cache
+    // Save Redis Cache
     // =====================================
 
     await setCache(cacheKey, publicVenue, 3600);

@@ -110,6 +110,11 @@ const ExhibitionSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    featured: {
+      type: Boolean,
+      default: true,
+      index: true,
+    },
     // Approval Status
     status: {
       type: String,
@@ -170,7 +175,6 @@ ExhibitionSchema.index({
   createdAt: -1,
 });
 
-
 // Dynamic Event Status
 ExhibitionSchema.virtual("dynamicStatus").get(function () {
   if (!this.startDate || !this.endDate) {
@@ -210,7 +214,6 @@ ExhibitionSchema.set("toJSON", {
 ExhibitionSchema.set("toObject", {
   virtuals: true,
 });
-
 
 // Export
 const Exhibition =

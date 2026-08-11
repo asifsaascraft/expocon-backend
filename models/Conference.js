@@ -106,6 +106,11 @@ const ConferenceSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    featured: {
+      type: Boolean,
+      default: true,
+      index: true,
+    },
 
     // Approval Status
     status: {

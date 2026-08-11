@@ -145,6 +145,12 @@ const conferencePaths = {
                   example:
                     "International conference focused on advancements in cardiology.",
                 },
+                featured: {
+                  type: "boolean",
+                  example: true,
+                  description:
+                    "Whether the conference is featured on the public website.",
+                },
               },
             },
 
@@ -325,6 +331,15 @@ const conferencePaths = {
           },
           description: "Filter by Entry Type ID.",
         },
+
+        {
+          in: "query",
+          name: "featured",
+          schema: {
+            type: "boolean",
+          },
+          description: "Filter conferences by featured status.",
+        },
       ],
 
       responses: {
@@ -410,7 +425,7 @@ const conferencePaths = {
       },
     },
   },
-    //==============================
+  //==============================
   // Get Conference By ID
   //==============================
   "/conferences/{id}": {
@@ -641,6 +656,13 @@ const conferencePaths = {
                   example:
                     "International conference focused on advancements in cardiology.",
                 },
+
+                featured: {
+                  type: "boolean",
+                  example: false,
+                  description:
+                    "Whether the conference is featured on the public website.",
+                },
               },
             },
 
@@ -703,7 +725,7 @@ const conferencePaths = {
         },
       },
     },
-        //==============================
+    //==============================
     // Delete Conference
     //==============================
     delete: {
@@ -958,8 +980,7 @@ const conferencePaths = {
         },
 
         403: {
-          description:
-            "Forbidden. Only administrators can reject conferences.",
+          description: "Forbidden. Only administrators can reject conferences.",
         },
 
         404: {

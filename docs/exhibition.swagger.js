@@ -149,6 +149,13 @@ const exhibitionPaths = {
                   type: "string",
                   example: "Doctors, Hospitals, Pharma Companies",
                 },
+
+                featured: {
+                  type: "boolean",
+                  default: true,
+                  example: true,
+                  description: "Whether this exhibition is featured.",
+                },
               },
             },
           },
@@ -317,6 +324,16 @@ const exhibitionPaths = {
             type: "string",
           },
           description: "Filter by Entry Type ID.",
+        },
+
+        {
+          in: "query",
+          name: "featured",
+          required: false,
+          schema: {
+            type: "boolean",
+          },
+          description: "Filter exhibitions by featured status.",
         },
       ],
 
@@ -637,6 +654,13 @@ const exhibitionPaths = {
                 visitorProfile: {
                   type: "string",
                   example: "Doctors, Hospitals, Pharma Companies",
+                },
+
+                featured: {
+                  type: "boolean",
+                  default: true,
+                  example: true,
+                  description: "Whether this exhibition is featured.",
                 },
               },
             },

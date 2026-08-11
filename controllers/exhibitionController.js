@@ -66,6 +66,7 @@ export const createExhibition = asyncHandler(async (req, res) => {
     exhibitorProfile,
     speciality,
     visitorProfile,
+    featured,
   } = req.body;
 
   //==============================
@@ -263,6 +264,7 @@ export const createExhibition = asyncHandler(async (req, res) => {
     exhibitorProfile: exhibitorProfile?.trim() || null,
     speciality: speciality?.trim() || null,
     visitorProfile: visitorProfile?.trim() || null,
+    featured: featured ?? true,
     createdBy: req.user._id,
   };
 
@@ -522,6 +524,7 @@ export const updateExhibition = asyncHandler(async (req, res) => {
     exhibitorProfile,
     speciality,
     visitorProfile,
+    featured,
   } = req.body;
 
   //==============================
@@ -767,6 +770,7 @@ export const updateExhibition = asyncHandler(async (req, res) => {
   exhibition.exhibitorProfile = exhibitorProfile?.trim() || null;
   exhibition.speciality = speciality?.trim() || null;
   exhibition.visitorProfile = visitorProfile?.trim() || null;
+  exhibition.featured = featured ?? true;
 
   //==============================
   // Replace Event Logo
