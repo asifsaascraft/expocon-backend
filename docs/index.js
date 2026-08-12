@@ -22,7 +22,7 @@ import advertisementPaths from "./advertisement.swagger.js";
 
 
 import publicVenuePaths from "./public/publicVenue.swagger.js";
-
+import publicStatePaths from "./public/publicState.swagger.js";
 // import partnerPaths from "./partner.swagger.js";
 // import staffPaths from "./staff.swagger.js";
 
@@ -53,6 +53,7 @@ const paths = {
 
 
   ...publicVenuePaths,
+  ...publicStatePaths,
 };
 
 export default paths;

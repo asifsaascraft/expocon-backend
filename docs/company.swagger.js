@@ -177,7 +177,7 @@ const companyPaths = {
             type: "string",
           },
           description:
-            "Search by company name, company email, city, mobile or phone.",
+            "Search by company name, company email, city, mobile, phone, state name or company type name.",
         },
         {
           in: "query",

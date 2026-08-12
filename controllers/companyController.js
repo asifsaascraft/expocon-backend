@@ -201,8 +201,9 @@ export const getCompanies = asyncHandler(async (req, res) => {
 
   const { page, limit, skip } = getPagination(req);
 
+  //==============================
   // Search
-
+  //==============================
   const searchQuery = buildSearchQuery(req, [
     "companyName",
     "companyEmail",
@@ -210,6 +211,75 @@ export const getCompanies = asyncHandler(async (req, res) => {
     "mobile",
     "phone",
   ]);
+
+  //=====================================
+  // Search by Company Type & State Name
+  //=====================================
+  if (req.query.search?.trim()) {
+    const searchTerm = req.query.search.trim();
+
+    //=====================================
+    // Find Matching Company Types & States
+    //=====================================
+    const [matchingCompanyTypes, matchingStates] = await Promise.all([
+      CompanyType.find({
+        companyTypeName: {
+          $regex: searchTerm,
+          $options: "i",
+        },
+      }).select("_id"),
+
+      State.find({
+        state: {
+          $regex: searchTerm,
+          $options: "i",
+        },
+      }).select("_id"),
+    ]);
+
+    //=====================================
+    // Extract IDs
+    //=====================================
+    const companyTypeIds = matchingCompanyTypes.map(
+      (companyType) => companyType._id,
+    );
+
+    const stateIds = matchingStates.map((state) => state._id);
+
+    //=====================================
+    // Add Reference Searches
+    //=====================================
+    const referenceSearchConditions = [];
+
+    // Search by Company Type
+    if (companyTypeIds.length > 0) {
+      referenceSearchConditions.push({
+        companyTypeId: {
+          $in: companyTypeIds,
+        },
+      });
+    }
+
+    // Search by State
+    if (stateIds.length > 0) {
+      referenceSearchConditions.push({
+        stateId: {
+          $in: stateIds,
+        },
+      });
+    }
+
+    //=====================================
+    // Merge Reference Search With
+    // Existing Search
+    //=====================================
+    if (referenceSearchConditions.length > 0) {
+      searchQuery.$or = [
+        ...(searchQuery.$or || []),
+        ...referenceSearchConditions,
+      ];
+    }
+  }
 
   // Filters
 
