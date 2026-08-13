@@ -453,7 +453,7 @@ const venuePaths = {
 
                 featured: {
                   type: "boolean",
-                  example: true,
+                  example: false,
                 },
 
                 phone: {

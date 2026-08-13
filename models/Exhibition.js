@@ -112,7 +112,7 @@ const ExhibitionSchema = new mongoose.Schema(
     },
     featured: {
       type: Boolean,
-      default: true,
+      default: false,
       index: true,
     },
     // Approval Status

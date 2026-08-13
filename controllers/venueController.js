@@ -121,7 +121,8 @@ export const createVenue = asyncHandler(async (req, res) => {
     city: city.trim(),
     address: address.trim(),
     website: website.trim(),
-    featured: featured !== undefined ? featured === "true" : true,
+    featured:
+      featured !== undefined ? featured === true || featured === "true" : false,
     mapLink: mapLink.trim(),
     phone: phone?.trim() || null,
 
@@ -652,7 +653,7 @@ export const approveVenue = asyncHandler(async (req, res) => {
   venue.rejectedBy = null;
   venue.rejectedAt = null;
   venue.rejectionReason = null;
-  
+
   // Track Update
 
   venue.updatedBy = req.user._id;
@@ -691,12 +692,12 @@ export const rejectVenue = asyncHandler(async (req, res) => {
 
   // Validate Rejection Reason
 
-if (!rejectionReason?.trim()) {
-  return errorResponse(res, {
-    statusCode: 400,
-    message: "Rejection reason is required.",
-  });
-}
+  if (!rejectionReason?.trim()) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Rejection reason is required.",
+    });
+  }
 
   // Find Venue
 
