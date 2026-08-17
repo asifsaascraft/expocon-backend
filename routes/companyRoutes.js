@@ -3,6 +3,7 @@ import express from "express";
 import {
   createCompany,
   getCompanies,
+  getApprovedCompaniesDropdown,
   getCompanyById,
   updateCompany,
   deleteCompany,
@@ -36,6 +37,15 @@ router.get(
   authorize("admin", "staff"),
   getCompanies,
 );
+
+// Get Approved Companies For Dropdown
+router.get(
+  "/dropdown",
+  protect,
+  authorize("admin", "staff"),
+  getApprovedCompaniesDropdown,
+);
+
 
 // Get Company By ID
 router.get(

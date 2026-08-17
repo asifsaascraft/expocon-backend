@@ -317,6 +317,127 @@ const companyPaths = {
     },
   },
   //==============================
+  // Get Approved Companies For Dropdown
+  //==============================
+  "/companies/dropdown": {
+    get: {
+      tags: ["Company"],
+
+      summary: "Get Approved Companies For Dropdown",
+
+      description:
+        "Retrieve all approved companies for dropdown usage. Only company ID and company name are returned. Results are sorted alphabetically by company name. Pagination is not used.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          in: "query",
+
+          name: "search",
+
+          required: false,
+
+          schema: {
+            type: "string",
+          },
+
+          description: "Search approved companies by company name.",
+        },
+      ],
+
+      responses: {
+        200: {
+          description: "Approved companies fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "Approved companies fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      type: "object",
+
+                      properties: {
+                        _id: {
+                          type: "string",
+
+                          example: "687c9d2ef7b79a3d12345678",
+                        },
+
+                        companyName: {
+                          type: "string",
+
+                          example: "Apollo Hospitals",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+
+              example: {
+                success: true,
+
+                message: "Approved companies fetched successfully.",
+
+                data: [
+                  {
+                    _id: "687c9d2ef7b79a3d12345678",
+
+                    companyName: "ABC Healthcare",
+                  },
+
+                  {
+                    _id: "687c9d2ef7b79a3d12345679",
+
+                    companyName: "Apollo Hospitals",
+                  },
+
+                  {
+                    _id: "687c9d2ef7b79a3d12345680",
+
+                    companyName: "Bharat Medical Solutions",
+                  },
+                ],
+              },
+            },
+          },
+        },
+
+        401: {
+          description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden. Only admin and staff can access this API.",
+        },
+
+        500: {
+          description: "Internal server error.",
+        },
+      },
+    },
+  },
+  //==============================
   // Get Company by ID
   //============================
   "/companies/{id}": {

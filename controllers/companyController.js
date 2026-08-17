@@ -380,6 +380,53 @@ export const getCompanies = asyncHandler(async (req, res) => {
 });
 
 //==============================
+// Get Approved Companies For Dropdown
+//==============================
+export const getApprovedCompaniesDropdown = asyncHandler(
+  async (req, res) => {
+    //==============================
+    // Search
+    //==============================
+    const search = req.query.search?.trim();
+
+    //==============================
+    // Query
+    //==============================
+    const query = {
+      status: "approved",
+    };
+
+    //==============================
+    // Search By Company Name
+    //==============================
+    if (search) {
+      query.companyName = {
+        $regex: search,
+        $options: "i",
+      };
+    }
+
+    //==============================
+    // Get Companies
+    //==============================
+    const companies = await Company.find(query)
+      .select("_id companyName")
+      .sort({
+        companyName: 1,
+      })
+      .lean();
+
+    //==============================
+    // Response
+    //==============================
+    return successResponse(res, {
+      message: "Approved companies fetched successfully.",
+      data: companies,
+    });
+  },
+);
+
+//==============================
 // Get Company By ID
 //==============================
 export const getCompanyById = asyncHandler(async (req, res) => {
@@ -878,3 +925,5 @@ export const rejectCompany = asyncHandler(async (req, res) => {
     data: populatedCompany,
   });
 });
+
+
