@@ -3,6 +3,7 @@ import express from "express";
 import {
   createVenue,
   getVenues,
+  getApprovedVenuesDropdown,
   getVenueById,
   updateVenue,
   deleteVenue,
@@ -44,6 +45,14 @@ router.get(
   protect,
   authorize("admin", "staff"),
   getVenues,
+);
+
+// Get Approved Venues For Dropdown
+router.get(
+  "/dropdown",
+  protect,
+  authorize("admin", "staff"),
+  getApprovedVenuesDropdown,
 );
 
 // Get Venue By ID

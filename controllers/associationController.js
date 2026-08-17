@@ -306,6 +306,54 @@ export const getAssociations = asyncHandler(async (req, res) => {
 });
 
 //==============================
+// Get Approved Associations For Dropdown
+//==============================
+export const getApprovedAssociationsDropdown = asyncHandler(
+  async (req, res) => {
+    //==============================
+    // Search
+    //==============================
+    const search = req.query.search?.trim();
+
+    //==============================
+    // Query
+    //==============================
+    const query = {
+      status: "approved",
+    };
+
+    //==============================
+    // Search By Association Name
+    //==============================
+    if (search) {
+      query.associationName = {
+        $regex: search,
+        $options: "i",
+      };
+    }
+
+    //==============================
+    // Get Associations
+    //==============================
+    const associations = await Association.find(query)
+      .select("_id associationName")
+      .sort({
+        associationName: 1,
+      })
+      .lean();
+
+    //==============================
+    // Response
+    //==============================
+    return successResponse(res, {
+      message: "Approved associations fetched successfully.",
+      data: associations,
+    });
+  },
+);
+
+
+//==============================
 // Get Association By ID
 //==============================
 export const getAssociationById = asyncHandler(async (req, res) => {

@@ -298,6 +298,125 @@ const venuePaths = {
     },
   },
   //==============================
+  // Get Approved Venues For Dropdown
+  //==============================
+  "/venues/dropdown": {
+    get: {
+      tags: ["Venue"],
+
+      summary: "Get Approved Venues For Dropdown",
+
+      description:
+        "Retrieve all approved venues for dropdown usage. Only venue ID and venue name are returned. Results are sorted alphabetically by venue name. Pagination and Redis cache are not used.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          in: "query",
+
+          name: "search",
+
+          required: false,
+
+          schema: {
+            type: "string",
+          },
+
+          description: "Search approved venues by venue name.",
+        },
+      ],
+
+      responses: {
+        200: {
+          description: "Approved venues fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "Approved venues fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      type: "object",
+
+                      properties: {
+                        _id: {
+                          type: "string",
+                          example: "687c9d2ef7b79a3d12345678",
+                        },
+
+                        venueName: {
+                          type: "string",
+                          example: "Hyderabad International Convention Centre",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+
+              example: {
+                success: true,
+
+                message: "Approved venues fetched successfully.",
+
+                data: [
+                  {
+                    _id: "687c9d2ef7b79a3d12345678",
+
+                    venueName: "Bangalore International Exhibition Centre",
+                  },
+
+                  {
+                    _id: "687c9d2ef7b79a3d12345679",
+
+                    venueName: "Hyderabad International Convention Centre",
+                  },
+
+                  {
+                    _id: "687c9d2ef7b79a3d12345680",
+
+                    venueName: "India Expo Centre",
+                  },
+                ],
+              },
+            },
+          },
+        },
+
+        401: {
+          description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden. Only admin and staff can access this API.",
+        },
+
+        500: {
+          description: "Internal server error.",
+        },
+      },
+    },
+  },
+  //==============================
   // Get Venue by ID
   //==============================
   "/venues/{id}": {

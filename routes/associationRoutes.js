@@ -3,6 +3,7 @@ import express from "express";
 import {
   createAssociation,
   getAssociations,
+  getApprovedAssociationsDropdown,
   getAssociationById,
   updateAssociation,
   deleteAssociation,
@@ -33,6 +34,15 @@ router.get(
   protect,
   authorize("admin", "staff"),
   getAssociations,
+);
+
+
+// Get Approved Associations For Dropdown
+router.get(
+  "/dropdown",
+  protect,
+  authorize("admin", "staff"),
+  getApprovedAssociationsDropdown,
 );
 
 // Get Association By ID

@@ -281,6 +281,53 @@ export const getVenues = asyncHandler(async (req, res) => {
 });
 
 //==============================
+// Get Approved Venues For Dropdown
+//==============================
+export const getApprovedVenuesDropdown = asyncHandler(
+  async (req, res) => {
+    //==============================
+    // Search
+    //==============================
+    const search = req.query.search?.trim();
+
+    //==============================
+    // Query
+    //==============================
+    const query = {
+      status: "approved",
+    };
+
+    //==============================
+    // Search By Venue Name
+    //==============================
+    if (search) {
+      query.venueName = {
+        $regex: search,
+        $options: "i",
+      };
+    }
+
+    //==============================
+    // Get Venues
+    //==============================
+    const venues = await Venue.find(query)
+      .select("_id venueName")
+      .sort({
+        venueName: 1,
+      })
+      .lean();
+
+    //==============================
+    // Response
+    //==============================
+    return successResponse(res, {
+      message: "Approved venues fetched successfully.",
+      data: venues,
+    });
+  },
+);
+
+//==============================
 // Get Venue By ID
 //==============================
 export const getVenueById = asyncHandler(async (req, res) => {

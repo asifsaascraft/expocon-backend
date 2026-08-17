@@ -281,6 +281,125 @@ const associationPaths = {
     },
   },
   //==============================
+  // Get Approved Associations For Dropdown
+  //==============================
+  "/associations/dropdown": {
+    get: {
+      tags: ["Association"],
+
+      summary: "Get Approved Associations For Dropdown",
+
+      description:
+        "Retrieve all approved associations for dropdown usage. Only association ID and association name are returned. Results are sorted alphabetically by association name. Pagination and Redis cache are not used.",
+
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
+
+      parameters: [
+        {
+          in: "query",
+
+          name: "search",
+
+          required: false,
+
+          schema: {
+            type: "string",
+          },
+
+          description: "Search approved associations by association name.",
+        },
+      ],
+
+      responses: {
+        200: {
+          description: "Approved associations fetched successfully.",
+
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+
+                properties: {
+                  success: {
+                    type: "boolean",
+                    example: true,
+                  },
+
+                  message: {
+                    type: "string",
+                    example: "Approved associations fetched successfully.",
+                  },
+
+                  data: {
+                    type: "array",
+
+                    items: {
+                      type: "object",
+
+                      properties: {
+                        _id: {
+                          type: "string",
+                          example: "687c9d2ef7b79a3d12345678",
+                        },
+
+                        associationName: {
+                          type: "string",
+                          example: "Indian Medical Association",
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+
+              example: {
+                success: true,
+
+                message: "Approved associations fetched successfully.",
+
+                data: [
+                  {
+                    _id: "687c9d2ef7b79a3d12345678",
+
+                    associationName: "Association of Engineers",
+                  },
+
+                  {
+                    _id: "687c9d2ef7b79a3d12345679",
+
+                    associationName: "Indian Medical Association",
+                  },
+
+                  {
+                    _id: "687c9d2ef7b79a3d12345680",
+
+                    associationName: "National Medical Association",
+                  },
+                ],
+              },
+            },
+          },
+        },
+
+        401: {
+          description: "Unauthorized.",
+        },
+
+        403: {
+          description: "Forbidden. Only admin and staff can access this API.",
+        },
+
+        500: {
+          description: "Internal server error.",
+        },
+      },
+    },
+  },
+  //==============================
   // Get Association By ID
   //==============================
   "/associations/{id}": {
