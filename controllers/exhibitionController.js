@@ -563,10 +563,10 @@ export const updateExhibition = asyncHandler(async (req, res) => {
       });
     }
 
-    if (exhibition.status !== "pending") {
+    if (!["pending", "rejected"].includes(exhibition.status)) {
       return errorResponse(res, {
         statusCode: 403,
-        message: "You can update only your pending exhibition.",
+        message: "You can update only your pending or rejected exhibition.",
       });
     }
   }
@@ -771,6 +771,24 @@ export const updateExhibition = asyncHandler(async (req, res) => {
   exhibition.speciality = speciality?.trim() || null;
   exhibition.visitorProfile = visitorProfile?.trim() || null;
   exhibition.featured = featured ?? true;
+
+  //==============================
+  // Reset Rejected Exhibition
+  //==============================
+
+  if (exhibition.status === "rejected") {
+    // Reset status
+    exhibition.status = "pending";
+
+    // Clear Rejection Information
+    exhibition.rejectedBy = null;
+    exhibition.rejectedAt = null;
+    exhibition.rejectionReason = null;
+
+    // Clear Approval Information
+    exhibition.approvedBy = null;
+    exhibition.approvedAt = null;
+  }
 
   //==============================
   // Replace Event Logo

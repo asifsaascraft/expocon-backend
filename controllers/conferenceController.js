@@ -624,10 +624,10 @@ export const updateConference = asyncHandler(async (req, res) => {
       });
     }
 
-    if (conference.status !== "pending") {
+    if (!["pending", "rejected"].includes(conference.status)) {
       return errorResponse(res, {
         statusCode: 403,
-        message: "You can update only your pending conference.",
+        message: "You can update only your pending or rejected conference.",
       });
     }
   }
@@ -859,6 +859,23 @@ export const updateConference = asyncHandler(async (req, res) => {
   conference.aboutConference = aboutConference?.trim() || null;
   if (featured !== undefined) {
     conference.featured = featured === true || featured === "true";
+  }
+
+  //==============================
+  // Reset Rejected Conference
+  //==============================
+
+  if (conference.status === "rejected") {
+    conference.status = "pending";
+
+    // Clear Rejection Information
+    conference.rejectedBy = null;
+    conference.rejectedAt = null;
+    conference.rejectionReason = null;
+
+    // Clear Approval Information
+    conference.approvedBy = null;
+    conference.approvedAt = null;
   }
 
   //==============================

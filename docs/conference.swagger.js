@@ -515,7 +515,7 @@ const conferencePaths = {
       summary: "Update Conference",
 
       description:
-        "Update an existing conference. Admin can update any conference. Staff can update only their own pending conferences.",
+        "Update an existing conference. Admin can update any conference. Staff can update only their own pending or rejected conferences. When a rejected conference is updated by its owner, its status is reset to pending and all previous approval and rejection information is cleared.",
 
       security: [
         {

@@ -510,7 +510,7 @@ const exhibitionPaths = {
       summary: "Update Exhibition",
 
       description:
-        "Update an existing exhibition. Admin can update any exhibition. Staff can update only their own pending exhibitions.",
+        "Update an existing exhibition. Admin can update any exhibition. Staff can update only their own pending or rejected exhibitions. When a rejected exhibition is updated by its owner, its status is reset to pending and all previous approval and rejection information is cleared.",
 
       security: [
         {
