@@ -94,8 +94,7 @@ const contactPaths = {
         },
 
         404: {
-          description:
-            "State, Company, Venue or Association not found.",
+          description: "State, Company, Venue or Association not found.",
         },
 
         409: {
@@ -107,7 +106,7 @@ const contactPaths = {
         },
       },
     },
-        //==============================
+    //==============================
     // Get Contacts
     //==============================
     get: {
@@ -326,7 +325,7 @@ const contactPaths = {
       },
     },
   },
-    //==============================
+  //==============================
   // Get Contact By ID
   //==============================
   "/contacts/{id}": {
@@ -410,7 +409,7 @@ const contactPaths = {
         },
       },
     },
-        //==============================
+    //==============================
     // Update Contact
     //==============================
     put: {
@@ -419,8 +418,7 @@ const contactPaths = {
       summary: "Update Contact",
 
       description:
-        "Update an existing contact. Admin can update any contact. Staff can update only their own pending contacts.",
-
+        "Update an existing contact. Admin can update any contact. Staff can update only their own pending or rejected contacts. When a rejected contact is updated by its owner, its status is reset to pending and all previous approval and rejection information is cleared.",
       security: [
         {
           bearerAuth: [],
@@ -551,7 +549,7 @@ const contactPaths = {
         },
       },
     },
-        //==============================
+    //==============================
     // Delete Contact
     //==============================
     delete: {
@@ -696,8 +694,7 @@ const contactPaths = {
         },
 
         400: {
-          description:
-            "Invalid contact ID or contact is already approved.",
+          description: "Invalid contact ID or contact is already approved.",
         },
 
         401: {
@@ -705,8 +702,7 @@ const contactPaths = {
         },
 
         403: {
-          description:
-            "Forbidden. Only administrators can approve contacts.",
+          description: "Forbidden. Only administrators can approve contacts.",
         },
 
         404: {
@@ -719,7 +715,7 @@ const contactPaths = {
       },
     },
   },
-    //==============================
+  //==============================
   // Reject Contact
   //==============================
   "/contacts/{id}/reject": {
@@ -729,7 +725,7 @@ const contactPaths = {
       summary: "Reject Contact",
 
       description:
-        "Reject a pending contact. Only administrators are allowed to reject contacts.",
+        "Reject an contact. Both pending and approved contacts can be rejected. Only administrators are allowed to reject contacts.",
 
       security: [
         {
@@ -806,8 +802,7 @@ const contactPaths = {
         },
 
         400: {
-          description:
-            "Invalid contact ID or contact is already rejected.",
+          description: "Invalid contact ID or contact is already rejected.",
         },
 
         401: {
@@ -815,8 +810,7 @@ const contactPaths = {
         },
 
         403: {
-          description:
-            "Forbidden. Only administrators can reject contacts.",
+          description: "Forbidden. Only administrators can reject contacts.",
         },
 
         404: {

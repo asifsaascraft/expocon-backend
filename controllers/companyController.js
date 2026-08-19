@@ -895,13 +895,6 @@ export const rejectCompany = asyncHandler(async (req, res) => {
     });
   }
 
-  if (company.status === "approved") {
-    return errorResponse(res, {
-      statusCode: 400,
-      message: "Approved company cannot be rejected.",
-    });
-  }
-
   // Reject Company
 
   company.status = "rejected";

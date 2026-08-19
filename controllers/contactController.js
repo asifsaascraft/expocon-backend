@@ -256,11 +256,7 @@ export const getContacts = asyncHandler(async (req, res) => {
 
   // Search
 
-  const searchQuery = buildSearchQuery(req, [
-    "fullName",
-    "email",
-    "mobile",
-  ]);
+  const searchQuery = buildSearchQuery(req, ["fullName", "email", "mobile"]);
 
   // Filters
 
@@ -346,10 +342,7 @@ export const getContacts = asyncHandler(async (req, res) => {
   //==============================
 
   const [contacts, total] = await Promise.all([
-    populateContact(Contact.find(query))
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
+    populateContact(Contact.find(query)).sort(sort).skip(skip).limit(limit),
 
     Contact.countDocuments(query),
   ]);
@@ -460,7 +453,6 @@ export const getContactById = asyncHandler(async (req, res) => {
   });
 });
 
-
 //==============================
 // Update Contact
 //==============================
@@ -513,10 +505,10 @@ export const updateContact = asyncHandler(async (req, res) => {
       });
     }
 
-    if (contact.status !== "pending") {
+    if (!["pending", "rejected"].includes(contact.status)) {
       return errorResponse(res, {
         statusCode: 403,
-        message: "You can update only your pending contact.",
+        message: "You can update only your pending or rejected contact.",
       });
     }
   }
@@ -556,10 +548,7 @@ export const updateContact = asyncHandler(async (req, res) => {
   ];
 
   for (const item of ids) {
-    if (
-      item.value &&
-      !mongoose.Types.ObjectId.isValid(item.value)
-    ) {
+    if (item.value && !mongoose.Types.ObjectId.isValid(item.value)) {
       return errorResponse(res, {
         statusCode: 400,
         message: item.message,
@@ -571,18 +560,11 @@ export const updateContact = asyncHandler(async (req, res) => {
   // Validate Master Data
   //==============================
 
-  const [
-    state,
-    company,
-    venue,
-    association,
-  ] = await Promise.all([
+  const [state, company, venue, association] = await Promise.all([
     stateId ? State.findById(stateId) : null,
     companyId ? Company.findById(companyId) : null,
     venueId ? Venue.findById(venueId) : null,
-    associationId
-      ? Association.findById(associationId)
-      : null,
+    associationId ? Association.findById(associationId) : null,
   ]);
 
   if (stateId && !state) {
@@ -618,9 +600,7 @@ export const updateContact = asyncHandler(async (req, res) => {
   //==============================
 
   if (email?.trim()) {
-    const escapedEmail = email
-      .trim()
-      .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const escapedEmail = email.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
     const existingEmail = await Contact.findOne({
       email: {
@@ -665,14 +645,30 @@ export const updateContact = asyncHandler(async (req, res) => {
   //==============================
 
   contact.fullName = fullName.trim();
-  contact.email = email?.trim()
-    ? email.trim().toLowerCase()
-    : null;
+  contact.email = email?.trim() ? email.trim().toLowerCase() : null;
   contact.mobile = mobile?.trim() || null;
   contact.stateId = stateId || null;
   contact.companyId = companyId || null;
   contact.venueId = venueId || null;
   contact.associationId = associationId || null;
+
+  //==============================
+  // Reset Rejected Company
+  //==============================
+
+  if (contact.status === "rejected") {
+    // Reset status
+    contact.status = "pending";
+
+    // Clear Rejection Information
+    contact.rejectedBy = null;
+    contact.rejectedAt = null;
+    contact.rejectionReason = null;
+
+    // Clear Approval Information
+    contact.approvedBy = null;
+    contact.approvedAt = null;
+  }
 
   //==============================
   // Audit Information
@@ -690,9 +686,7 @@ export const updateContact = asyncHandler(async (req, res) => {
   // Populate Contact
   //==============================
 
-  const populatedContact = await populateContact(
-    Contact.findById(contact._id),
-  );
+  const populatedContact = await populateContact(Contact.findById(contact._id));
 
   //==============================
   // Clear Cache
@@ -827,9 +821,7 @@ export const approveContact = asyncHandler(async (req, res) => {
 
   // Populate Contact
 
-  const populatedContact = await populateContact(
-    Contact.findById(contact._id),
-  );
+  const populatedContact = await populateContact(Contact.findById(contact._id));
 
   // Clear Cache
 
@@ -887,13 +879,6 @@ export const rejectContact = asyncHandler(async (req, res) => {
     });
   }
 
-  if (contact.status === "approved") {
-    return errorResponse(res, {
-      statusCode: 400,
-      message: "Approved contact cannot be rejected.",
-    });
-  }
-
   // Reject Contact
 
   contact.status = "rejected";
@@ -914,9 +899,7 @@ export const rejectContact = asyncHandler(async (req, res) => {
 
   // Populate Contact
 
-  const populatedContact = await populateContact(
-    Contact.findById(contact._id),
-  );
+  const populatedContact = await populateContact(Contact.findById(contact._id));
 
   // Clear Cache
 
