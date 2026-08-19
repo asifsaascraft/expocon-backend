@@ -382,47 +382,49 @@ export const getCompanies = asyncHandler(async (req, res) => {
 //==============================
 // Get Approved Companies For Dropdown
 //==============================
-export const getApprovedCompaniesDropdown = asyncHandler(async (req, res) => {
-  //==============================
-  // Search
-  //==============================
-  const search = req.query.search?.trim();
+export const getApprovedCompaniesDropdown = asyncHandler(
+  async (req, res) => {
+    //==============================
+    // Search
+    //==============================
+    const search = req.query.search?.trim();
 
-  //==============================
-  // Query
-  //==============================
-  const query = {
-    status: "approved",
-  };
-
-  //==============================
-  // Search By Company Name
-  //==============================
-  if (search) {
-    query.companyName = {
-      $regex: search,
-      $options: "i",
+    //==============================
+    // Query
+    //==============================
+    const query = {
+      status: "approved",
     };
-  }
 
-  //==============================
-  // Get Companies
-  //==============================
-  const companies = await Company.find(query)
-    .select("_id companyName")
-    .sort({
-      companyName: 1,
-    })
-    .lean();
+    //==============================
+    // Search By Company Name
+    //==============================
+    if (search) {
+      query.companyName = {
+        $regex: search,
+        $options: "i",
+      };
+    }
 
-  //==============================
-  // Response
-  //==============================
-  return successResponse(res, {
-    message: "Approved companies fetched successfully.",
-    data: companies,
-  });
-});
+    //==============================
+    // Get Companies
+    //==============================
+    const companies = await Company.find(query)
+      .select("_id companyName")
+      .sort({
+        companyName: 1,
+      })
+      .lean();
+
+    //==============================
+    // Response
+    //==============================
+    return successResponse(res, {
+      message: "Approved companies fetched successfully.",
+      data: companies,
+    });
+  },
+);
 
 //==============================
 // Get Company By ID
@@ -542,10 +544,10 @@ export const updateCompany = asyncHandler(async (req, res) => {
       });
     }
 
-    if (!["pending", "rejected"].includes(company.status)) {
+    if (company.status !== "pending") {
       return errorResponse(res, {
         statusCode: 403,
-        message: "You can update only your pending or rejected company.",
+        message: "You can update only your pending company.",
       });
     }
   }
@@ -676,24 +678,6 @@ export const updateCompany = asyncHandler(async (req, res) => {
   company.phone = phone?.trim() || null;
   company.mobile = mobile?.trim() || null;
 
-  //==============================
-  // Reset Rejected Company
-  //==============================
-
-  if (company.status === "rejected") {
-    // Reset status
-    company.status = "pending";
-
-    // Clear Rejection Information
-    company.rejectedBy = null;
-    company.rejectedAt = null;
-    company.rejectionReason = null;
-
-    // Clear Approval Information
-    company.approvedBy = null;
-    company.approvedAt = null;
-  }
-
   if (req.file) {
     // Delete old logo from S3
     if (company.uploadLogo) {
@@ -817,6 +801,13 @@ export const approveCompany = asyncHandler(async (req, res) => {
     });
   }
 
+  if (company.status === "rejected") {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Rejected company cannot be approved.",
+    });
+  }
+
   // Approve Company
 
   company.status = "approved";
@@ -934,3 +925,5 @@ export const rejectCompany = asyncHandler(async (req, res) => {
     data: populatedCompany,
   });
 });
+
+

@@ -352,6 +352,7 @@ export const getApprovedAssociationsDropdown = asyncHandler(
   },
 );
 
+
 //==============================
 // Get Association By ID
 //==============================
@@ -471,10 +472,10 @@ export const updateAssociation = asyncHandler(async (req, res) => {
       });
     }
 
-    if (!["pending", "rejected"].includes(association.status)) {
+    if (association.status !== "pending") {
       return errorResponse(res, {
         statusCode: 403,
-        message: "You can update only your pending or rejected association.",
+        message: "You can update only your pending association.",
       });
     }
   }
@@ -579,24 +580,6 @@ export const updateAssociation = asyncHandler(async (req, res) => {
   association.address = address.trim();
   association.website = website.trim();
   association.associationTypeId = associationTypeId;
-
-  //==============================
-  // Reset Rejected Association
-  //==============================
-
-  if (association.status === "rejected") {
-    // Reset status
-    association.status = "pending";
-
-    // Clear Rejection Information
-    association.rejectedBy = null;
-    association.rejectedAt = null;
-    association.rejectionReason = null;
-
-    // Clear Approval Information
-    association.approvedBy = null;
-    association.approvedAt = null;
-  }
 
   //==============================
   // Audit Information
@@ -808,6 +791,13 @@ export const rejectAssociation = asyncHandler(async (req, res) => {
     return errorResponse(res, {
       statusCode: 400,
       message: "Association is already rejected.",
+    });
+  }
+
+  if (association.status === "approved") {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Approved association cannot be rejected.",
     });
   }
 

@@ -522,7 +522,7 @@ const companyPaths = {
       tags: ["Company"],
       summary: "Update Company",
       description:
-        "Update an existing company. Admin can update any company. Staff can update only their own pending companies.",
+        "Update an existing company. Admin can update any company. Staff can update only their own pending or rejected companies. When a rejected company is updated by its owner, its status is reset to pending and all previous approval and rejection information is cleared.",
 
       security: [
         {
@@ -839,7 +839,7 @@ const companyPaths = {
       tags: ["Company"],
       summary: "Reject Company",
       description:
-        "Reject a pending company. Only administrators are allowed to reject companies.",
+        "Reject an company. Both pending and approved companies can be rejected. Only administrators are allowed to reject companies.",
 
       security: [
         {

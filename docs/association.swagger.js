@@ -493,7 +493,7 @@ const associationPaths = {
       summary: "Update Association",
 
       description:
-        "Update an existing association. Admin can update any association. Staff can update only their own pending associations.",
+        "Update an existing association. Admin can update any association. Staff can update only their own pending or rejected associations. When a rejected association is updated by its owner, its status is reset to pending and all previous approval and rejection information is cleared.",
 
       security: [
         {
@@ -805,7 +805,7 @@ const associationPaths = {
       summary: "Reject Association",
 
       description:
-        "Reject a pending association. Only administrators are allowed to reject associations.",
+        "Reject a association. Both pending and approved associations can be rejected. Only administrators are allowed to reject associations.",
 
       security: [
         {

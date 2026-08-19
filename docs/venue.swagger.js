@@ -502,7 +502,7 @@ const venuePaths = {
       tags: ["Venue"],
       summary: "Update Venue",
       description:
-        "Update an existing venue. Admin can update any venue. Staff can update only their own pending venues.",
+        "Update an existing venue. Admin can update any venue. Staff can update only their own pending or rejected venues. When a rejected venue is updated by its owner, its status is reset to pending and all previous approval and rejection information is cleared.",
 
       security: [
         {
@@ -813,7 +813,7 @@ const venuePaths = {
       tags: ["Venue"],
       summary: "Reject Venue",
       description:
-        "Reject a pending venue. Only administrators are allowed to reject venues.",
+        "Reject an venue. Both pending and approved venues can be rejected. Only administrators are allowed to reject venues.",
 
       security: [
         {

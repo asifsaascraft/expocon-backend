@@ -283,47 +283,49 @@ export const getVenues = asyncHandler(async (req, res) => {
 //==============================
 // Get Approved Venues For Dropdown
 //==============================
-export const getApprovedVenuesDropdown = asyncHandler(async (req, res) => {
-  //==============================
-  // Search
-  //==============================
-  const search = req.query.search?.trim();
+export const getApprovedVenuesDropdown = asyncHandler(
+  async (req, res) => {
+    //==============================
+    // Search
+    //==============================
+    const search = req.query.search?.trim();
 
-  //==============================
-  // Query
-  //==============================
-  const query = {
-    status: "approved",
-  };
-
-  //==============================
-  // Search By Venue Name
-  //==============================
-  if (search) {
-    query.venueName = {
-      $regex: search,
-      $options: "i",
+    //==============================
+    // Query
+    //==============================
+    const query = {
+      status: "approved",
     };
-  }
 
-  //==============================
-  // Get Venues
-  //==============================
-  const venues = await Venue.find(query)
-    .select("_id venueName")
-    .sort({
-      venueName: 1,
-    })
-    .lean();
+    //==============================
+    // Search By Venue Name
+    //==============================
+    if (search) {
+      query.venueName = {
+        $regex: search,
+        $options: "i",
+      };
+    }
 
-  //==============================
-  // Response
-  //==============================
-  return successResponse(res, {
-    message: "Approved venues fetched successfully.",
-    data: venues,
-  });
-});
+    //==============================
+    // Get Venues
+    //==============================
+    const venues = await Venue.find(query)
+      .select("_id venueName")
+      .sort({
+        venueName: 1,
+      })
+      .lean();
+
+    //==============================
+    // Response
+    //==============================
+    return successResponse(res, {
+      message: "Approved venues fetched successfully.",
+      data: venues,
+    });
+  },
+);
 
 //==============================
 // Get Venue By ID
@@ -440,10 +442,10 @@ export const updateVenue = asyncHandler(async (req, res) => {
       });
     }
 
-    if (!["pending", "rejected"].includes(venue.status)) {
+    if (venue.status !== "pending") {
       return errorResponse(res, {
         statusCode: 403,
-        message: "You can update only your pending or rejected venue.",
+        message: "You can update only your pending venue.",
       });
     }
   }
@@ -519,24 +521,6 @@ export const updateVenue = asyncHandler(async (req, res) => {
 
   venue.mapLink = mapLink.trim();
   venue.phone = phone?.trim() || null;
-
-  //==============================
-  // Reset Rejected Venue
-  //==============================
-
-  if (venue.status === "rejected") {
-    // Reset status
-    venue.status = "pending";
-
-    // Clear Rejection Information
-    venue.rejectedBy = null;
-    venue.rejectedAt = null;
-    venue.rejectionReason = null;
-
-    // Clear Approval Information
-    venue.approvedBy = null;
-    venue.approvedAt = null;
-  }
 
   // Replace Venue Photo
 
@@ -779,6 +763,13 @@ export const rejectVenue = asyncHandler(async (req, res) => {
     return errorResponse(res, {
       statusCode: 400,
       message: "Venue is already rejected.",
+    });
+  }
+
+  if (venue.status === "approved") {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Approved venue cannot be rejected.",
     });
   }
 
