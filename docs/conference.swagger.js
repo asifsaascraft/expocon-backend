@@ -897,7 +897,7 @@ const conferencePaths = {
       summary: "Reject Conference",
 
       description:
-        "Reject a pending conference. Only administrators are allowed to reject conferences.",
+        "Reject a conference. Both pending and approved conferences can be rejected. Only administrators are allowed to reject conferences.",
 
       security: [
         {

@@ -1108,14 +1108,7 @@ export const rejectConference = asyncHandler(async (req, res) => {
       message: "Conference is already rejected.",
     });
   }
-
-  if (conference.status === "approved") {
-    return errorResponse(res, {
-      statusCode: 400,
-      message: "Approved conference cannot be rejected.",
-    });
-  }
-
+  
   // Reject Conference
 
   conference.status = "rejected";

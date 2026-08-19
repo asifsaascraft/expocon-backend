@@ -894,8 +894,8 @@ const exhibitionPaths = {
       summary: "Reject Exhibition",
 
       description:
-        "Reject a pending exhibition. Only administrators are allowed to reject exhibitions.",
-
+        "Reject an exhibition. Both pending and approved exhibitions can be rejected. Only administrators are allowed to reject exhibitions.",
+        
       security: [
         {
           bearerAuth: [],

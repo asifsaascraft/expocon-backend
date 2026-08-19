@@ -1025,13 +1025,6 @@ export const rejectExhibition = asyncHandler(async (req, res) => {
     });
   }
 
-  if (exhibition.status === "approved") {
-    return errorResponse(res, {
-      statusCode: 400,
-      message: "Approved exhibition cannot be rejected.",
-    });
-  }
-
   // Reject Exhibition
 
   exhibition.status = "rejected";
