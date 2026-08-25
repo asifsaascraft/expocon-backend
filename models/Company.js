@@ -79,8 +79,6 @@ const CompanySchema = new mongoose.Schema(
     mobile: {
       type: String,
       trim: true,
-      unique: true,
-      sparse: true,
       match: [/^[6-9]\d{9}$/, "Please enter a valid mobile number."],
       default: null,
     },

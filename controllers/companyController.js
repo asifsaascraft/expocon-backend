@@ -129,21 +129,6 @@ export const createCompany = asyncHandler(async (req, res) => {
     });
   }
 
-  // Duplicate Mobile
-
-  if (mobile?.trim()) {
-    const existingMobile = await Company.findOne({
-      mobile: mobile.trim(),
-    });
-
-    if (existingMobile) {
-      return errorResponse(res, {
-        statusCode: 409,
-        message: "Mobile number already exists.",
-      });
-    }
-  }
-
   // Prepare Data
 
   const companyData = {
@@ -641,24 +626,6 @@ export const updateCompany = asyncHandler(async (req, res) => {
       statusCode: 409,
       message: "Company email already exists.",
     });
-  }
-
-  // Duplicate Mobile
-
-  if (mobile?.trim()) {
-    const existingMobile = await Company.findOne({
-      mobile: mobile.trim(),
-      _id: {
-        $ne: id,
-      },
-    });
-
-    if (existingMobile) {
-      return errorResponse(res, {
-        statusCode: 409,
-        message: "Mobile number already exists.",
-      });
-    }
   }
 
   // Update Company
