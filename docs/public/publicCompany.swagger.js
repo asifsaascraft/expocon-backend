@@ -267,7 +267,7 @@ const publicCompanyPaths = {
     get: {
       tags: ["Public - Company"],
 
-      summary: "Get All Public Companies",
+      summary: "Get All Public Companies (Excluding Exhibition Organizer & Conference Organizer (PCO))",
 
       description:
         "Get all approved public companies except companies whose company type is Exhibition Organizer or Professional Conference Organiser (PCO). The response contains public company information and the total number of upcoming approved exhibitions and conferences for each company.",
