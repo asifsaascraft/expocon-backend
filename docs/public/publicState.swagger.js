@@ -70,16 +70,12 @@ const publicStatePaths = {
           schema: {
             type: "string",
 
-            enum: [
-              "venueCount",
-              "state",
-            ],
+            enum: ["venueCount", "state"],
 
             default: "venueCount",
           },
 
-          description:
-            "Field used to sort states. Default is venueCount.",
+          description: "Field used to sort states. Default is venueCount.",
         },
 
         {
@@ -92,10 +88,7 @@ const publicStatePaths = {
           schema: {
             type: "string",
 
-            enum: [
-              "asc",
-              "desc",
-            ],
+            enum: ["asc", "desc"],
 
             default: "desc",
           },
@@ -107,16 +100,14 @@ const publicStatePaths = {
 
       responses: {
         200: {
-          description:
-            "Public states with venue count fetched successfully.",
+          description: "Public states with venue count fetched successfully.",
 
           content: {
             "application/json": {
               example: {
                 success: true,
 
-                message:
-                  "Public states with venue count fetched successfully.",
+                message: "Public states with venue count fetched successfully.",
 
                 data: [
                   {
@@ -169,22 +160,24 @@ const publicStatePaths = {
     },
   },
 
-
   // =====================================
-  // Get Public States With Conference Count
+  // Public States With Upcoming Conference Count
   // =====================================
 
   "/public/states/conference-count": {
     get: {
       tags: ["Public - State"],
 
-      summary:
-        "Get All Public States With Conference Count",
+      summary: "Get Public States With Upcoming Conference Count",
 
       description:
-        "Get all states with the number of approved conferences available in each state. States with zero approved conferences are also included. Results support search, pagination, and sorting by conference count.",
+        "Get all states that have approved upcoming conferences. Only the upcoming conference count for each state is returned. Conference details are not included in the response. Upcoming conferences are determined using the startDate.",
 
       parameters: [
+        // =====================================
+        // Page
+        // =====================================
+
         {
           in: "query",
 
@@ -194,12 +187,18 @@ const publicStatePaths = {
 
           schema: {
             type: "integer",
+
             minimum: 1,
+
             default: 1,
           },
 
           description: "Page number.",
         },
+
+        // =====================================
+        // Limit
+        // =====================================
 
         {
           in: "query",
@@ -210,70 +209,15 @@ const publicStatePaths = {
 
           schema: {
             type: "integer",
+
             minimum: 1,
+
             maximum: 100,
+
             default: 20,
           },
 
           description: "Number of states per page.",
-        },
-
-        {
-          in: "query",
-
-          name: "search",
-
-          required: false,
-
-          schema: {
-            type: "string",
-          },
-
-          description: "Search state by state name.",
-        },
-
-        {
-          in: "query",
-
-          name: "sortBy",
-
-          required: false,
-
-          schema: {
-            type: "string",
-
-            enum: [
-              "conferenceCount",
-              "state",
-            ],
-
-            default: "conferenceCount",
-          },
-
-          description:
-            "Field used to sort states. Default is conferenceCount.",
-        },
-
-        {
-          in: "query",
-
-          name: "order",
-
-          required: false,
-
-          schema: {
-            type: "string",
-
-            enum: [
-              "asc",
-              "desc",
-            ],
-
-            default: "desc",
-          },
-
-          description:
-            "Sort order. By default, states with the highest number of approved conferences appear first.",
         },
       ],
 
@@ -296,38 +240,40 @@ const publicStatePaths = {
 
                 data: [
                   {
-                    state: "Maharashtra",
-                    conferenceCount: 20,
+                    state: "Tamil Nadu",
+
+                    upcomingConferenceCount: 21,
                   },
 
                   {
-                    state: "Telangana",
-                    conferenceCount: 15,
-                  },
+                    state: "Uttarakhand",
 
-                  {
-                    state: "Karnataka",
-                    conferenceCount: 10,
-                  },
-
-                  {
-                    state: "Uttar Pradesh",
-                    conferenceCount: 4,
+                    upcomingConferenceCount: 2,
                   },
 
                   {
                     state: "Bihar",
-                    conferenceCount: 0,
+
+                    upcomingConferenceCount: 1,
                   },
                 ],
 
                 pagination: {
-                  total: 5,
                   page: 1,
+
                   limit: 20,
-                  totalPages: 1,
-                  hasNextPage: false,
+
+                  total: 37,
+
+                  totalPages: 2,
+
+                  from: 1,
+
+                  to: 20,
+
                   hasPreviousPage: false,
+
+                  hasNextPage: true,
                 },
               },
             },
@@ -353,22 +299,24 @@ const publicStatePaths = {
     },
   },
 
-
   // =====================================
-  // Get Public States With Exhibition Count
+  // Public States With Upcoming Exhibition Count
   // =====================================
 
   "/public/states/exhibition-count": {
     get: {
       tags: ["Public - State"],
 
-      summary:
-        "Get All Public States With Exhibition Count",
+      summary: "Get Public States With Upcoming Exhibition Count",
 
       description:
-        "Get all states with the number of approved exhibitions available in each state. States with zero approved exhibitions are also included. Results support search, pagination, and sorting by exhibition count.",
+        "Get all states that have approved upcoming exhibitions. Only the upcoming exhibition count for each state is returned. Exhibition details are not included in the response. Upcoming exhibitions are determined using the startDate.",
 
       parameters: [
+        // =====================================
+        // Page
+        // =====================================
+
         {
           in: "query",
 
@@ -378,12 +326,18 @@ const publicStatePaths = {
 
           schema: {
             type: "integer",
+
             minimum: 1,
+
             default: 1,
           },
 
           description: "Page number.",
         },
+
+        // =====================================
+        // Limit
+        // =====================================
 
         {
           in: "query",
@@ -394,70 +348,15 @@ const publicStatePaths = {
 
           schema: {
             type: "integer",
+
             minimum: 1,
+
             maximum: 100,
+
             default: 20,
           },
 
           description: "Number of states per page.",
-        },
-
-        {
-          in: "query",
-
-          name: "search",
-
-          required: false,
-
-          schema: {
-            type: "string",
-          },
-
-          description: "Search state by state name.",
-        },
-
-        {
-          in: "query",
-
-          name: "sortBy",
-
-          required: false,
-
-          schema: {
-            type: "string",
-
-            enum: [
-              "exhibitionCount",
-              "state",
-            ],
-
-            default: "exhibitionCount",
-          },
-
-          description:
-            "Field used to sort states. Default is exhibitionCount.",
-        },
-
-        {
-          in: "query",
-
-          name: "order",
-
-          required: false,
-
-          schema: {
-            type: "string",
-
-            enum: [
-              "asc",
-              "desc",
-            ],
-
-            default: "desc",
-          },
-
-          description:
-            "Sort order. By default, states with the highest number of approved exhibitions appear first.",
         },
       ],
 
@@ -481,37 +380,39 @@ const publicStatePaths = {
                 data: [
                   {
                     state: "Maharashtra",
-                    exhibitionCount: 22,
+
+                    upcomingExhibitionCount: 18,
                   },
 
                   {
-                    state: "Telangana",
-                    exhibitionCount: 17,
+                    state: "Delhi",
+
+                    upcomingExhibitionCount: 7,
                   },
 
                   {
-                    state: "Karnataka",
-                    exhibitionCount: 13,
-                  },
+                    state: "Gujarat",
 
-                  {
-                    state: "Uttar Pradesh",
-                    exhibitionCount: 6,
-                  },
-
-                  {
-                    state: "Bihar",
-                    exhibitionCount: 0,
+                    upcomingExhibitionCount: 4,
                   },
                 ],
 
                 pagination: {
-                  total: 5,
                   page: 1,
+
                   limit: 20,
-                  totalPages: 1,
-                  hasNextPage: false,
+
+                  total: 25,
+
+                  totalPages: 2,
+
+                  from: 1,
+
+                  to: 20,
+
                   hasPreviousPage: false,
+
+                  hasNextPage: true,
                 },
               },
             },
@@ -537,6 +438,5 @@ const publicStatePaths = {
     },
   },
 };
-
 
 export default publicStatePaths;

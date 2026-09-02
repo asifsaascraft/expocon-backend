@@ -84,6 +84,13 @@ const UserSchema = new mongoose.Schema(
       default: "user",
     },
 
+    companyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Company",
+      default: null,
+      index: true,
+    },
+
     // Account Status
     status: {
       type: String,

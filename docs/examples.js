@@ -58,12 +58,12 @@ export const createStaffExample = {
 };
 
 // Partner Examples
-export const approvePartnerExample = {
-  remarks: "Approved by admin",
-};
+export const createPartnerExample = {
+  companyId:
+    "6852b4d04ef5f2e4dbd0d100",
 
-export const rejectPartnerExample = {
-  remarks: "Required documents are missing.",
+  email:
+    "partner@example.com",
 };
 
 // Password Examples
@@ -228,6 +228,52 @@ export const getAllStaffsResponseExample = {
     limit: 20,
     totalPages: 1,
     hasNextPage: false,
+    hasPreviousPage: false,
+  },
+};
+
+export const getAllPartnersResponseExample = {
+  success: true,
+
+  message: "Partners fetched successfully.",
+
+  data: [
+    {
+      _id: "686f9c5c7a4d8b0012345680",
+
+      fullName: "India Trade Promotion Organization",
+
+      username: "india_trade_promotion_organization",
+
+      email: "partner@example.com",
+
+      mobile: "9876543212",
+
+      role: "partner",
+
+      companyId: "6852b4d04ef5f2e4dbd0d100",
+
+      status: "active",
+
+      isEmailVerified: true,
+
+      createdAt: "2026-07-15T10:30:00.000Z",
+
+      updatedAt: "2026-07-15T10:30:00.000Z",
+    },
+  ],
+
+  pagination: {
+    total: 1,
+
+    page: 1,
+
+    limit: 20,
+
+    totalPages: 1,
+
+    hasNextPage: false,
+
     hasPreviousPage: false,
   },
 };

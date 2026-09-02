@@ -3,6 +3,8 @@ import express from "express";
 import {
   getAllUsers,
   getAllStaffs,
+  getAllPartners,
+  createPartner,
   toggleUserSuspension,
 } from "../controllers/adminUserController.js";
 
@@ -24,6 +26,12 @@ router.get("/users", getAllUsers);
 
 // Staffs
 router.get("/staffs", getAllStaffs);
+
+//  Partner
+router.get("/partners", getAllPartners);
+
+// Create Partner
+router.post("/partners", createPartner);
 
 // SUSPEND / UNSUSPEND (all role)
 router.post(

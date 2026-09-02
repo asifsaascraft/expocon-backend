@@ -1,16 +1,12 @@
+import crypto from "crypto";
 import User from "../models/User.js";
 import UserSession from "../models/UserSession.js";
+import Company from "../models/Company.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
-import {
-  successResponse,
-  errorResponse,
-} from "../utils/response.js";
+import { successResponse, errorResponse } from "../utils/response.js";
 
-import {
-  getPagination,
-  buildPaginationMeta,
-} from "../utils/pagination.js";
+import { getPagination, buildPaginationMeta } from "../utils/pagination.js";
 
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
@@ -41,9 +37,7 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 
   // Filters
 
-  const filtersQuery = buildFiltersQuery(req, [
-    "status",
-  ]);
+  const filtersQuery = buildFiltersQuery(req, ["status"]);
 
   // Final Query
 
@@ -87,19 +81,12 @@ export const getAllUsers = asyncHandler(async (req, res) => {
   // Database
 
   const [users, total] = await Promise.all([
-    User.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
+    User.find(query).sort(sort).skip(skip).limit(limit),
 
     User.countDocuments(query),
   ]);
 
-  const pagination = buildPaginationMeta(
-    total,
-    page,
-    limit,
-  );
+  const pagination = buildPaginationMeta(total, page, limit);
 
   // Cache
 
@@ -140,9 +127,7 @@ export const getAllStaffs = asyncHandler(async (req, res) => {
 
   // Filters
 
-  const filtersQuery = buildFiltersQuery(req, [
-    "status",
-  ]);
+  const filtersQuery = buildFiltersQuery(req, ["status"]);
 
   // Final Query
 
@@ -184,19 +169,12 @@ export const getAllStaffs = asyncHandler(async (req, res) => {
   // Database
 
   const [staffs, total] = await Promise.all([
-    User.find(query)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit),
+    User.find(query).sort(sort).skip(skip).limit(limit),
 
     User.countDocuments(query),
   ]);
 
-  const pagination = buildPaginationMeta(
-    total,
-    page,
-    limit,
-  );
+  const pagination = buildPaginationMeta(total, page, limit);
 
   // Cache
 
@@ -219,103 +197,356 @@ export const getAllStaffs = asyncHandler(async (req, res) => {
 });
 
 //==============================
-// Suspend / Unsuspend User
+// Get All Partners
 //==============================
-export const toggleUserSuspension = asyncHandler(
-  async (req, res) => {
-    const { id } = req.params;
+export const getAllPartners = asyncHandler(async (req, res) => {
+  // Pagination
 
-    // Find User
-    const user = await User.findOne({
-      _id: id,
-      isDeleted: false,
+  const { page, limit, skip } = getPagination(req);
+
+  // Search
+
+  const searchQuery = buildSearchQuery(req, [
+    "fullName",
+    "username",
+    "email",
+    "mobile",
+  ]);
+
+  // Filters
+
+  const filtersQuery = buildFiltersQuery(req, ["status"]);
+
+  // Final Query
+
+  const query = {
+    role: "partner",
+
+    isDeleted: false,
+
+    ...searchQuery,
+
+    ...filtersQuery,
+  };
+
+  // Sorting
+
+  const sort = buildSortQuery(req);
+
+  // Cache Key
+
+  const cacheKey = `admin-partners:${JSON.stringify({
+    page,
+    limit,
+    query,
+    sort,
+  })}`;
+
+  // Redis
+
+  const cachedData = await getCache(cacheKey);
+
+  if (cachedData) {
+    return successResponse(res, {
+      message: "Partners fetched successfully (from cache).",
+
+      data: cachedData.data,
+
+      pagination: cachedData.pagination,
+    });
+  }
+
+  // Database
+
+  const [partners, total] = await Promise.all([
+    User.find(query).sort(sort).skip(skip).limit(limit),
+
+    User.countDocuments(query),
+  ]);
+
+  // Pagination Metadata
+
+  const pagination = buildPaginationMeta(total, page, limit);
+
+  // Cache
+
+  await setCache(
+    cacheKey,
+    {
+      data: partners,
+      pagination,
+    },
+    3600,
+  );
+
+  // Response
+
+  return successResponse(res, {
+    message: "Partners fetched successfully.",
+
+    data: partners,
+
+    pagination,
+  });
+});
+
+//==============================
+// Create Partner
+//==============================
+export const createPartner = asyncHandler(async (req, res) => {
+  const { companyId, email } = req.body;
+
+  //==============================
+  // Validate Required Fields
+  //==============================
+
+  if (!companyId || !email) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Company ID and email are required.",
+    });
+  }
+
+  //==============================
+  // Validate Company ID
+  //==============================
+
+  if (!mongoose.Types.ObjectId.isValid(companyId)) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "Invalid company ID.",
+    });
+  }
+
+  //==============================
+  // Normalize Email
+  //==============================
+
+  const normalizedEmail = email.trim().toLowerCase();
+
+  //==============================
+  // Find Company
+  //==============================
+
+  const company = await Company.findOne({
+    _id: companyId,
+    status: "approved",
+  });
+
+  if (!company) {
+    return errorResponse(res, {
+      statusCode: 404,
+      message: "Company not found.",
+    });
+  }
+
+  //==============================
+  // Check Existing Partner
+  //==============================
+
+  const existingPartner = await User.findOne({
+    role: "partner",
+    companyId: company._id,
+    isDeleted: false,
+  });
+
+  if (existingPartner) {
+    return errorResponse(res, {
+      statusCode: 409,
+      message: "A partner already exists for this company.",
+    });
+  }
+
+  //==============================
+  // Check Email Already Exists
+  //==============================
+
+  const existingUser = await User.findOne({
+    email: normalizedEmail,
+    isDeleted: false,
+  });
+
+  if (existingUser) {
+    return errorResponse(res, {
+      statusCode: 409,
+      message: "A user with this email already exists.",
+    });
+  }
+
+  //==============================
+  // Generate Username
+  //==============================
+
+  const username = await generateUsername(company.companyName);
+
+  //==============================
+  // Check Generated Username
+  //==============================
+
+  const existingUsername = await User.findOne({
+    username,
+    isDeleted: false,
+  });
+
+  if (existingUsername) {
+    return errorResponse(res, {
+      statusCode: 409,
+      message: "Unable to generate a unique partner username.",
+    });
+  }
+
+  //==============================
+  // Generate Temporary Password
+  //==============================
+
+  const temporaryPassword = `Exp@${crypto.randomBytes(9).toString("base64url")}`;
+
+  //==============================
+  // Create Partner
+  //==============================
+
+  const partner = await User.create({
+    fullName: company.companyName,
+
+    username,
+
+    email: normalizedEmail,
+
+    password: temporaryPassword,
+
+    role: "partner",
+
+    companyId: company._id,
+
+    status: "active",
+
+    isEmailVerified: true,
+
+    createdBy: req.user._id,
+  });
+
+  //==============================
+  // Send Partner Login Email
+  //==============================
+
+  try {
+    await sendEmail({
+      to: partner.email,
+
+      name: partner.fullName,
+
+      templateKey: process.env.ZEPTO_PARTNER_WELCOME_TEMPLATE,
+
+      mergeInfo: {
+        name: partner.fullName,
+
+        email: partner.email,
+
+        password: temporaryPassword,
+
+        login_link: `${process.env.PARTNER_FRONTEND_URL}/login`,
+
+        current_year: new Date().getFullYear(),
+      },
+    });
+  } catch (error) {
+    // Remove account if email could not be sent
+
+    await User.deleteOne({
+      _id: partner._id,
     });
 
-    if (!user) {
-      return errorResponse(res, {
-        statusCode: 404,
-        message: "User not found.",
-      });
-    }
+    throw error;
+  }
 
-    // Admin cannot suspend another admin
-    if (user.role === "admin") {
-      return errorResponse(res, {
-        statusCode: 403,
-        message: "Admin accounts cannot be suspended.",
-      });
-    }
+  //==============================
+  // Clear Partner Redis Cache
+  //==============================
 
-    // Only these roles can be suspended
-    const allowedRoles = [
-      "user",
-      "partner",
-      "staff",
-    ];
+  await deleteCacheByPattern("admin-partners:*");
+  //==============================
+  // Response
+  //==============================
 
-    if (!allowedRoles.includes(user.role)) {
-      return errorResponse(res, {
-        statusCode: 400,
-        message: "This role cannot be suspended.",
-      });
-    }
+  return successResponse(res, {
+    statusCode: 201,
 
-    //==============================
-    // UNSUSPEND
-    //==============================
-    if (user.status === "suspended") {
-      user.status = "active";
+    message:
+      "Partner created successfully. Login credentials have been sent to the partner's email.",
 
-      await user.save();
+    data: {
+      id: partner._id,
 
-      // Clear Redis cache
-      await deleteCacheByPattern("admin-users:*");
-      await deleteCacheByPattern("admin-staffs:*");
+      fullName: partner.fullName,
 
-      return successResponse(res, {
-        message: "User unsuspended successfully.",
+      username: partner.username,
 
-        data: {
-          id: user._id,
-          fullName: user.fullName,
-          email: user.email,
-          role: user.role,
-          status: user.status,
-        },
-      });
-    }
+      email: partner.email,
 
-    //==============================
-    // SUSPEND
-    //==============================
-    user.status = "suspended";
+      role: partner.role,
+
+      companyId: partner.companyId,
+
+      companyName: company.companyName,
+
+      status: partner.status,
+
+      isEmailVerified: partner.isEmailVerified,
+    },
+  });
+});
+
+//==============================
+// Suspend / Unsuspend User
+//==============================
+export const toggleUserSuspension = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  // Find User
+  const user = await User.findOne({
+    _id: id,
+    isDeleted: false,
+  });
+
+  if (!user) {
+    return errorResponse(res, {
+      statusCode: 404,
+      message: "User not found.",
+    });
+  }
+
+  // Admin cannot suspend another admin
+  if (user.role === "admin") {
+    return errorResponse(res, {
+      statusCode: 403,
+      message: "Admin accounts cannot be suspended.",
+    });
+  }
+
+  // Only these roles can be suspended
+  const allowedRoles = ["user", "partner", "staff"];
+
+  if (!allowedRoles.includes(user.role)) {
+    return errorResponse(res, {
+      statusCode: 400,
+      message: "This role cannot be suspended.",
+    });
+  }
+
+  //==============================
+  // UNSUSPEND
+  //==============================
+  if (user.status === "suspended") {
+    user.status = "active";
 
     await user.save();
 
-    //==============================
-    // Logout From All Devices
-    //==============================
-
-    await UserSession.updateMany(
-      {
-        user: user._id,
-        isActive: true,
-      },
-      {
-        isActive: false,
-        loggedOutAt: new Date(),
-      },
-    );
-
-    //==============================
-    // Clear Redis Cache
-    //==============================
-
+    // Clear Redis cache
     await deleteCacheByPattern("admin-users:*");
     await deleteCacheByPattern("admin-staffs:*");
 
     return successResponse(res, {
-      message: "User suspended successfully.",
+      message: "User unsuspended successfully.",
 
       data: {
         id: user._id,
@@ -325,5 +556,46 @@ export const toggleUserSuspension = asyncHandler(
         status: user.status,
       },
     });
-  },
-);
+  }
+
+  //==============================
+  // SUSPEND
+  //==============================
+  user.status = "suspended";
+
+  await user.save();
+
+  //==============================
+  // Logout From All Devices
+  //==============================
+
+  await UserSession.updateMany(
+    {
+      user: user._id,
+      isActive: true,
+    },
+    {
+      isActive: false,
+      loggedOutAt: new Date(),
+    },
+  );
+
+  //==============================
+  // Clear Redis Cache
+  //==============================
+
+  await deleteCacheByPattern("admin-users:*");
+  await deleteCacheByPattern("admin-staffs:*");
+
+  return successResponse(res, {
+    message: "User suspended successfully.",
+
+    data: {
+      id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      status: user.status,
+    },
+  });
+});

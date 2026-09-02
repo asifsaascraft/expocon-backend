@@ -32,7 +32,7 @@ router.get(
 
 
 // =====================================
-// Public States With Conference Count
+// Public States With Upcoming Conference Count
 // =====================================
 router.get(
   "/conference-count",
@@ -41,7 +41,7 @@ router.get(
 
 
 // =====================================
-// Public States With Exhibition Count
+// Public States With Upcoming Exhibition Count
 // =====================================
 router.get(
   "/exhibition-count",

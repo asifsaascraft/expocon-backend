@@ -275,10 +275,10 @@ export const getPublicStatesWithVenueCount = asyncHandler(
 
 
 // =====================================
-// Get Public States With Conference Count
+// Get Public States With Upcoming Conference Count
 // =====================================
-export const getPublicStatesWithConferenceCount = asyncHandler(
-  async (req, res) => {
+export const getPublicStatesWithConferenceCount =
+  asyncHandler(async (req, res) => {
     // =====================================
     // Pagination
     // =====================================
@@ -286,41 +286,20 @@ export const getPublicStatesWithConferenceCount = asyncHandler(
     const { page, limit, skip } = getPagination(req);
 
     // =====================================
-    // Query Parameters
+    // Current Date
     // =====================================
 
-    const {
-      search,
-      sortBy = "conferenceCount",
-      order = "desc",
-    } = req.query;
-
-    // =====================================
-    // Validate Sort
-    // =====================================
-
-    const allowedSortFields = [
-      "conferenceCount",
-      "state",
-    ];
-
-    const safeSortBy = allowedSortFields.includes(sortBy)
-      ? sortBy
-      : "conferenceCount";
-
-    const safeOrder = order === "asc" ? 1 : -1;
+    const now = new Date();
 
     // =====================================
     // Cache Key
     // =====================================
 
-    const cacheKey = `public-states-conference-count:${JSON.stringify({
-      page,
-      limit,
-      search: search?.trim() || "",
-      sortBy: safeSortBy,
-      order: safeOrder,
-    })}`;
+    const cacheKey =
+      `public-state-conference-count:${JSON.stringify({
+        page,
+        limit,
+      })}`;
 
     // =====================================
     // Check Redis Cache
@@ -332,126 +311,96 @@ export const getPublicStatesWithConferenceCount = asyncHandler(
       return successResponse(res, {
         message:
           "Public states with conference count fetched successfully (from cache).",
+
         data: cachedData.data,
+
         pagination: cachedData.pagination,
       });
     }
 
     // =====================================
-    // Build State Match
+    // Aggregate Upcoming Conferences
     // =====================================
 
-    const stateMatch = {};
-
-    if (search?.trim()) {
-      stateMatch.state = {
-        $regex: search.trim(),
-        $options: "i",
-      };
-    }
-
-    // =====================================
-    // Aggregation
-    // =====================================
-
-    const aggregation = [
-      // -------------------------------------
-      // Search State
-      // -------------------------------------
+    const result = await Conference.aggregate([
+      // =====================================
+      // Only Approved Upcoming Conferences
+      // =====================================
 
       {
-        $match: stateMatch,
+        $match: {
+          status: "approved",
+
+          startDate: {
+            $gte: now,
+          },
+
+          stateId: {
+            $ne: null,
+          },
+        },
       },
 
-      // -------------------------------------
-      // Lookup Approved Conferences
-      // -------------------------------------
+      // =====================================
+      // Group By State
+      // =====================================
+
+      {
+        $group: {
+          _id: "$stateId",
+
+          upcomingConferenceCount: {
+            $sum: 1,
+          },
+        },
+      },
+
+      // =====================================
+      // Populate State
+      // =====================================
 
       {
         $lookup: {
-          from: Conference.collection.name,
+          from: "states",
 
-          let: {
-            stateId: "$_id",
-          },
+          localField: "_id",
 
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    {
-                      $eq: ["$stateId", "$$stateId"],
-                    },
-                    {
-                      $eq: ["$status", "approved"],
-                    },
-                  ],
-                },
-              },
-            },
+          foreignField: "_id",
 
-            {
-              $count: "count",
-            },
-          ],
-
-          as: "conferenceCountData",
+          as: "state",
         },
       },
 
-      // -------------------------------------
-      // Convert Count Array To Number
-      // -------------------------------------
+      // =====================================
+      // Convert State Array To Object
+      // =====================================
 
       {
-        $addFields: {
-          conferenceCount: {
-            $ifNull: [
-              {
-                $arrayElemAt: [
-                  "$conferenceCountData.count",
-                  0,
-                ],
-              },
-              0,
-            ],
-          },
+        $unwind: "$state",
+      },
+
+      // =====================================
+      // Sort
+      // =====================================
+      //
+      // States having more upcoming conferences
+      // appear first.
+      //
+      // If counts are equal, state name is
+      // sorted alphabetically.
+      // =====================================
+
+      {
+        $sort: {
+          upcomingConferenceCount: -1,
+
+          "state.state": 1,
         },
       },
 
-      // -------------------------------------
-      // Only Required Response Fields
-      // -------------------------------------
-
-      {
-        $project: {
-          _id: 0,
-          state: 1,
-          conferenceCount: 1,
-        },
-      },
-
-      // -------------------------------------
-      // Sorting
-      // -------------------------------------
-
-      {
-        $sort:
-          safeSortBy === "conferenceCount"
-            ? {
-                conferenceCount: safeOrder,
-                state: 1,
-              }
-            : {
-                state: safeOrder,
-                conferenceCount: -1,
-              },
-      },
-
-      // -------------------------------------
-      // Pagination
-      // -------------------------------------
+      // =====================================
+      // Pagination + Total Count
+      // =====================================
 
       {
         $facet: {
@@ -463,6 +412,16 @@ export const getPublicStatesWithConferenceCount = asyncHandler(
             {
               $limit: limit,
             },
+
+            {
+              $project: {
+                _id: 0,
+
+                state: "$state.state",
+
+                upcomingConferenceCount: 1,
+              },
+            },
           ],
 
           total: [
@@ -472,34 +431,35 @@ export const getPublicStatesWithConferenceCount = asyncHandler(
           ],
         },
       },
-    ];
+    ]);
 
     // =====================================
-    // Execute Aggregation
+    // Extract Data
     // =====================================
 
-    const [result] = await State.aggregate(aggregation);
+    const data = result[0]?.data || [];
 
-    const states = result?.data || [];
-
-    const total = result?.total?.[0]?.count || 0;
+    const total =
+      result[0]?.total?.[0]?.count || 0;
 
     // =====================================
     // Pagination Metadata
     // =====================================
 
-    const pagination = buildPaginationMeta(
-      total,
-      page,
-      limit,
-    );
+    const pagination =
+      buildPaginationMeta(
+        total,
+        page,
+        limit,
+      );
 
     // =====================================
     // Response Data
     // =====================================
 
     const responseData = {
-      data: states,
+      data,
+
       pagination,
     };
 
@@ -520,18 +480,19 @@ export const getPublicStatesWithConferenceCount = asyncHandler(
     return successResponse(res, {
       message:
         "Public states with conference count fetched successfully.",
-      data: states,
+
+      data,
+
       pagination,
     });
-  },
-);
+  });
 
 
 // =====================================
-// Get Public States With Exhibition Count
+// Get Public States With Upcoming Exhibition Count
 // =====================================
-export const getPublicStatesWithExhibitionCount = asyncHandler(
-  async (req, res) => {
+export const getPublicStatesWithExhibitionCount =
+  asyncHandler(async (req, res) => {
     // =====================================
     // Pagination
     // =====================================
@@ -539,41 +500,20 @@ export const getPublicStatesWithExhibitionCount = asyncHandler(
     const { page, limit, skip } = getPagination(req);
 
     // =====================================
-    // Query Parameters
+    // Current Date
     // =====================================
 
-    const {
-      search,
-      sortBy = "exhibitionCount",
-      order = "desc",
-    } = req.query;
-
-    // =====================================
-    // Validate Sort
-    // =====================================
-
-    const allowedSortFields = [
-      "exhibitionCount",
-      "state",
-    ];
-
-    const safeSortBy = allowedSortFields.includes(sortBy)
-      ? sortBy
-      : "exhibitionCount";
-
-    const safeOrder = order === "asc" ? 1 : -1;
+    const now = new Date();
 
     // =====================================
     // Cache Key
     // =====================================
 
-    const cacheKey = `public-states-exhibition-count:${JSON.stringify({
-      page,
-      limit,
-      search: search?.trim() || "",
-      sortBy: safeSortBy,
-      order: safeOrder,
-    })}`;
+    const cacheKey =
+      `public-state-exhibition-count:${JSON.stringify({
+        page,
+        limit,
+      })}`;
 
     // =====================================
     // Check Redis Cache
@@ -585,126 +525,89 @@ export const getPublicStatesWithExhibitionCount = asyncHandler(
       return successResponse(res, {
         message:
           "Public states with exhibition count fetched successfully (from cache).",
+
         data: cachedData.data,
+
         pagination: cachedData.pagination,
       });
     }
 
     // =====================================
-    // Build State Match
+    // Aggregate Upcoming Exhibitions
     // =====================================
 
-    const stateMatch = {};
-
-    if (search?.trim()) {
-      stateMatch.state = {
-        $regex: search.trim(),
-        $options: "i",
-      };
-    }
-
-    // =====================================
-    // Aggregation
-    // =====================================
-
-    const aggregation = [
-      // -------------------------------------
-      // Search State
-      // -------------------------------------
+    const result = await Exhibition.aggregate([
+      // =====================================
+      // Only Approved Upcoming Exhibitions
+      // =====================================
 
       {
-        $match: stateMatch,
+        $match: {
+          status: "approved",
+
+          startDate: {
+            $gte: now,
+          },
+
+          stateId: {
+            $ne: null,
+          },
+        },
       },
 
-      // -------------------------------------
-      // Lookup Approved Exhibitions
-      // -------------------------------------
+      // =====================================
+      // Group By State
+      // =====================================
+
+      {
+        $group: {
+          _id: "$stateId",
+
+          upcomingExhibitionCount: {
+            $sum: 1,
+          },
+        },
+      },
+
+      // =====================================
+      // Populate State
+      // =====================================
 
       {
         $lookup: {
-          from: Exhibition.collection.name,
+          from: "states",
 
-          let: {
-            stateId: "$_id",
-          },
+          localField: "_id",
 
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    {
-                      $eq: ["$stateId", "$$stateId"],
-                    },
-                    {
-                      $eq: ["$status", "approved"],
-                    },
-                  ],
-                },
-              },
-            },
+          foreignField: "_id",
 
-            {
-              $count: "count",
-            },
-          ],
-
-          as: "exhibitionCountData",
+          as: "state",
         },
       },
 
-      // -------------------------------------
-      // Convert Count Array To Number
-      // -------------------------------------
+      // =====================================
+      // Convert State Array To Object
+      // =====================================
 
       {
-        $addFields: {
-          exhibitionCount: {
-            $ifNull: [
-              {
-                $arrayElemAt: [
-                  "$exhibitionCountData.count",
-                  0,
-                ],
-              },
-              0,
-            ],
-          },
+        $unwind: "$state",
+      },
+
+      // =====================================
+      // Sort
+      // =====================================
+
+      {
+        $sort: {
+          upcomingExhibitionCount: -1,
+
+          "state.state": 1,
         },
       },
 
-      // -------------------------------------
-      // Only Required Response Fields
-      // -------------------------------------
-
-      {
-        $project: {
-          _id: 0,
-          state: 1,
-          exhibitionCount: 1,
-        },
-      },
-
-      // -------------------------------------
-      // Sorting
-      // -------------------------------------
-
-      {
-        $sort:
-          safeSortBy === "exhibitionCount"
-            ? {
-                exhibitionCount: safeOrder,
-                state: 1,
-              }
-            : {
-                state: safeOrder,
-                exhibitionCount: -1,
-              },
-      },
-
-      // -------------------------------------
-      // Pagination
-      // -------------------------------------
+      // =====================================
+      // Pagination + Total Count
+      // =====================================
 
       {
         $facet: {
@@ -716,6 +619,16 @@ export const getPublicStatesWithExhibitionCount = asyncHandler(
             {
               $limit: limit,
             },
+
+            {
+              $project: {
+                _id: 0,
+
+                state: "$state.state",
+
+                upcomingExhibitionCount: 1,
+              },
+            },
           ],
 
           total: [
@@ -725,34 +638,35 @@ export const getPublicStatesWithExhibitionCount = asyncHandler(
           ],
         },
       },
-    ];
+    ]);
 
     // =====================================
-    // Execute Aggregation
+    // Extract Data
     // =====================================
 
-    const [result] = await State.aggregate(aggregation);
+    const data = result[0]?.data || [];
 
-    const states = result?.data || [];
-
-    const total = result?.total?.[0]?.count || 0;
+    const total =
+      result[0]?.total?.[0]?.count || 0;
 
     // =====================================
     // Pagination Metadata
     // =====================================
 
-    const pagination = buildPaginationMeta(
-      total,
-      page,
-      limit,
-    );
+    const pagination =
+      buildPaginationMeta(
+        total,
+        page,
+        limit,
+      );
 
     // =====================================
     // Response Data
     // =====================================
 
     const responseData = {
-      data: states,
+      data,
+
       pagination,
     };
 
@@ -773,11 +687,12 @@ export const getPublicStatesWithExhibitionCount = asyncHandler(
     return successResponse(res, {
       message:
         "Public states with exhibition count fetched successfully.",
-      data: states,
+
+      data,
+
       pagination,
     });
-  },
-);
+  });
 
 
 // =====================================
