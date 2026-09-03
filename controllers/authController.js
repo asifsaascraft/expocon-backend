@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import UserSession from "../models/UserSession.js";
@@ -291,7 +292,7 @@ export const inviteStaff = asyncHandler(async (req, res) => {
   });
 
   // Clear Staff Redis Cache
-await deleteCacheByPattern("admin-staffs:*");
+  await deleteCacheByPattern("admin-staffs:*");
 
   // Invitation Link
 
@@ -821,6 +822,7 @@ export const logoutAllDevices = asyncHandler(async (req, res) => {
 export const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
+  // Validate
   if (!email) {
     return errorResponse(res, {
       statusCode: 400,
@@ -828,6 +830,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     });
   }
 
+  // Find User
   const user = await User.findOne({
     email: email.toLowerCase(),
     isDeleted: false,
@@ -842,7 +845,6 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   }
 
   // Generate Reset Token
-
   const { rawToken, hashedToken } = generateRandomToken();
 
   user.passwordResetToken = hashedToken;
@@ -853,12 +855,30 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     validateBeforeSave: false,
   });
 
-  // Reset Link
+  //========================================
+  // Select Frontend URL Based On User Role
+  //========================================
 
-  const resetLink = `${process.env.FRONTEND_URL}/reset-password/${rawToken}`;
+  let frontendUrl = process.env.FRONTEND_URL;
+
+  if (user.role === "partner") {
+    frontendUrl = process.env.PARTNER_FRONTEND_URL;
+  }
+
+  // Remove trailing slash if present
+  frontendUrl = frontendUrl?.replace(/\/$/, "");
+
+  if (!frontendUrl) {
+    return errorResponse(res, {
+      statusCode: 500,
+      message: "Frontend URL is not configured.",
+    });
+  }
+
+  // Reset Link
+  const resetLink = `${frontendUrl}/reset-password/${rawToken}`;
 
   // Send Email
-
   await sendEmail({
     to: user.email,
 

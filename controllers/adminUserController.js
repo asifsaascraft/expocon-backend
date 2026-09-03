@@ -1,13 +1,13 @@
+import mongoose from "mongoose";
 import crypto from "crypto";
 import User from "../models/User.js";
 import UserSession from "../models/UserSession.js";
+import generateUsername from "../utils/generateUsername.js";
 import Company from "../models/Company.js";
 import asyncHandler from "../utils/asyncHandler.js";
-
+import sendEmail from "../utils/sendEmail.js";
 import { successResponse, errorResponse } from "../utils/response.js";
-
 import { getPagination, buildPaginationMeta } from "../utils/pagination.js";
-
 import buildSearchQuery from "../utils/search.js";
 import buildSortQuery from "../utils/sort.js";
 import buildFiltersQuery from "../utils/filters.js";
